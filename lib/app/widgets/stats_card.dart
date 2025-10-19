@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 
 class StatsCard extends StatelessWidget {
   final IconData icon;
@@ -19,50 +20,50 @@ class StatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(Responsive.sp(12)),
       decoration: BoxDecoration(
         color: AppColors.cardDark,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(Responsive.radiusLg),
         border: Border.all(
           color: color.withOpacity(0.3),
-          width: 1,
+          width: Responsive.sp(1),
         ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(Responsive.sp(8)),
             decoration: BoxDecoration(
               color: color.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
             ),
             child: FaIcon(
               icon,
               color: color,
-              size: 20,
+              size: Responsive.sp(20),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: Responsive.smVertical),
           Flexible(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textGrey,
-                fontSize: 10,
+                fontSize: Responsive.fontSize(10),
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: Responsive.sp(4)),
           Flexible(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textWhite,
-                fontSize: 16,
+                fontSize: Responsive.fontSize(16),
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,

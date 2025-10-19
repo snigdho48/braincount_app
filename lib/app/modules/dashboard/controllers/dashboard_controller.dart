@@ -12,6 +12,7 @@ class DashboardController extends GetxController {
   final recentTasks = <TaskModel>[].obs;
   final isLoading = false.obs;
   final selectedTab = 0.obs;
+  final selectedFilter = 'submitted'.obs; // For task filtering
 
   @override
   void onInit() {
@@ -49,6 +50,11 @@ class DashboardController extends GetxController {
     selectedTab.value = index;
   }
 
+  void changeFilter(String filter) {
+    selectedFilter.value = filter;
+    // Optionally reload tasks based on filter
+  }
+
   void goToTaskDetails(TaskModel task) {
     Get.toNamed(
       AppRoutes.taskDetails,
@@ -57,7 +63,7 @@ class DashboardController extends GetxController {
   }
 
   void goToWithdraw() {
-    Get.toNamed(AppRoutes.withdraw);
+    Get.toNamed(AppRoutes.balanceHistory);
   }
 
   void goToSettings() {

@@ -1,41 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 
 class BrainLoader extends StatelessWidget {
   final String? message;
-  final double size;
+  final double? size;
 
   const BrainLoader({
     super.key,
     this.message,
-    this.size = 100,
+    this.size,
   });
 
   @override
   Widget build(BuildContext context) {
+    final loaderSize = size ?? Responsive.sp(100);
+    
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Animated brain icon (using creative shapes)
           Container(
-            width: size,
-            height: size,
+            width: loaderSize,
+            height: loaderSize,
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.5),
-                  blurRadius: 20,
-                  spreadRadius: 5,
+                  blurRadius: Responsive.sp(20),
+                  spreadRadius: Responsive.sp(5),
                 ),
               ],
             ),
-            child: const Icon(
+            child: Icon(
               Icons.psychology,
-              size: 50,
+              size: loaderSize * 0.5,
               color: Colors.white,
             ),
           )
@@ -53,12 +56,12 @@ class BrainLoader extends StatelessWidget {
                 duration: 1000.ms,
               ),
           if (message != null) ...[
-            const SizedBox(height: 20),
+            SizedBox(height: Responsive.mdVertical),
             Text(
               message!,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textGrey,
-                fontSize: 14,
+                fontSize: Responsive.fontSize(14),
               ),
             )
                 .animate(onPlay: (controller) => controller.repeat())
@@ -71,5 +74,3 @@ class BrainLoader extends StatelessWidget {
     );
   }
 }
-
-

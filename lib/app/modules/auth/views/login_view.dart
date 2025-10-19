@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../controllers/login_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -18,49 +18,75 @@ class LoginView extends GetView<LoginController> {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: Form(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: Get.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
+              ),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: EdgeInsets.all(Responsive.md),
+                  child: Form(
               key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 40),
-                  // Logo
-                  Container(
-                    height: 80,
-                    child: Image.asset(
-                      'assets/app_icon/braincount-logo.png',
-                      height: 80,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 120,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.brain,
-                            size: 50,
-                            color: Colors.white,
-                          ),
-                        );
-                      },
+                  // Back button
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: AppColors.textWhite,
+                        size: Responsive.iconSize,
+                      ),
+                      onPressed: () => Get.back(),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: Responsive.lgVertical),
+                  // Logo (Favicon)
+                  Center(
+                    child: Container(
+                      width: Responsive.sp(113),
+                      height: Responsive.sp(113),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Responsive.radiusLg),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Responsive.radiusLg),
+                        child: Image.asset(
+                          'assets/app_icon/favicon.png',
+                          width: Responsive.sp(113),
+                          height: Responsive.sp(113),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                gradient: AppColors.primaryGradient,
+                                borderRadius: BorderRadius.circular(Responsive.radiusLg),
+                              ),
+                              child: Icon(
+                                Icons.psychology,
+                                size: Responsive.sp(60),
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: Responsive.lgVertical),
                   // Title
-                  const Text(
+                  Text(
                     'Login',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: Responsive.fontSize(20),
                       fontWeight: FontWeight.bold,
                       color: AppColors.textWhite,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: Responsive.lgVertical),
                   // Email Field
                   CustomTextField(
                     label: 'Email',
@@ -68,7 +94,6 @@ class LoginView extends GetView<LoginController> {
                     controller: controller.emailController,
                     isRequired: true,
                     keyboardType: TextInputType.emailAddress,
-                    prefixIcon: FontAwesomeIcons.envelope,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -79,7 +104,7 @@ class LoginView extends GetView<LoginController> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: Responsive.mdVertical),
                   // Password Field
                   Obx(() => CustomTextField(
                         label: 'Password',
@@ -87,7 +112,16 @@ class LoginView extends GetView<LoginController> {
                         controller: controller.passwordController,
                         isRequired: true,
                         isPassword: controller.obscurePassword.value,
-                        prefixIcon: FontAwesomeIcons.lock,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.obscurePassword.value
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: AppColors.textGrey,
+                            size: Responsive.iconSizeSm,
+                          ),
+                          onPressed: controller.togglePasswordVisibility,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
@@ -97,92 +131,85 @@ class LoginView extends GetView<LoginController> {
                           }
                           return null;
                         },
-                        suffixIcon: IconButton(
-                          icon: FaIcon(
-                            controller.obscurePassword.value
-                                ? FontAwesomeIcons.eyeSlash
-                                : FontAwesomeIcons.eye,
-                            color: AppColors.textGrey,
-                            size: 18,
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                          padding: const EdgeInsets.all(12),
-                        ),
                       )),
-                  const SizedBox(height: 12),
+                  SizedBox(height: Responsive.smVertical),
                   // Forgot Password
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: controller.goToForgotPassword,
-                      child: const Text(
+                      child: Text(
                         'Forgot Password?',
                         style: TextStyle(
-                          color: AppColors.info,
+                          color: AppColors.primary,
+                          fontSize: Responsive.fontSize(14),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: Responsive.lgVertical),
                   // Login Button
                   Obx(() => CustomButton(
                         text: 'Login',
                         onPressed: controller.login,
                         isLoading: controller.isLoading.value,
                       )),
-                  const SizedBox(height: 24),
-                  // Or login with
-                  const Text(
-                    'or login with',
-                    style: TextStyle(
-                      color: AppColors.textGrey,
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  // Google Login Button
-                  Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: AppColors.textWhite,
-                        width: 2,
+                  SizedBox(height: Responsive.lgVertical),
+                  // Or divider
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: AppColors.borderColor,
+                        ),
                       ),
-                    ),
-                    child: ElevatedButton(
-                      onPressed: controller.loginWithGoogle,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Responsive.md),
+                        child: Text(
+                          'or login with',
+                          style: TextStyle(
+                            color: AppColors.textGrey,
+                            fontSize: Responsive.fontSize(14),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: AppColors.borderColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: Responsive.lgVertical),
+                  // Google Login Button
+                  GestureDetector(
+                    onTap: controller.loginWithGoogle,
+                    child: Container(
+                      height: Responsive.buttonHeight,
+                      decoration: BoxDecoration(
+                        color: AppColors.cardDark,
+                        borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
+                        border: Border.all(
+                          color: AppColors.borderColor,
+                          width: Responsive.sp(1),
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: const BoxDecoration(
-                              gradient: AppColors.primaryGradient,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const FaIcon(
-                              FontAwesomeIcons.google,
-                              color: Colors.white,
-                              size: 18,
-                            ),
+                          Image.asset(
+                            'assets/app_icon/google_logo.png',
+                            width: Responsive.sp(24),
+                            height: Responsive.sp(24),
                           ),
-                          const SizedBox(width: 12),
-                          const Text(
+                          SizedBox(width: Responsive.sm),
+                          Text(
                             'Login with Google',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: Responsive.fontSize(16),
                               fontWeight: FontWeight.w600,
                               color: AppColors.textWhite,
                             ),
@@ -191,25 +218,30 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: Responsive.xlVertical),
                   // Register Link
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Don't have an account?",
+                      Text(
+                        "Don't have an account? ",
                         style: TextStyle(
                           color: AppColors.textGrey,
-                          fontSize: 14,
+                          fontSize: Responsive.fontSize(14),
                         ),
                       ),
                       TextButton(
                         onPressed: controller.goToRegister,
-                        child: const Text(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
                           'Register',
                           style: TextStyle(
-                            color: AppColors.info,
-                            fontSize: 14,
+                            color: AppColors.primary,
+                            fontSize: Responsive.fontSize(14),
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -217,13 +249,14 @@ class LoginView extends GetView<LoginController> {
                     ],
                   ),
                 ],
+                  ),
+                ),
               ),
             ),
           ),
         ),
       ),
+    )
     );
   }
 }
-
-

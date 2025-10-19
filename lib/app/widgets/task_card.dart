@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 import '../data/models/task_model.dart';
 
 class TaskCard extends StatelessWidget {
@@ -18,40 +19,41 @@ class TaskCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: Responsive.sp(12)),
+        padding: EdgeInsets.all(Responsive.sp(12)),
         decoration: BoxDecoration(
           color: AppColors.cardDark,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(Responsive.radiusLg),
           border: Border.all(
             color: AppColors.success.withOpacity(0.3),
-            width: 1,
+            width: Responsive.sp(1),
           ),
         ),
         child: Row(
           children: [
             // Task Image
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
               child: Image.asset(
                 'assets/designs/dashboard dafult.png',
-                width: 80,
-                height: 80,
+                width: Responsive.sp(80),
+                height: Responsive.sp(80),
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    width: 80,
-                    height: 80,
+                    width: Responsive.sp(80),
+                    height: Responsive.sp(80),
                     color: AppColors.cardBackground,
-                    child: const Icon(
+                    child: Icon(
                       Icons.image,
                       color: AppColors.textGrey,
+                      size: Responsive.iconSize,
                     ),
                   );
                 },
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: Responsive.sp(12)),
             // Task Details
             Expanded(
               child: Column(
@@ -61,17 +63,17 @@ class TaskCard extends StatelessWidget {
                     children: [
                       Text(
                         '${task.id}: ',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textGrey,
-                          fontSize: 12,
+                          fontSize: Responsive.fontSize(12),
                         ),
                       ),
                       Expanded(
                         child: Text(
                           task.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.textWhite,
-                            fontSize: 14,
+                            fontSize: Responsive.fontSize(14),
                             fontWeight: FontWeight.w600,
                           ),
                           maxLines: 1,
@@ -80,26 +82,26 @@ class TaskCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: Responsive.sp(4)),
                   Text(
                     'Submission Status: ${task.submissionStatus ?? "Accepted"}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textGrey,
-                      fontSize: 12,
+                      fontSize: Responsive.fontSize(12),
                     ),
                   ),
                   Text(
                     'Submitted Status: ${task.submittedStatus ?? "Good"}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textGrey,
-                      fontSize: 12,
+                      fontSize: Responsive.fontSize(12),
                     ),
                   ),
                   Text(
                     'View: ${task.views}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textGrey,
-                      fontSize: 12,
+                      fontSize: Responsive.fontSize(12),
                     ),
                   ),
                 ],
@@ -110,18 +112,18 @@ class TaskCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios,
                   color: AppColors.textGrey,
-                  size: 16,
+                  size: Responsive.sp(16),
                 ),
-                const SizedBox(height: 24),
+                SizedBox(height: Responsive.sp(24)),
                 if (task.deadline != null)
                   Text(
                     DateFormat('dd/MM/yy').format(task.deadline!),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.error,
-                      fontSize: 11,
+                      fontSize: Responsive.fontSize(11),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -133,5 +135,3 @@ class TaskCard extends StatelessWidget {
     );
   }
 }
-
-

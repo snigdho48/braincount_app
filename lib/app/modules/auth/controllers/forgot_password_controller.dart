@@ -15,7 +15,7 @@ class ForgotPasswordController extends GetxController {
     super.onClose();
   }
 
-  Future<void> sendOTP() async {
+  Future<void> sendResetCode() async {
     if (!formKey.currentState!.validate()) return;
 
     try {

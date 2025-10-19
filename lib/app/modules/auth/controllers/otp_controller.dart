@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 
 class OtpController extends GetxController {
   final otpController = TextEditingController();
+  final emailController = TextEditingController();
   final isLoading = false.obs;
   final email = ''.obs;
 
@@ -16,12 +17,36 @@ class OtpController extends GetxController {
   void onInit() {
     super.onInit();
     email.value = Get.arguments?['email'] ?? '';
+    emailController.text = email.value;
   }
 
   @override
   void onClose() {
     otpController.dispose();
+    emailController.dispose();
     super.onClose();
+  }
+
+  Future<void> sendOtp() async {
+    try {
+      isLoading.value = true;
+      // TODO: Send OTP to email
+      await Future.delayed(const Duration(seconds: 2));
+      Get.snackbar(
+        'OTP Sent',
+        'A verification code has been sent to your email',
+        backgroundColor: AppColors.success.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      ErrorModal.show(
+        Get.context!,
+        title: 'Error',
+        message: 'Failed to send OTP. Please try again.',
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> verifyOTP() async {

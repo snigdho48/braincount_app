@@ -68,6 +68,28 @@ class RegisterController extends GetxController {
     }
   }
 
+  Future<void> registerWithGoogle() async {
+    try {
+      isLoading.value = true;
+      
+      // TODO: Implement Google Sign-In
+      // For now, show a message
+      ErrorModal.show(
+        Get.context!,
+        title: 'Coming Soon',
+        message: 'Google registration will be available soon.',
+      );
+    } catch (e) {
+      ErrorModal.show(
+        Get.context!,
+        title: 'Error',
+        message: 'An error occurred. Please try again.',
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   void goToLogin() {
     Get.back();
   }

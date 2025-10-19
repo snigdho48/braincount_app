@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/forgot_password_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_text_field.dart';
 
@@ -16,9 +17,15 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Form(
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: Get.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
+              ),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: EdgeInsets.all(Responsive.md),
+                  child: Form(
               key: controller.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -27,49 +34,35 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back,
                         color: AppColors.textWhite,
+                        size: Responsive.iconSize,
                       ),
                       onPressed: () => Get.back(),
                     ),
                   ),
-                  const SizedBox(height: 60),
-                  // Logo
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: const Icon(
-                      Icons.psychology,
-                      size: 80,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: Responsive.lgVertical),
                   // Title
-                  const Text(
+                  Text(
                     'Forgot Password',
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: Responsive.fontSize(20),
                       fontWeight: FontWeight.bold,
                       color: AppColors.textWhite,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Enter your email address to receive\nOTP verification code',
+                  SizedBox(height: Responsive.mdVertical),
+                  // Description
+                  Text(
+                    'No worries! Enter your email address below and we will send you a code to reset password.',
                     style: TextStyle(
-                      fontSize: 14,
                       color: AppColors.textGrey,
+                      fontSize: Responsive.fontSize(14),
+                      height: 1.5,
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: Responsive.lgVertical),
                   // Email Field
                   CustomTextField(
                     label: 'Email',
@@ -87,11 +80,11 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 40),
-                  // Send OTP Button
+                  SizedBox(height: Responsive.xlVertical * 2),
+                  // Reset Button
                   Obx(() => CustomButton(
-                        text: 'Send OTP',
-                        onPressed: controller.sendOTP,
+                        text: 'Reset Password',
+                        onPressed: controller.sendResetCode,
                         isLoading: controller.isLoading.value,
                       )),
                 ],
@@ -99,9 +92,12 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
             ),
           ),
         ),
-      ),
+              ),
+              ),
+            ),
+          ),
+      
+    
     );
   }
 }
-
-

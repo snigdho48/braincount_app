@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../controllers/withdraw_controller.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_text_field.dart';
+import '../../../core/utils/responsive.dart';
 
 class WithdrawView extends GetView<WithdrawController> {
   const WithdrawView({super.key});
@@ -21,102 +20,29 @@ class WithdrawView extends GetView<WithdrawController> {
             children: [
               // Header
               _buildHeader(),
-              // Content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Form(
-                    key: controller.formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Available Balance
-                        _buildBalanceCard(),
-                        const SizedBox(height: 30),
-                        // Withdrawal Method
-                        const Text(
-                          'Select Withdrawal Method',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textWhite,
-                          ),
+                  padding: EdgeInsets.all(Responsive.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Title
+                      Text(
+                        'Select Method',
+                        style: TextStyle(
+                          fontSize: Responsive.fontSize(16),
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textWhite,
                         ),
-                        const SizedBox(height: 16),
-                        _buildMethods(),
-                        const SizedBox(height: 30),
-                        // Amount
-                        CustomTextField(
-                          label: 'Amount',
-                          hint: 'Enter amount to withdraw',
-                          controller: controller.amountController,
-                          isRequired: true,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter amount';
-                            }
-                            final amount = double.tryParse(value);
-                            if (amount == null || amount <= 0) {
-                              return 'Please enter a valid amount';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        // Account Number
-                        CustomTextField(
-                          label: 'Account Number',
-                          hint: 'Enter your account number',
-                          controller: controller.accountNumberController,
-                          isRequired: true,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter account number';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 40),
-                        // Submit Button
-                        Obx(() => CustomButton(
-                              text: 'Submit Withdrawal',
-                              onPressed: controller.submitWithdrawal,
-                              isLoading: controller.isLoading.value,
-                            )),
-                        const SizedBox(height: 20),
-                        // Info
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColors.info.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.info.withOpacity(0.3),
-                            ),
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.info_outline,
-                                color: AppColors.info,
-                              ),
-                              SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  'Withdrawal requests are processed within 24-48 hours',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textGrey,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: Responsive.lgVertical),
+                      // Bank Section
+                      _buildBankSection(),
+                      SizedBox(height: Responsive.lgVertical),
+                      // Mobile Banking Section
+                      _buildMobileBankingSection(),
+                    ],
                   ),
                 ),
               ),
@@ -128,109 +54,213 @@ class WithdrawView extends GetView<WithdrawController> {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.md,
+        vertical: Responsive.smVertical,
+      ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.textWhite,
-            ),
-          ),
-          const Expanded(
-            child: Text(
-              'Withdraw',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
+          Row(
+            children: [
+              Container(
+                width: Responsive.sp(40),
+                height: Responsive.sp(40),
+                decoration: BoxDecoration(
+                  color: AppColors.cardDark,
+                  borderRadius: BorderRadius.circular(Responsive.radiusSm),
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: AppColors.primary,
+                  size: Responsive.iconSize,
+                ),
               ),
-              textAlign: TextAlign.center,
+              SizedBox(width: Responsive.sm),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'NAFSIN RAHMAN',
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(14),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textWhite,
+                    ),
+                  ),
+                  Text(
+                    'User ID: 34874',
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(12),
+                      color: AppColors.textGrey,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.settings,
+              color: AppColors.textWhite,
+              size: Responsive.iconSize,
             ),
           ),
-          const SizedBox(width: 48),
         ],
       ),
     );
   }
 
-  Widget _buildBalanceCard() {
-    return Obx(() => Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
+  Widget _buildBankSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Bank:',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(14),
+            fontWeight: FontWeight.w600,
+            color: AppColors.textWhite,
           ),
-          child: Column(
-            children: [
-              const Text(
-                'Available Balance',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white70,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '৳${NumberFormat('#,##0.00', 'en_US').format(controller.availableBalance.value)}',
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ));
+        ),
+        SizedBox(height: Responsive.mdVertical),
+        _buildBankCard('Bank Name', 'Account: **** 1234', true),
+        SizedBox(height: Responsive.smVertical),
+        _buildBankCard('Bank Name 2', 'Account: **** 5678', false),
+        SizedBox(height: Responsive.mdVertical),
+        _buildAddNewCard('Add new bank', FontAwesomeIcons.building),
+      ],
+    );
   }
 
-  Widget _buildMethods() {
-    return Obx(() => Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: controller.methods.map((method) {
-            final isSelected = controller.selectedMethod.value == method;
-            return GestureDetector(
-              onTap: () => controller.selectMethod(method),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primary
-                      : AppColors.cardDark,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.borderColor,
-                    width: 2,
-                  ),
-                ),
-                child: Text(
-                  method.toUpperCase(),
+  Widget _buildBankCard(String bankName, String account, bool isSelected) {
+    return Container(
+      padding: EdgeInsets.all(Responsive.md),
+      decoration: BoxDecoration(
+        color: AppColors.cardDark,
+        borderRadius: BorderRadius.circular(Responsive.radiusMd),
+        border: Border.all(
+          color: isSelected ? AppColors.primary : AppColors.borderColor,
+          width: isSelected ? 2 : 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: Responsive.sp(40),
+            height: Responsive.sp(32),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              borderRadius: BorderRadius.circular(Responsive.radiusSm),
+            ),
+            child: FaIcon(
+              FontAwesomeIcons.building,
+              color: AppColors.primary,
+              size: Responsive.iconSizeSm,
+            ),
+          ),
+          SizedBox(width: Responsive.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  bankName,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: Responsive.fontSize(14),
                     fontWeight: FontWeight.w600,
-                    color: isSelected
-                        ? Colors.white
-                        : AppColors.textWhite,
+                    color: AppColors.textWhite,
                   ),
                 ),
-              ),
-            );
-          }).toList(),
-        ));
+                Text(
+                  account,
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(12),
+                    color: AppColors.textGrey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (isSelected)
+            FaIcon(
+              FontAwesomeIcons.circleCheck,
+              color: AppColors.success,
+              size: Responsive.iconSizeSm,
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMobileBankingSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Mobile Banking',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(14),
+            fontWeight: FontWeight.w600,
+            color: AppColors.textWhite,
+          ),
+        ),
+        SizedBox(height: Responsive.mdVertical),
+        _buildAddNewCard('Add Mobile Banking', FontAwesomeIcons.mobileScreen),
+      ],
+    );
+  }
+
+  Widget _buildAddNewCard(String text, IconData icon) {
+    return Container(
+      padding: EdgeInsets.all(Responsive.lg),
+      decoration: BoxDecoration(
+        color: AppColors.cardDark,
+        borderRadius: BorderRadius.circular(Responsive.radiusMd),
+        border: Border.all(color: AppColors.borderColor),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: Responsive.sp(42),
+            height: Responsive.sp(42),
+            decoration: BoxDecoration(
+              color: AppColors.cardBackground,
+              shape: BoxShape.circle,
+            ),
+            child: FaIcon(
+              icon,
+              color: AppColors.primary,
+              size: Responsive.iconSizeSm,
+            ),
+          ),
+          SizedBox(width: Responsive.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(14),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textWhite,
+                  ),
+                ),
+                Text(
+                  'Your information is secured with advanced encryption technology.',
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(11),
+                    color: AppColors.textGrey,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
-
-

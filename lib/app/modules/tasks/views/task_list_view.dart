@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/task_list_controller.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../widgets/task_card.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../widgets/brain_loader.dart';
+import '../widgets/task_filter_modal.dart';
+import '../widgets/submitted_task_card.dart';
 
 class TaskListView extends GetView<TaskListController> {
   const TaskListView({super.key});
@@ -13,51 +15,26 @@ class TaskListView extends GetView<TaskListController> {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: AppColors.backgroundGradient,
+          color: Color(0xFF232323), // As per Figma
         ),
         child: SafeArea(
           child: Column(
             children: [
-              // Header
-              _buildHeader(),
-              // Filters
-              _buildFilters(),
-              // Task List
+              // User Header
+              _buildUserHeader(),
+              
+              // Title with back button
+              _buildTitleBar(),
+              
+              // Search and Filter
+              _buildSearchFilter(),
+              
+              // Tab Filters
+              _buildTabFilters(),
+              
+              // Task List Container
               Expanded(
-                child: Obx(() {
-                  if (controller.isLoading.value) {
-                    return const BrainLoader(message: 'Loading tasks...');
-                  }
-
-                  if (controller.filteredTasks.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No tasks found',
-                        style: TextStyle(
-                          color: AppColors.textGrey,
-                          fontSize: 16,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return RefreshIndicator(
-                    onRefresh: controller.loadTasks,
-                    color: AppColors.primary,
-                    backgroundColor: AppColors.cardBackground,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(20),
-                      itemCount: controller.filteredTasks.length,
-                      itemBuilder: (context, index) {
-                        final task = controller.filteredTasks[index];
-                        return TaskCard(
-                          task: task,
-                          onTap: () => controller.goToTaskDetails(task),
-                        );
-                      },
-                    ),
-                  );
-                }),
+                child: _buildTaskListContainer(),
               ),
             ],
           ),
@@ -66,44 +43,211 @@ class TaskListView extends GetView<TaskListController> {
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
+  Widget _buildUserHeader() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.md,
+        vertical: Responsive.smVertical + Responsive.sp(4),
+      ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(
-              Icons.arrow_back,
+          // User Info
+          Row(
+            children: [
+              // Avatar (Reactive with Obx)
+              Obx(() => Container(
+                width: Responsive.sp(40),
+                height: Responsive.sp(40),
+                padding: EdgeInsets.all(Responsive.sp(3)),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE0B8FF),
+                  borderRadius: BorderRadius.circular(Responsive.sp(20)),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Responsive.sp(13)),
+                    image: DecorationImage(
+                      image: AssetImage(controller.userAvatar.value),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              )),
+              
+              SizedBox(width: Responsive.sp(7)),
+              
+              // User Name and ID (Reactive with Obx)
+              Obx(() => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.userName.value,
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(13),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textWhite,
+                      letterSpacing: 0,
+                    ),
+                  ),
+                  Text(
+                    'User ID: ${controller.userId.value}',
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(10),
+                      color: AppColors.textWhite,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              )),
+            ],
+          ),
+          
+          // Settings Icon
+          Image.asset(
+            'assets/figma_exports/d221e5c78d3d50402888e8534c8e50c2ea421f24.png',
+            width: Responsive.sp(28),
+            height: Responsive.sp(28),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitleBar() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.md,
+        vertical: Responsive.smVertical,
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Back button
+          Align(
+            alignment: Alignment.centerLeft,
+            child: GestureDetector(
+              onTap: () => Get.back(),
+              child: Container(
+                padding: EdgeInsets.all(Responsive.sp(2)),
+                child: Image.asset(
+                  'assets/figma_exports/ba6ed2fd049b915b810f85dd2105488af57baf59.svg',
+                  width: Responsive.sp(18),
+                  height: Responsive.sp(14),
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.arrow_back_ios,
+                    color: AppColors.textWhite,
+                    size: Responsive.sp(18),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          
+          // Title
+          Text(
+            'Task Details',
+            style: TextStyle(
+              fontSize: Responsive.fontSize(20),
+              fontWeight: FontWeight.bold,
               color: AppColors.textWhite,
             ),
           ),
-          const Expanded(
-            child: Text(
-              'Task Details',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
-              ),
-              textAlign: TextAlign.center,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchFilter() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: Responsive.sp(7),
+        vertical: Responsive.smVertical,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.sp(15),
+        vertical: Responsive.sp(5),
+      ),
+      height: Responsive.sp(43),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2D2D2D),
+        borderRadius: BorderRadius.circular(Responsive.sp(8)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Search icon and input field
+          Expanded(
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/figma_exports/146223f13eae8b4dd341985b6ba9249c05aaf196.svg',
+                  width: Responsive.sp(18),
+                  height: Responsive.sp(18),
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.search,
+                    color: AppColors.textWhite,
+                    size: Responsive.sp(18),
+                  ),
+                ),
+                SizedBox(width: Responsive.sp(15)),
+                Expanded(
+                  child: TextField(
+                    controller: controller.searchController,
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(12),
+                      color: AppColors.textWhite,
+                      letterSpacing: 0.24,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      hintStyle: TextStyle(
+                        fontSize: Responsive.fontSize(12),
+                        color: AppColors.textWhite.withValues(alpha: 0.5),
+                        letterSpacing: 0.24,
+                      ),
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      focusedErrorBorder: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    onChanged: (value) => controller.searchTasks(value),
+                  ),
+                ),
+              ],
             ),
           ),
+          
+          // Filter
           Row(
             children: [
-              const Text(
-                'Filter',
-                style: TextStyle(
-                  color: AppColors.textGrey,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.filter_list,
-                  color: AppColors.textWhite,
+              Obx(() => Text(
+                    controller.currentFilter.value == 'all'
+                        ? 'All'
+                        : controller.currentFilter.value == 'pending'
+                            ? 'Pending'
+                            : 'Submitted',
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(12),
+                      color: const Color(0xFF838383),
+                      letterSpacing: 0.24,
+                    ),
+                  )),
+              SizedBox(width: Responsive.sp(11)),
+              GestureDetector(
+                onTap: () => _showFilterModal(),
+                child: Image.asset(
+                  'assets/figma_exports/67a6248f2096d2b2d0548a4eea19bd790cdc22b3.svg',
+                  width: Responsive.sp(15),
+                  height: Responsive.sp(15),
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.filter_alt,
+                    color: AppColors.textWhite,
+                    size: Responsive.sp(15),
+                  ),
                 ),
               ),
             ],
@@ -113,59 +257,137 @@ class TaskListView extends GetView<TaskListController> {
     );
   }
 
-  Widget _buildFilters() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Obx(() => Row(
-            children: [
-              _buildFilterTab('Task List', 'all'),
-              const SizedBox(width: 8),
-              _buildFilterTab('Pending', 'pending'),
-              const SizedBox(width: 8),
-              _buildFilterTab('Submitted', 'submitted'),
-            ],
-          )),
+  Widget _buildTabFilters() {
+    return Container(
+      margin: EdgeInsets.only(
+      // Container margin + padding + left offset from Figma
+        top: Responsive.smVertical,
+        bottom: Responsive.smVertical,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildTabItem(
+            'Task List',
+            'assets/figma_exports/8aa6fba88f740008d70c33a46ba833ba49188fb8.svg',
+            controller.selectedFilter.value == 'all',
+            () => controller.filterTasks('all'),
+          ),
+          SizedBox(width: Responsive.sp(6)),
+          _buildTabItem(
+            'Pending',
+            'assets/figma_exports/d62224f98de08e0db9c557c2ceb68c638014c840.svg',
+            controller.selectedFilter.value == 'pending',
+            () => controller.filterTasks('pending'),
+          ),
+          SizedBox(width: Responsive.sp(6)),
+          _buildTabItem(
+            'Submitted',
+            'assets/figma_exports/cfead7e94754971181d0ed1a699867244aa04b4c.svg',
+            controller.selectedFilter.value == 'submitted',
+            () => controller.filterTasks('submitted'),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildFilterTab(String label, String value) {
-    final isSelected = controller.selectedFilter.value == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => controller.changeFilter(value),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : AppColors.cardDark,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                value == 'all'
-                    ? Icons.list
-                    : value == 'pending'
-                        ? Icons.pending_actions
-                        : Icons.task_alt,
-                color: AppColors.textWhite,
-                size: 18,
+  Widget _buildTabItem(String title, String iconPath, bool isActive, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: Responsive.sp(109), // Fixed width as per Figma
+        height: Responsive.sp(30),
+        padding: EdgeInsets.symmetric(
+          vertical: Responsive.sp(7),
+        ),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFF646397) : Colors.transparent,
+          borderRadius: BorderRadius.circular(Responsive.sp(6)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              iconPath,
+              width: Responsive.sp(title == 'Task List' ? 11.27 : 13),
+              height: Responsive.sp(title == 'Task List' ? 13.338 : 12),
+              color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.list,
+                size: Responsive.sp(12),
+                color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
               ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  color: AppColors.textWhite,
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
+            ),
+            SizedBox(width: Responsive.sp(11)),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: Responsive.fontSize(12),
+                color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
+                letterSpacing: 0.24,
+                height: 1.25,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+
+  Widget _buildTaskListContainer() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: Responsive.sp(7)),
+      padding: EdgeInsets.all(Responsive.sp(11)),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2D2D2D),
+        borderRadius: BorderRadius.circular(Responsive.sp(10)),
+      ),
+      child: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(child: BrainLoader(message: 'Loading tasks...'));
+        }
+
+        if (controller.filteredTasks.isEmpty) {
+          return Center(
+            child: Text(
+              'No tasks found',
+              style: TextStyle(
+                fontSize: Responsive.fontSize(14),
+                color: AppColors.textGrey,
+              ),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: controller.filteredTasks.length,
+          itemBuilder: (context, index) {
+            final task = controller.filteredTasks[index];
+            return SubmittedTaskCard(
+              task: task,
+              index: index,
+              onTap: () => controller.goToTaskDetails(task),
+            );
+          },
+        );
+      }),
+    );
+  }
+
+  void _showFilterModal() {
+    Get.bottomSheet(
+      TaskFilterModal(
+        onApply: (filters) {
+          controller.applyAdvancedFilters(filters);
+        },
+        initialFilters: controller.advancedFilters.value,
+      ),
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
+    );
+  }
 }
-
-

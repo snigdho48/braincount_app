@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../controllers/profile_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -15,139 +16,44 @@ class ProfileView extends GetView<ProfileController> {
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              _buildHeader(),
-              // Content
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Obx(() {
-                    final user = controller.currentUser.value;
-                    return Column(
-                      children: [
-                        // Profile Picture
-                        Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.textWhite,
-                              width: 3,
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.person,
-                            size: 60,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // User Name
-                        Text(
-                          user?.name.toUpperCase() ?? 'USER',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textWhite,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // User ID
-                        Text(
-                          'User ID: ${user?.userId ?? ''}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textGrey,
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        // Balance Card
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.5),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              const Text(
-                                'Current Balance',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                '৳${NumberFormat('#,##0.00', 'en_US').format(user?.balance ?? 0)}',
-                                style: const TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        // Profile Options
-                        _buildOption(
-                          icon: Icons.email,
-                          title: 'Email',
-                          subtitle: user?.email ?? '',
-                          onTap: () {},
-                        ),
-                        _buildOption(
-                          icon: Icons.history,
-                          title: 'Balance History',
-                          subtitle: 'View your transaction history',
-                          onTap: controller.goToBalanceHistory,
-                        ),
-                        _buildOption(
-                          icon: Icons.settings,
-                          title: 'Settings',
-                          subtitle: 'App settings and preferences',
-                          onTap: controller.goToSettings,
-                        ),
-                        _buildOption(
-                          icon: Icons.help,
-                          title: 'Help & Support',
-                          subtitle: 'Get help and support',
-                          onTap: () {},
-                        ),
-                        _buildOption(
-                          icon: Icons.info,
-                          title: 'About',
-                          subtitle: 'App version and information',
-                          onTap: () {},
-                        ),
-                        const SizedBox(height: 16),
-                        // Logout Button
-                        _buildOption(
-                          icon: Icons.logout,
-                          title: 'Logout',
-                          subtitle: 'Sign out of your account',
-                          onTap: controller.logout,
-                          isDestructive: true,
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-                    );
-                  }),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: Get.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
+              ),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: EdgeInsets.all(Responsive.md),
+                  child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header
+                _buildHeader(),
+                SizedBox(height: Responsive.lgVertical),
+                // Title
+                Text(
+                  'Profile',
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(16),
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textWhite,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: Responsive.lgVertical),
+                // Profile Info Card
+                _buildProfileCard(),
+                SizedBox(height: Responsive.lgVertical),
+                // Information Section
+                _buildInformationSection(),
+                SizedBox(height: Responsive.lgVertical),
+                // Preferences Section
+                _buildPreferencesSection(),
+              ],
+                  ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -155,100 +61,249 @@ class ProfileView extends GetView<ProfileController> {
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: Responsive.sp(40),
+              height: Responsive.sp(40),
+              decoration: BoxDecoration(
+                color: AppColors.cardDark,
+                borderRadius: BorderRadius.circular(Responsive.radiusSm),
+              ),
+              child: Icon(
+                Icons.person,
+                color: AppColors.primary,
+                size: Responsive.iconSize,
+              ),
+            ),
+            SizedBox(width: Responsive.sm),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Obx(() => Text(
+                      controller.user.value?.name ?? 'User',
+                      style: TextStyle(
+                        fontSize: Responsive.fontSize(14),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textWhite,
+                      ),
+                    )),
+                Obx(() => Text(
+                      'User ID: ${controller.user.value?.userId ?? 'N/A'}',
+                      style: TextStyle(
+                        fontSize: Responsive.fontSize(12),
+                        color: AppColors.textGrey,
+                      ),
+                    )),
+              ],
+            ),
+          ],
+        ),
+        IconButton(
+          onPressed: () {},
+          icon: Icon(
+            Icons.settings,
+            color: AppColors.textWhite,
+            size: Responsive.iconSize,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileCard() {
+    return Container(
+      padding: EdgeInsets.all(Responsive.lg),
+      decoration: BoxDecoration(
+        color: AppColors.cardDark,
+        borderRadius: BorderRadius.circular(Responsive.radiusLg),
+      ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () => Get.back(),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.textWhite,
+          Container(
+            width: Responsive.sp(97),
+            height: Responsive.sp(97),
+            decoration: BoxDecoration(
+              gradient: AppColors.primaryGradient,
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
+            ),
+            child: Icon(
+              Icons.person,
+              size: Responsive.sp(50),
+              color: Colors.white,
             ),
           ),
-          const Expanded(
-            child: Text(
-              'Profile',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
-              ),
-              textAlign: TextAlign.center,
+          SizedBox(width: Responsive.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.wallet,
+                      color: AppColors.warning,
+                      size: Responsive.iconSizeSm,
+                    ),
+                    SizedBox(width: Responsive.sm),
+                    Obx(() => Text(
+                          controller.user.value?.balance.toStringAsFixed(0) ?? '0',
+                          style: TextStyle(
+                            fontSize: Responsive.fontSize(16),
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textWhite,
+                          ),
+                        )),
+                  ],
+                ),
+                Text(
+                  'Balance',
+                  style: TextStyle(
+                    fontSize: Responsive.fontSize(12),
+                    color: AppColors.textGrey,
+                  ),
+                ),
+                SizedBox(height: Responsive.mdVertical),
+                Obx(() => Text(
+                      controller.user.value?.name ?? 'User Name',
+                      style: TextStyle(
+                        fontSize: Responsive.fontSize(14),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textWhite,
+                      ),
+                    )),
+                Obx(() => Text(
+                      'User ID: ${controller.user.value?.userId ?? 'N/A'}',
+                      style: TextStyle(
+                        fontSize: Responsive.fontSize(12),
+                        color: AppColors.textGrey,
+                      ),
+                    )),
+              ],
             ),
           ),
-          const SizedBox(width: 48),
         ],
       ),
     );
   }
 
-  Widget _buildOption({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-    bool isDestructive = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.cardDark,
-          borderRadius: BorderRadius.circular(12),
+  Widget _buildInformationSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Informations:',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(14),
+            fontWeight: FontWeight.w600,
+            color: AppColors.textWhite,
+          ),
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: (isDestructive ? AppColors.error : AppColors.primary)
-                    .withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icon,
-                color: isDestructive ? AppColors.error : AppColors.primary,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color:
-                          isDestructive ? AppColors.error : AppColors.textWhite,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textGrey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
+        SizedBox(height: Responsive.mdVertical),
+        _buildInfoItem(FontAwesomeIcons.envelope, 'Email:', controller.user.value?.email ?? 'N/A'),
+        _buildInfoItem(FontAwesomeIcons.phone, 'Phone:', '0131976411'),
+        _buildInfoItem(FontAwesomeIcons.moneyBillTransfer, 'Total Withdraw:', '23,322 BDT'),
+      ],
+    );
+  }
+
+  Widget _buildInfoItem(IconData icon, String label, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: Responsive.mdVertical),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.borderColor.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          FaIcon(
+            icon,
+            color: AppColors.primary,
+            size: Responsive.iconSizeSm,
+          ),
+          SizedBox(width: Responsive.md),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: Responsive.fontSize(14),
               color: AppColors.textGrey,
-              size: 16,
             ),
-          ],
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: Responsive.fontSize(14),
+              color: AppColors.textWhite,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreferencesSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Preference:',
+          style: TextStyle(
+            fontSize: Responsive.fontSize(14),
+            fontWeight: FontWeight.w600,
+            color: AppColors.textWhite,
+          ),
         ),
+        SizedBox(height: Responsive.mdVertical),
+        _buildPreferenceItem(FontAwesomeIcons.globe, 'Language:', 'EN'),
+        _buildPreferenceItem(FontAwesomeIcons.palette, 'Theme:', 'Default'),
+      ],
+    );
+  }
+
+  Widget _buildPreferenceItem(IconData icon, String label, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: Responsive.mdVertical),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.borderColor.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          FaIcon(
+            icon,
+            color: AppColors.primary,
+            size: Responsive.iconSizeSm,
+          ),
+          SizedBox(width: Responsive.md),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: Responsive.fontSize(14),
+              color: AppColors.textGrey,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: Responsive.fontSize(14),
+              color: AppColors.textWhite,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-

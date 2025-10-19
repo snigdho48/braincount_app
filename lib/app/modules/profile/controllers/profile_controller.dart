@@ -5,6 +5,7 @@ import '../../../routes/app_routes.dart';
 
 class ProfileController extends GetxController {
   final currentUser = Rxn<UserModel>();
+  Rxn<UserModel> get user => currentUser; // Alias for currentUser
 
   @override
   void onInit() {
@@ -13,9 +14,9 @@ class ProfileController extends GetxController {
   }
 
   Future<void> loadUserData() async {
-    final user = await StorageService.getUser();
-    if (user != null) {
-      currentUser.value = user;
+    final userData = await StorageService.getUser();
+    if (userData != null) {
+      currentUser.value = userData;
     }
   }
 

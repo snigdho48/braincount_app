@@ -1,126 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pinput/pinput.dart';
 import '../controllers/otp_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive.dart';
 import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_text_field.dart';
 
 class OtpView extends GetView<OtpController> {
   const OtpView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final defaultPinTheme = PinTheme(
-      width: 60,
-      height: 60,
-      textStyle: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-        color: AppColors.textWhite,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.borderColor, width: 2),
-      ),
-    );
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: Get.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
+              ),
+              child: IntrinsicHeight(
+                child: Padding(
+                  padding: EdgeInsets.all(Responsive.md),
+                  child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Back Button
                 Align(
                   alignment: Alignment.centerLeft,
                   child: IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_back,
                       color: AppColors.textWhite,
+                      size: Responsive.iconSize,
                     ),
                     onPressed: () => Get.back(),
                   ),
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: Responsive.xlVertical),
+                // Illustration
+                Center(
+                  child: Container(
+                    width: Responsive.sp(230),
+                    height: Responsive.sp(230),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardDark,
+                      borderRadius: BorderRadius.circular(Responsive.radiusXl),
+                    ),
+                    child: Icon(
+                      Icons.lock_outline,
+                      size: Responsive.sp(100),
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+                SizedBox(height: Responsive.xlVertical),
                 // Title
-                const Text(
+                Text(
                   'OTP Verification',
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: Responsive.fontSize(20),
                     fontWeight: FontWeight.bold,
                     color: AppColors.textWhite,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
-                Obx(() => Text(
-                      'Enter the 6-digit code sent to\n${controller.email.value}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textGrey,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-                const SizedBox(height: 40),
-                // OTP Input
-                Center(
-                  child: Pinput(
-                    controller: controller.otpController,
-                    length: 6,
-                    defaultPinTheme: defaultPinTheme,
-                    focusedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        border: Border.all(color: AppColors.primary, width: 2),
-                      ),
-                    ),
-                    onCompleted: (pin) => controller.verifyOTP(),
+                SizedBox(height: Responsive.mdVertical),
+                // Description
+                Text(
+                  'Enter email and phone number to send one time Password',
+                  style: TextStyle(
+                    color: AppColors.textGrey,
+                    fontSize: Responsive.fontSize(14),
+                    height: 1.5,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
-                // Verify Button
+                SizedBox(height: Responsive.lgVertical),
+                // Email Field
+                CustomTextField(
+                  label: 'Email',
+                  hint: 'Write email address',
+                  controller: controller.emailController,
+                  isRequired: true,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    }
+                    if (!GetUtils.isEmail(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: Responsive.xlVertical * 2),
+                // Continue Button
                 Obx(() => CustomButton(
-                      text: 'Verify',
-                      onPressed: controller.verifyOTP,
+                      text: 'Continue',
+                      onPressed: controller.sendOtp,
                       isLoading: controller.isLoading.value,
                     )),
-                const SizedBox(height: 24),
-                // Resend OTP
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Didn't receive the code?",
-                      style: TextStyle(
-                        color: AppColors.textGrey,
-                        fontSize: 14,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: controller.resendOTP,
-                      child: const Text(
-                        'Resend',
-                        style: TextStyle(
-                          color: AppColors.info,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
         ),
+              ),
+              ),
+            ),
       ),
     );
   }
 }
-
-

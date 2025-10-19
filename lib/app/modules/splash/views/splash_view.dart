@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/splash_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive.dart';
 
 class SplashView extends GetView<SplashController> {
   const SplashView({super.key});
@@ -20,36 +21,36 @@ class SplashView extends GetView<SplashController> {
             children: [
               // Favicon on top
               Container(
-                width: 80,
-                height: 80,
+                width: Responsive.sp(80),
+                height: Responsive.sp(80),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(Responsive.radiusLg + Responsive.sp(4)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 10),
+                      blurRadius: Responsive.sp(20),
+                      offset: Offset(0, Responsive.sp(10)),
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(Responsive.radiusLg + Responsive.sp(4)),
                   child: Image.asset(
                     'assets/app_icon/favicon.png',
-                    width: 80,
-                    height: 80,
+                    width: Responsive.sp(80),
+                    height: Responsive.sp(80),
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        width: 80,
-                        height: 80,
+                        width: Responsive.sp(80),
+                        height: Responsive.sp(80),
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(Responsive.radiusLg + Responsive.sp(4)),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.psychology,
-                          size: 40,
+                          size: Responsive.sp(40),
                           color: Colors.white,
                         ),
                       );
@@ -71,20 +72,20 @@ class SplashView extends GetView<SplashController> {
                     duration: 1500.ms,
                   ),
               
-              const SizedBox(height: 30),
+              SizedBox(height: Responsive.lgVertical),
               
               // BrainCount Logo below
-              Container(
-                height: 60,
+              SizedBox(
+                height: Responsive.height(7),
                 child: Image.asset(
                   'assets/app_icon/braincount-logo.png',
-                  height: 60,
+                  height: Responsive.height(7),
                   fit: BoxFit.contain,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Text(
+                    return Text(
                       'braincount',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: Responsive.fontSize(32),
                         fontWeight: FontWeight.bold,
                         color: AppColors.textWhite,
                         letterSpacing: 2,
@@ -97,14 +98,14 @@ class SplashView extends GetView<SplashController> {
                   .fadeIn(duration: 1000.ms, delay: 500.ms)
                   .slideY(begin: 0.3, end: 0, duration: 1000.ms, delay: 500.ms),
               
-              const SizedBox(height: 20),
+              SizedBox(height: Responsive.mdVertical),
               
               // Loading indicator
-              Container(
-                width: 30,
-                height: 30,
+              SizedBox(
+                width: Responsive.sp(30),
+                height: Responsive.sp(30),
                 child: CircularProgressIndicator(
-                  strokeWidth: 3,
+                  strokeWidth: Responsive.sp(3),
                   valueColor: AlwaysStoppedAnimation<Color>(
                     AppColors.primary.withOpacity(0.8),
                   ),
@@ -115,16 +116,13 @@ class SplashView extends GetView<SplashController> {
                   .then()
                   .fadeOut(duration: 800.ms),
               
-              const SizedBox(height: 20),
-              
-
-              const SizedBox(height: 40),
+              SizedBox(height: Responsive.xlVertical),
               
               // App tagline
               Text(
                 'Task-Based Earnings Platform',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: Responsive.fontSize(14),
                   color: AppColors.textGrey.withOpacity(0.8),
                   letterSpacing: 1,
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 
 class CustomTextField extends StatelessWidget {
   final String label;
@@ -37,39 +38,46 @@ class CustomTextField extends StatelessWidget {
           children: [
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: Responsive.fontSize(14),
                 color: AppColors.textWhite,
                 fontWeight: FontWeight.w500,
               ),
             ),
             if (isRequired)
-              const Text(
+              Text(
                 ' *',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: Responsive.fontSize(14),
                   color: AppColors.error,
                 ),
               ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: Responsive.smVertical),
         TextFormField(
           controller: controller,
           obscureText: isPassword,
           keyboardType: keyboardType,
           maxLines: maxLines,
-          style: const TextStyle(color: AppColors.textWhite),
+          style: TextStyle(
+            color: AppColors.textWhite,
+            fontSize: Responsive.fontSize(15),
+          ),
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
+            hintStyle: TextStyle(
+              color: AppColors.textGrey.withOpacity(0.6),
+              fontSize: Responsive.fontSize(14),
+            ),
             prefixIcon: prefixIcon != null
                 ? Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: EdgeInsets.all(Responsive.sp(12)),
                     child: FaIcon(
                       prefixIcon,
                       color: AppColors.textGrey,
-                      size: 18,
+                      size: Responsive.iconSizeSm,
                     ),
                   )
                 : null,
@@ -77,12 +85,30 @@ class CustomTextField extends StatelessWidget {
             filled: true,
             fillColor: AppColors.cardDark,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
+              borderSide: BorderSide.none,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
+              borderSide: BorderSide(
+                color: AppColors.primary.withOpacity(0.5),
+                width: Responsive.sp(1),
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Responsive.radiusMd),
+              borderSide: BorderSide(
+                color: AppColors.error,
+                width: Responsive.sp(1),
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: Responsive.md,
+              vertical: Responsive.mdVertical,
             ),
           ),
         ),

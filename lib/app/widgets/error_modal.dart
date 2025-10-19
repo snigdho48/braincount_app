@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 import 'custom_button.dart';
 
 class ErrorModal extends StatelessWidget {
@@ -35,46 +36,46 @@ class ErrorModal extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.all(Responsive.lg),
         decoration: BoxDecoration(
           color: AppColors.cardBackground,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(Responsive.radiusXl),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(Responsive.sp(20)),
               decoration: BoxDecoration(
                 color: AppColors.error.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.close,
-                size: 48,
+                size: Responsive.sp(48),
                 color: AppColors.error,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: Responsive.mdVertical),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: Responsive.fontSize(24),
                 fontWeight: FontWeight.bold,
                 color: AppColors.textWhite,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: Responsive.smVertical),
             Text(
               message,
-              style: const TextStyle(
-                fontSize: 14,
+              style: TextStyle(
+                fontSize: Responsive.fontSize(14),
                 color: AppColors.textGrey,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: Responsive.lgVertical),
             CustomButton(
               text: 'Try Again',
               onPressed: onPressed,
@@ -85,5 +86,3 @@ class ErrorModal extends StatelessWidget {
     );
   }
 }
-
-

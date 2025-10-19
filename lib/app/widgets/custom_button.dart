@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../core/theme/app_colors.dart';
+import '../core/utils/responsive.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -7,7 +9,7 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final bool isOutlined;
   final double? width;
-  final double height;
+  final double? height;
   final IconData? icon;
 
   const CustomButton({
@@ -17,20 +19,20 @@ class CustomButton extends StatelessWidget {
     this.isLoading = false,
     this.isOutlined = false,
     this.width,
-    this.height = 56,
+    this.height,
     this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width ?? double.infinity,
-      height: height,
+      width: width ?? Get.width,
+      height: height ?? Responsive.buttonHeight,
       decoration: BoxDecoration(
         gradient: isOutlined ? null : AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
         border: isOutlined
-            ? Border.all(color: AppColors.borderColor, width: 2)
+            ? Border.all(color: AppColors.borderColor, width: Responsive.sp(2))
             : null,
       ),
       child: ElevatedButton(
@@ -39,29 +41,30 @@ class CustomButton extends StatelessWidget {
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
           ),
+          padding: EdgeInsets.symmetric(horizontal: Responsive.md),
         ),
         child: isLoading
-            ? const SizedBox(
-                height: 24,
-                width: 24,
+            ? SizedBox(
+                height: Responsive.iconSize,
+                width: Responsive.iconSize,
                 child: CircularProgressIndicator(
                   color: AppColors.textWhite,
-                  strokeWidth: 2,
+                  strokeWidth: Responsive.sp(2),
                 ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, color: AppColors.textWhite),
-                    const SizedBox(width: 8),
+                    Icon(icon, color: AppColors.textWhite, size: Responsive.iconSize),
+                    SizedBox(width: Responsive.sm),
                   ],
                   Text(
                     text,
-                    style: const TextStyle(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(16),
                       fontWeight: FontWeight.w600,
                       color: AppColors.textWhite,
                     ),
