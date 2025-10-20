@@ -22,7 +22,7 @@ class TaskListView extends GetView<TaskListController> {
           child: Column(
             children: [
               // User Header
-              UserHeader(scale: Responsive.scaleWidth(393.0)),
+              // UserHeader(scale: Responsive.scaleWidth(393.0)),
               
               // Title with back button
               _buildTitleBar(),
@@ -56,25 +56,25 @@ class TaskListView extends GetView<TaskListController> {
         alignment: Alignment.center,
         children: [
           // Back button
-          Align(
-            alignment: Alignment.centerLeft,
-            child: GestureDetector(
-              onTap: () => Get.back(),
-              child: Container(
-                padding: EdgeInsets.all(Responsive.sp(2)),
-                child: Image.asset(
-                  'assets/figma_exports/ba6ed2fd049b915b810f85dd2105488af57baf59.svg',
-                  width: Responsive.sp(18),
-                  height: Responsive.sp(14),
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.arrow_back_ios,
-                    color: AppColors.textWhite,
-                    size: Responsive.sp(18),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.centerLeft,
+          //   child: GestureDetector(
+          //     onTap: () => Get.back(),
+          //     child: Container(
+          //       padding: EdgeInsets.all(Responsive.sp(2)),
+          //       child: Image.asset(
+          //         'assets/figma_exports/ba6ed2fd049b915b810f85dd2105488af57baf59.svg',
+          //         width: Responsive.sp(18),
+          //         height: Responsive.sp(14),
+          //         errorBuilder: (context, error, stackTrace) => Icon(
+          //           Icons.arrow_back_ios,
+          //           color: AppColors.textWhite,
+          //           size: Responsive.sp(18),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
           
           // Title
           Text(

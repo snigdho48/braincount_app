@@ -53,7 +53,7 @@ class ProfileView extends GetView<ProfileController> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      SizedBox(width: 34 * scale), // Balance back button
+                      // SizedBox(width: 34 * scale), // Balance back button
                     ],
                   ),
                 ),
