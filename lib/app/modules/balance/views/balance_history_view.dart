@@ -1,342 +1,187 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/balance_history_controller.dart';
-import '../../../core/theme/app_colors.dart';
 
 class BalanceHistoryView extends GetView<BalanceHistoryController> {
   const BalanceHistoryView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
     final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Base design width from Figma (393px)
     final baseWidth = 393.0;
-    
-    // Scale factor for responsive design
     final scale = screenWidth / baseWidth;
-    
+
     return Scaffold(
+      floatingActionButton: _buildRequestButton(scale),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(
         decoration: const BoxDecoration(
-          color: Color(0xFF232323), // Exact Figma background color
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
-              child: Stack(
-                children: [
-                  // Top Background Container (at top: 0)
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    child: Container(
-                      width: 393 * scale,
-                      height: 382 * scale,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF393838),
-                        borderRadius: BorderRadius.circular(25 * scale),
-                      ),
-                    ),
-                  ),
-              
-              // User Header (top: 49px, left: 28px)
-              Positioned(
-                left: 28 * scale,
-                top: 49 * scale,
-                child: _buildUserHeader(scale),
-              ),
-              
-              // Back Button (left: 36px, top: 123px)
-              Positioned(
-                left: 36 * scale,
-                top: 123 * scale,
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Transform.rotate(
-                    angle: 271.416 * 3.14159 / 180,
-                    child: Transform.scale(
-                      scaleY: -1,
-                      child: Icon(
-                        Icons.arrow_forward,
-                        size: 15.8 * scale,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              
-              // "Withdraw" Title (left: calc(50%-50.5px), top: 124px)
-              Positioned(
-                left: (screenWidth / 2) - (50.5 * scale),
-                top: 124 * scale,
-                child: SizedBox(
-                  width: 100 * scale,
-                  child: Text(
-                    'Withdraw',
-                    style: TextStyle(
-                      fontFamily: 'Oddlini',
-                      fontSize: 20 * scale,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              
-              // Balance Title (left: 110px, top: 109px)
-              Positioned(
-                left: 110 * scale,
-                top: 109 * scale,
-                child: SizedBox(
-                  width: 172 * scale,
-                  child: Column(
-                    children: [
-                      Text(
-                        'Balance History',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Oddlini',
-                          fontSize: 20 * scale,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Total withdrawal amount',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Helvetica',
-                          fontSize: 16 * scale,
-                          color: const Color(0xFF888787),
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              // 3D Coin (left: 144px, top: 173px)
-              Positioned(
-                left: 144 * scale,
-                top: 173 * scale,
-                child: Image.asset(
-                  'assets/figma_exports/f95735da83252e978fe0c91533b59558cce94027.png',
-                  width: 113 * scale,
-                  height: 113 * scale,
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.account_balance_wallet,
-                    size: 80 * scale,
-                    color: Colors.amber,
-                  ),
-                ),
-              ),
-              
-              // Balance Amount (left: 61px, top: 301px)
-              Positioned(
-                left: 61 * scale,
-                top: 301 * scale,
-                child: Obx(() => RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: '${controller.totalWithdrawn.value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                        style: TextStyle(
-                          fontFamily: 'Oddlini',
-                          fontSize: 48 * scale,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFFFFBB27),
-                        ),
-                      ),
-                      TextSpan(
-                        text: ' BDT',
-                        style: TextStyle(
-                          fontFamily: 'Oddlini',
-                          fontSize: 48 * scale,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-              ),
-              
-              // History Title (left: 67px, top: 402px with translate-x-[-50%])
-              Positioned(
-                left: 67 * scale,
-                top: 402 * scale,
-                child: Transform.translate(
-                  offset: Offset(-67 * scale * 0.5, 0),
-                  child: Text(
-                    'History:',
-                    style: TextStyle(
-                      fontFamily: 'Satoshi',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13 * scale,
-                      color: const Color(0xFF7B7B7B),
-                    ),
-                  ),
-                ),
-              ),
-              
-              // Stats Section (left: 16px, top: 429px)
-              Positioned(
-                left: 16 * scale,
-                top: 429 * scale,
-                child: _buildStatsSection(scale),
-              ),
-              
-              // Withdraw History Title (left: 97px, top: 752px with translate-x-[-50%])
-              Positioned(
-                left: 97 * scale,
-                top: 752 * scale,
-                child: Transform.translate(
-                  offset: Offset(-97 * scale * 0.5, 0),
-                  child: Text(
-                    'Withdraw History:',
-                    style: TextStyle(
-                      fontFamily: 'Satoshi',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13 * scale,
-                      color: const Color(0xFF7B7B7B),
-                    ),
-                  ),
-                ),
-              ),
-              
-              // Withdraw History List (left: calc(50%-0.5px), top: 786px)
-              Positioned(
-                left: (screenWidth / 2) - (0.5 * scale),
-                top: 786 * scale,
-                child: Transform.translate(
-                  offset: Offset(-180 * scale, 0), // Center 360px width
-                  child: _buildWithdrawHistoryList(scale),
-                ),
-              ),
-              
-                  // Request Withdraw Button (left: calc(50%-0.5px), top: 722px)
-                  Positioned(
-                    left: (screenWidth / 2) - (0.5 * scale),
-                    top: 722 * scale,
-                    child: Transform.translate(
-                      offset: Offset(-108 * scale, 0), // Center 216px width
-                      child: _buildRequestButton(scale),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            color: Color(0xFF232323),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUserHeader(double scale) {
-    return Row(
-      children: [
-        // Profile Image with Badge
-        SizedBox(
-          width: 60 * scale,
-          height: 55 * scale,
-          child: Stack(
-            children: [
-              // Background circle
-              Positioned(
-                left: 9 * scale,
-                top: 7 * scale,
-                child: Container(
-                  width: 40 * scale,
-                  height: 40 * scale,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE0B8FF),
-                    borderRadius: BorderRadius.circular(20 * scale),
-                  ),
-                ),
-              ),
-              // User Image
-              Positioned(
-                left: 12 * scale,
-                top: 11 * scale,
-                child: Container(
-                  width: 34 * scale,
-                  height: 31 * scale,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(13 * scale),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(13 * scale),
-                    child: Image.asset(
-                      'assets/figma_exports/52ec367639c91dd0186e7c21dba64d8ed1375a47.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.person,
-                        size: 24 * scale,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Badge
-              Positioned(
-                left: 0,
-                top: 0,
-                child: Container(
-                  width: 24 * scale,
-                  height: 24 * scale,
-                  decoration: BoxDecoration(
-                    color: AppColors.error,
-                    borderRadius: BorderRadius.circular(12 * scale),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '2',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 11 * scale,
-                      color: const Color(0xFFF5F5F4),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(width: 10 * scale),
-        // User Info (Positioned at left: 146px, top: 60px for name)
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: [
-            Obx(() => Text(
-              controller.userName.value.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'Oddlini',
-                fontWeight: FontWeight.w700,
-                fontSize: 13 * scale,
-                color: Colors.white,
-                height: 20 / 13, // line-height: 20px
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Top Section with Background
+                
+                Container(
+                  width: screenWidth,
+                  height: 350 * scale,
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                       decoration: BoxDecoration(
+                    color: const Color(0xFF393838),
+                    borderRadius: BorderRadius.circular(25 * scale),
+                  ),
+                  child: Stack(
+                    children: [
+                      // Background Container
+                 
+                      
+                      // Content in top section (centered)
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 10 * scale),
+                            // Balance History Title
+                            Column(
+                              children: [
+                                Text(
+                                  'Balance History',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Oddlini',
+                                    fontSize: 20 * scale,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  'Total withdrawal amount',
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 16 * scale,
+                                    color: const Color(0xFF888787),
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                        
+                        SizedBox(height: 9 * scale),
+                        
+                        // 3D Coin
+                        Image.asset(
+                          'assets/figma_exports/f95735da83252e978fe0c91533b59558cce94027.png',
+                          width: 113 * scale,
+                          height: 113 * scale,
+                          errorBuilder: (context, error, stackTrace) => Icon(
+                            Icons.account_balance_wallet,
+                            size: 80 * scale,
+                            color: Colors.amber,
+                          ),
+                        ),
+                        
+                        SizedBox(height: 15 * scale),
+                        
+                        // Balance Amount
+                        Obx(() => RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${controller.totalWithdrawn.value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                style: TextStyle(
+                                  fontFamily: 'Oddlini',
+                                  fontSize: 48 * scale,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFFFFBB27),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' BDT',
+                                style: TextStyle(
+                                  fontFamily: 'Oddlini',
+                                  fontSize: 48 * scale,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                          ],
+                        ),
+                      ),
+                      
+                      // Back Button (positioned absolutely in top section)
+                      Positioned(
+                        left: 16 * scale,
+                        top: 16 * scale,
+                        child: GestureDetector(
+                          onTap: () => Get.back(),
+                          child: Container(
+                            padding: EdgeInsets.all(8 * scale),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 20 * scale,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
+                SizedBox(height: 20 * scale),
+                
+                // History Label
+           ],
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // History Section (Collapsible)
+                    _buildCollapsibleSection(
+                      title: 'History:',
+                      isExpanded: controller.isHistoryExpanded,
+                      onToggle: controller.toggleHistory,
+                      scale: scale,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                        child: _buildStatsSection(scale),
+                      ),
+                    ),
+
+                    SizedBox(height: 30 * scale),
+
+                    // Withdraw History Section (Collapsible)
+                    _buildCollapsibleSection(
+                      title: 'Withdraw History:',
+                      isExpanded: controller.isWithdrawHistoryExpanded,
+                      onToggle: controller.toggleWithdrawHistory,
+                      scale: scale,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+                        child: _buildWithdrawHistoryList(scale),
+                      ),
+                    ),
+
+                    SizedBox(height: 100 * scale),
+                  ],
+                ),
               ),
-            )),
-            Obx(() => Text(
-              'User ID: ${controller.userId.value}',
-              style: TextStyle(
-                fontFamily: 'Satoshi',
-                fontWeight: FontWeight.w500,
-                fontSize: 11 * scale,
-                color: Colors.grey,
-                height: 20 / 11, // line-height: 20px
-              ),
-            )),
+            )
           ],
         ),
-      ],
+      ),
     );
   }
 
@@ -599,5 +444,64 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
         ),
       ),
     );
+  }
+
+  Widget _buildCollapsibleSection({
+    required String title,
+    required RxBool isExpanded,
+    required VoidCallback onToggle,
+    required double scale,
+    required Widget child,
+  }) {
+    return Obx(() => Column(
+      children: [
+        // Header with title and expand/collapse icon
+        GestureDetector(
+          onTap: onToggle,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16 * scale, vertical: 12 * scale),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontFamily: 'Satoshi',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13 * scale,
+                    color: const Color(0xFF7B7B7B),
+                  ),
+                ),
+                SizedBox(width: 8 * scale),
+                AnimatedRotation(
+                  turns: isExpanded.value ? 0.5 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    color: const Color(0xFF7B7B7B),
+                    size: 20 * scale,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        
+        // Collapsible content with animation
+        AnimatedCrossFade(
+          firstChild: Padding(
+            padding: EdgeInsets.only(top: 7 * scale),
+            child: child,
+          ),
+          secondChild: const SizedBox(width: double.infinity, height: 0),
+          crossFadeState: isExpanded.value 
+              ? CrossFadeState.showFirst 
+              : CrossFadeState.showSecond,
+          duration: const Duration(milliseconds: 300),
+          sizeCurve: Curves.easeInOut,
+        ),
+      ],
+    ));
   }
 }

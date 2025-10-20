@@ -18,6 +18,18 @@ class BalanceHistoryController extends GetxController {
   final rejectedTasks = 1.obs;
   final completedTasks = 34.obs;
   final pendingAmount = 2222.0.obs;
+  
+  // Collapsible sections
+  final isHistoryExpanded = true.obs;
+  final isWithdrawHistoryExpanded = true.obs;
+  
+  void toggleHistory() {
+    isHistoryExpanded.value = !isHistoryExpanded.value;
+  }
+  
+  void toggleWithdrawHistory() {
+    isWithdrawHistoryExpanded.value = !isWithdrawHistoryExpanded.value;
+  }
 
   @override
   void onInit() {

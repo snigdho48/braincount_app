@@ -27,6 +27,8 @@ import '../modules/balance/bindings/balance_history_binding.dart';
 import '../modules/balance/views/balance_history_view.dart';
 import '../modules/withdraw/bindings/withdraw_binding.dart';
 import '../modules/withdraw/views/withdraw_view.dart';
+import '../modules/withdraw/views/add_bank_view.dart';
+import '../modules/withdraw/views/add_new_bank_view.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -99,6 +101,16 @@ class AppPages {
     GetPage(
       name: AppRoutes.withdraw,
       page: () => const WithdrawView(),
+      binding: WithdrawBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.addBank,
+      page: () => const AddBankView(),
+      binding: WithdrawBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.addNewBank,
+      page: () => const AddNewBankView(),
       binding: WithdrawBinding(),
     ),
   ];

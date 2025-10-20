@@ -13,4 +13,6 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String balanceHistory = '/balance-history';
   static const String withdraw = '/withdraw';
+  static const String addBank = '/add-bank';
+  static const String addNewBank = '/add-new-bank';
 }
