@@ -6,11 +6,20 @@ import '../../../routes/app_routes.dart';
 class ProfileController extends GetxController {
   final currentUser = Rxn<UserModel>();
   Rxn<UserModel> get user => currentUser; // Alias for currentUser
+  
+  // Language selection
+  final selectedLanguage = 'EN'.obs;
+  final availableLanguages = ['EN', 'BN'];
 
   @override
   void onInit() {
     super.onInit();
     loadUserData();
+  }
+  
+  void changeLanguage(String language) {
+    selectedLanguage.value = language;
+    // TODO: Implement actual language change logic with GetX localization
   }
 
   Future<void> loadUserData() async {

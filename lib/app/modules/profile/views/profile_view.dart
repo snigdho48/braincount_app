@@ -22,7 +22,6 @@ class ProfileView extends GetView<ProfileController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // User Header
-                UserHeader(scale: scale),
                 
                 SizedBox(height: 6 * scale),
                 
@@ -31,17 +30,17 @@ class ProfileView extends GetView<ProfileController> {
                   padding: EdgeInsets.symmetric(horizontal: 16 * scale),
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Container(
-                          padding: EdgeInsets.all(8 * scale),
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            size: 18 * scale,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () => Get.back(),
+                      //   child: Container(
+                      //     padding: EdgeInsets.all(8 * scale),
+                      //     child: Icon(
+                      //       Icons.arrow_back_ios,
+                      //       size: 18 * scale,
+                      //       color: Colors.white,
+                      //     ),
+                      //   ),
+                      // ),
                       Expanded(
                         child: Text(
                           'Profile',
@@ -102,12 +101,14 @@ class ProfileView extends GetView<ProfileController> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF5B099B),
-            Color(0xFF7B1BAB),
-            Color(0xFF5B099B),
+            Color.fromARGB(255, 127, 80, 163),
+                  Color(0xFF7B1BAB),
+            Color.fromARGB(255, 157, 43, 245),
+      
+            
           ],
         ),
-        border: Border.all(color: Colors.white, width: 1),
+      
         borderRadius: BorderRadius.circular(20 * scale),
       ),
       child: Row(
@@ -267,13 +268,12 @@ class ProfileView extends GetView<ProfileController> {
             children: [
               // Email Row
               Container(
-                height: 67 * scale,
                 padding: EdgeInsets.symmetric(horizontal: 39 * scale, vertical: 23 * scale),
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
                       color: const Color(0xFF232323),
-                      width: Responsive.sp(3),
+                      width: Responsive.sp(3.05),
                     ),
                   ),
                 ),
@@ -303,6 +303,7 @@ class ProfileView extends GetView<ProfileController> {
                     SizedBox(width: 42 * scale),
                     Expanded(
                       child: Obx(() => Text(
+                        textAlign: TextAlign.end,
                         controller.user.value?.email ?? '3rfwehe@gmail.com',
                         style: TextStyle(
                           fontFamily: 'Helvetica',
@@ -320,7 +321,6 @@ class ProfileView extends GetView<ProfileController> {
               
               // Phone Row
               Container(
-                height: 67 * scale,
                 padding: EdgeInsets.symmetric(horizontal: 37 * scale, vertical: 21 * scale),
                 decoration: BoxDecoration(
                   border: Border(
@@ -369,46 +369,47 @@ class ProfileView extends GetView<ProfileController> {
               ),
               
               // Total Withdraw Row
-              Container(
-                height: 67 * scale,
-                padding: EdgeInsets.symmetric(horizontal: 35 * scale, vertical: 19 * scale),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/figma_exports/c33c2922af6e3138ba83c64c20e4f805a0c07d4a.png',
-                      width: 26 * scale,
-                      height: 26 * scale,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.account_balance_wallet,
-                        size: 26 * scale,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(width: 16 * scale),
-                    Text(
-                      'Total Withdraw:',
-                      style: TextStyle(
-                        fontFamily: 'Helvetica',
-                        fontSize: 16 * scale,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                        letterSpacing: 0.32 * scale,
-                      ),
-                    ),
-                    SizedBox(width: 39 * scale),
-                    Text(
-                      '23,322 BDT',
-                      style: TextStyle(
-                        fontFamily: 'Helvetica',
-                        fontSize: 16 * scale,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF888787),
-                        letterSpacing: 0.32 * scale,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            //   Container(
+            //     height: 67 * scale,
+            //     padding: EdgeInsets.symmetric(horizontal: 35 * scale, vertical: 19 * scale),
+            //     child: Row(
+            //       children: [
+            //         Image.asset(
+            //           'assets/figma_exports/c33c2922af6e3138ba83c64c20e4f805a0c07d4a.png',
+            //           width: 26 * scale,
+            //           height: 26 * scale,
+            //           errorBuilder: (context, error, stackTrace) => Icon(
+            //             Icons.account_balance_wallet,
+            //             size: 26 * scale,
+            //             color: Colors.white,
+            //           ),
+            //         ),
+            //         SizedBox(width: 16 * scale),
+            //         Text(
+            //           'Total Withdraw:',
+            //           style: TextStyle(
+            //             fontFamily: 'Helvetica',
+            //             fontSize: 16 * scale,
+            //             fontWeight: FontWeight.w400,
+            //             color: Colors.white,
+            //             letterSpacing: 0.32 * scale,
+            //           ),
+            //         ),
+            //         SizedBox(width: 39 * scale),
+            //         Text(
+            //           '23,322 BDT',
+            //           style: TextStyle(
+            //             fontFamily: 'Helvetica',
+            //             fontSize: 16 * scale,
+            //             fontWeight: FontWeight.w400,
+            //             color: const Color(0xFF888787),
+            //             letterSpacing: 0.32 * scale,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // 
             ],
           ),
         ),
@@ -441,7 +442,7 @@ class ProfileView extends GetView<ProfileController> {
             children: [
               // Language Row
               Container(
-                height: 67 * scale,
+             
                 padding: EdgeInsets.symmetric(horizontal: 39 * scale, vertical: 22 * scale),
                 decoration: BoxDecoration(
                   border: Border(
@@ -479,41 +480,44 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                       ],
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8 * scale, vertical: 4 * scale),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF212121),
-                        borderRadius: BorderRadius.circular(24 * scale),
+              GestureDetector(
+                onTap: () => _showLanguageSelector(scale),
+                child: Container(
+                
+                  padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 4 * scale),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF212121),
+                    borderRadius: BorderRadius.circular(24 * scale),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Obx(() => Text(
+                        controller.selectedLanguage.value,
+                        style: TextStyle(
+                          fontFamily: 'Helvetica',
+                          fontSize: 16 * scale,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF888787),
+                          letterSpacing: 0.24 * scale,
+                        ),
+                      )),
+                      SizedBox(width: 5 * scale),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        size: 16 * scale,
+                        color: const Color(0xFF888787),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'EN',
-                            style: TextStyle(
-                              fontFamily: 'Helvetica',
-                              fontSize: 12 * scale,
-                              fontWeight: FontWeight.w400,
-                              color: const Color(0xFF888787),
-                              letterSpacing: 0.24 * scale,
-                            ),
-                          ),
-                          SizedBox(width: 5 * scale),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            size: 16 * scale,
-                            color: const Color(0xFF888787),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
+                  ),
+                ),
+              ),
                   ],
                 ),
               ),
               
               // Theme Row
               Container(
-                height: 67 * scale,
                 padding: EdgeInsets.symmetric(horizontal: 39 * scale, vertical: 20 * scale),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -560,6 +564,104 @@ class ProfileView extends GetView<ProfileController> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showLanguageSelector(double scale) {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF393838),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20 * scale),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: EdgeInsets.only(top: 12 * scale),
+              width: 40 * scale,
+              height: 4 * scale,
+              decoration: BoxDecoration(
+                color: const Color(0xFF888787),
+                borderRadius: BorderRadius.circular(2 * scale),
+              ),
+            ),
+            
+            // Title
+            Padding(
+              padding: EdgeInsets.all(20 * scale),
+              child: Text(
+                'Select Language',
+                style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 18 * scale,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            
+            // Language options
+            ...controller.availableLanguages.map((language) {
+              return Obx(() {
+                final isSelected = controller.selectedLanguage.value == language;
+                return InkWell(
+                  onTap: () {
+                    controller.changeLanguage(language);
+                    Get.back();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20 * scale,
+                      vertical: 16 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected 
+                          ? const Color(0xFF85428C).withOpacity(0.2)
+                          : Colors.transparent,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: const Color(0xFF232323),
+                          width: Responsive.sp(3),
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          language == 'EN' ? 'English' : 'বাংলা',
+                          style: TextStyle(
+                            fontFamily: 'Helvetica',
+                            fontSize: 16 * scale,
+                            fontWeight: FontWeight.w400,
+                            color: isSelected
+                                ? const Color(0xFF85428C)
+                                : const Color(0xFF888787),
+                          ),
+                        ),
+                        if (isSelected)
+                          Icon(
+                            Icons.check_circle,
+                            color: const Color(0xFF85428C),
+                            size: 20 * scale,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+            }).toList(),
+            
+            SizedBox(height: 20 * scale),
+          ],
+        ),
+      ),
+      isDismissible: true,
+      enableDrag: true,
     );
   }
 }
