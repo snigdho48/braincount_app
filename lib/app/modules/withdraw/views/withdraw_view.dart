@@ -1,16 +1,16 @@
+import 'package:braincount/app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/withdraw_controller.dart';
 import '../../../routes/app_routes.dart';
+import '../../../widgets/user_header.dart';
 
 class WithdrawView extends GetView<WithdrawController> {
   const WithdrawView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final baseWidth = 393.0;
-    final scale = screenWidth / baseWidth;
+    final scale = Responsive.scaleWidth(393.0);
 
     return Scaffold(
       floatingActionButton: Obx(() => controller.hasSelectedAccount
@@ -25,7 +25,8 @@ class WithdrawView extends GetView<WithdrawController> {
           child: Column(
             children: [
               // User Header
-             // _buildUserHeader(scale),
+              const SizedBox.shrink(),
+              UserHeader(scale: scale),
               
               SizedBox(height: 16 * scale),
               
@@ -170,80 +171,7 @@ class WithdrawView extends GetView<WithdrawController> {
     );
   }
 
-  Widget _buildUserHeader(double scale) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16 * scale, vertical: 12 * scale),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              // Profile Image
-              Container(
-                width: 40 * scale,
-                height: 40 * scale,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0B8FF),
-                  borderRadius: BorderRadius.circular(20 * scale),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(13 * scale),
-                  child: Padding(
-                    padding: EdgeInsets.all(3 * scale),
-                    child: Image.asset(
-                      'assets/figma_exports/52ec367639c91dd0186e7c21dba64d8ed1375a47.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.person,
-                        size: 24 * scale,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 7 * scale),
-              // User Info
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'NAFSIN RAHMAN',
-                    style: TextStyle(
-                      fontFamily: 'Oddlini',
-                      fontSize: 13 * scale,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(
-                    'User ID: 34874',
-                    style: TextStyle(
-                      fontFamily: 'Satoshi',
-                      fontSize: 10 * scale,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          // Settings Icon
-          Image.asset(
-            'assets/figma_exports/d221e5c78d3d50402888e8534c8e50c2ea421f24.png',
-            width: 28 * scale,
-            height: 28 * scale,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.settings,
-              size: 28 * scale,
-              color: Colors.white,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildBankCard({
     required String bankName,
@@ -396,13 +324,13 @@ class WithdrawView extends GetView<WithdrawController> {
   }
 
   Widget _buildWithdrawModalContent(double scale) {
-    final screenHeight = MediaQuery.of(Get.context!).size.height;
+    final screenHeight = Get.height;
     final modalHeight = screenHeight * 0.75;
     
     return Container(
       height: modalHeight,
       padding: EdgeInsets.only(
-        bottom: MediaQuery.of(Get.context!).viewInsets.bottom,
+        bottom: Get.mediaQuery.viewInsets.bottom,
       ),
       decoration: BoxDecoration(
         color: const Color(0xFF232323),

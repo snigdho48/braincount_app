@@ -1,7 +1,9 @@
+import 'package:braincount/app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/dashboard_controller.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../widgets/user_header.dart';
 import '../../../widgets/brain_loader.dart';
 import '../../../routes/app_routes.dart';
 import '../../tasks/widgets/submitted_task_card.dart';
@@ -11,14 +13,8 @@ class DashboardView extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Base design width from Figma (393px)
-    final baseWidth = 393.0;
-    
     // Scale factor for responsive design
-    final scale = screenWidth / baseWidth;
+    final scale = Responsive.scaleWidth(393.0);
     
     return Scaffold(
       body: Container(
@@ -35,7 +31,7 @@ class DashboardView extends GetView<DashboardController> {
               child: Column(
                 children: [
                   // User Header
-                  _buildUserHeader(scale),
+                  UserHeader(scale: scale, onSettingsTap: controller.goToSettings),
                   
                   SizedBox(height: 16 * scale),
                   
@@ -72,86 +68,7 @@ class DashboardView extends GetView<DashboardController> {
     );
   }
 
-  Widget _buildUserHeader(double scale) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16 * scale,
-        vertical: 11 * scale,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // User Info
-          Expanded(
-            child: Row(
-              children: [
-                // Avatar
-                Container(
-                  width: 40 * scale,
-                  height: 40 * scale,
-                  padding: EdgeInsets.all(3 * scale),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE0B8FF),
-                    borderRadius: BorderRadius.circular(20 * scale),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13 * scale),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/figma_exports/52ec367639c91dd0186e7c21dba64d8ed1375a47.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                
-                SizedBox(width: 7 * scale),
-                
-                // User Name and ID
-                Expanded(
-                  child: Obx(() => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        controller.currentUser.value?.name.toUpperCase() ?? 'NAFSIN RAHMAN',
-                        style: TextStyle(
-                          fontSize: 13 * scale,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          height: 20 / 13,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        'User ID: ${controller.currentUser.value?.id ?? '34874'}',
-                        style: TextStyle(
-                          fontSize: 10 * scale,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  )),
-                ),
-              ],
-            ),
-          ),
-          
-          // Settings Icon
-          GestureDetector(
-            onTap: controller.goToSettings,
-            child: Icon(
-              Icons.settings,
-              color: Colors.white,
-              size: 28 * scale,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildTitle(double scale) {
     return Text(

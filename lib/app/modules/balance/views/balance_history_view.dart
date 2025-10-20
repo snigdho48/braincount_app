@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/balance_history_controller.dart';
+import '../../../core/utils/responsive.dart';
 
 class BalanceHistoryView extends GetView<BalanceHistoryController> {
   const BalanceHistoryView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final baseWidth = 393.0;
-    final scale = screenWidth / baseWidth;
+    final scale = Responsive.scaleWidth(393.0);
+    final screenWidth = Get.width;
 
     return Scaffold(
       floatingActionButton: _buildRequestButton(scale),
@@ -30,7 +30,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                 Container(
                   width: screenWidth,
                   height: 350 * scale,
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  padding: EdgeInsets.only(top: Get.mediaQuery.padding.top),
                        decoration: BoxDecoration(
                     color: const Color(0xFF393838),
                     borderRadius: BorderRadius.circular(25 * scale),

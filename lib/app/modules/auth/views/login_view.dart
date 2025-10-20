@@ -20,7 +20,7 @@ class LoginView extends GetView<LoginController> {
           child: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: Get.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
+                minHeight: Get.height - Get.mediaQuery.padding.top - Get.mediaQuery.padding.bottom,
               ),
               child: IntrinsicHeight(
                 child: Padding(

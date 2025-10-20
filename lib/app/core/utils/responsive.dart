@@ -61,5 +61,13 @@ class Responsive {
 
   // Check if it's desktop
   static bool get isDesktop => Get.width >= 1024;
+
+  // Scale factor based on design width
+  static double scaleWidth(double width) => Get.width / width;
+
+  // Scale factor based on design height
+  static double scaleHeight(double height) => Get.height / height;
+  
+
 }
 

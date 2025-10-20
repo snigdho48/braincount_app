@@ -1,0 +1,590 @@
+# BrainCount Flutter App - Figma Design System Rules
+
+## Overview
+This document provides comprehensive rules for integrating Figma designs using the Model Context Protocol (MCP) in the BrainCount Flutter application.
+
+---
+
+## 1. Token Definitions
+
+### Color Tokens
+**Location**: `lib/app/core/theme/app_colors.dart`
+
+```dart
+class AppColors {
+  // Backgrounds
+  static const background = Color(0xFF232323);
+  static const cardBackground = Color(0xFF393838);
+  static const inputBackground = Color(0xFF303030);
+  static const dashboardBackground = Color(0xFF160531);
+
+  // Brand Colors
+  static const primary = Color(0xFFFFBB27);
+  static const accent = Color(0xFF0A97F5);
+  static const success = Color(0xFF27AF40);
+  static const error = Colors.red;
+
+  // Text Colors
+  static const textPrimary = Colors.white;
+  static const textSecondary = Color(0xFF888787);
+  static const textTertiary = Color(0xFF7B7B7B);
+  static const textPlaceholder = Color(0xFFA9ACB4);
+
+  // Gradients
+  static const buttonGradient = RadialGradient(
+    center: Alignment(-0.126, -2.234),
+    radius: 1.5,
+    colors: [
+      Color(0xEB58A3D8),
+      Color(0xE78C98EC),
+      Color(0xE3C08EFF),
+    ],
+    stops: [0.242, 0.545, 0.849],
+  );
+}
+```
+
+### Typography Tokens
+**Location**: `lib/app/core/theme/text_styles.dart`
+
+```dart
+class AppTextStyles {
+  static TextStyle heading1(double scale) => GoogleFonts.inter(
+    fontSize: 48 * scale,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+
+  static TextStyle heading2(double scale) => GoogleFonts.inter(
+    fontSize: 20 * scale,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+
+  static TextStyle body(double scale) => GoogleFonts.inter(
+    fontSize: 14 * scale,
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+  );
+
+  static TextStyle button(double scale) => GoogleFonts.inter(
+    fontSize: 16 * scale,
+    fontWeight: FontWeight.w700,
+    color: Colors.white,
+  );
+
+  static TextStyle label(double scale) => GoogleFonts.inter(
+    fontSize: 10 * scale,
+    fontWeight: FontWeight.w400,
+    color: const Color(0xFF7B7B7B),
+  );
+}
+```
+
+### Spacing Tokens
+**Location**: `lib/app/core/utils/responsive.dart`
+
+```dart
+class Responsive {
+  // Scale factors
+  static double scaleWidth(double width) => Get.width / width;
+  static double scaleHeight(double height) => Get.height / height;
+
+  // Spacing scale
+  static double sp(double size) => Get.width * (size / 375);
+  
+  // Common spacing values
+  static double get xs => sp(4);
+  static double get sm => sp(8);
+  static double get md => sp(16);
+  static double get lg => sp(24);
+  static double get xl => sp(32);
+}
+```
+
+---
+
+## 2. Component Library
+
+### Component Architecture
+**Location**: `lib/app/widgets/`
+
+#### Reusable Components
+- `UserHeader` - User profile header with avatar, name, ID, settings
+- `CustomButton` - Standardized button with gradient support
+- `CustomTextField` - Input field with consistent styling
+- `SuccessModal` - Success feedback modal
+- `ErrorModal` - Error feedback modal
+- `BrainLoader` - Loading indicator
+
+#### Component Pattern
+```dart
+class ComponentName extends StatelessWidget {
+  final double scale;
+  final String? title;
+  final VoidCallback? onTap;
+
+  const ComponentName({
+    super.key,
+    required this.scale,
+    this.title,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // Component implementation
+    );
+  }
+}
+```
+
+### Module-Specific Components
+**Location**: `lib/app/modules/*/widgets/`
+
+- `TaskCard` - Task display card
+- `StatsCard` - Dashboard statistics card
+- `TaskFilterModal` - Advanced task filtering
+- `SubmittedTaskCard` - Submitted task display
+
+---
+
+## 3. Frameworks & Libraries
+
+### Core Framework
+- **Flutter SDK**: 3.5.4+
+- **Dart**: 3.6.2+
+
+### State Management
+- **GetX**: 4.7.2
+  - Navigation: `Get.toNamed()`, `Get.back()`
+  - State: `.obs` observables, `Obx()` reactive widgets
+  - Dependency injection: `Get.put()`, `Get.find()`
+
+### UI Libraries
+- **Material Design**: Flutter's built-in Material components
+- **Google Fonts**: 6.2.1 for typography
+- **Font Awesome**: 10.10.0 for icons
+
+### Additional Packages
+```yaml
+dependencies:
+  google_fonts: ^6.2.1
+  font_awesome_flutter: ^10.10.0
+  animated_bottom_navigation_bar: ^1.4.0
+  cached_network_image: ^3.4.1
+  image_picker: ^1.1.2
+  permission_handler: ^11.3.1
+  shared_preferences: ^2.2.2
+  one_request: ^2.1.1
+```
+
+### Build System
+- **Flutter Build**: Standard Flutter build system
+- **Gradle**: Android build system
+- **Xcode**: iOS build system
+
+---
+
+## 4. Asset Management
+
+### Asset Structure
+```
+assets/
+├── app_icon/
+│   ├── braincount-logo.png
+│   ├── favicon.png
+│   └── google_logo.png
+├── designs/
+│   └── [Figma design references]
+└── figma_exports/
+    ├── [40 SVG files]
+    └── [16 PNG files]
+```
+
+### Asset Referencing Pattern
+```dart
+// Images with error handling
+Image.asset(
+  'assets/figma_exports/filename.png',
+  width: 40 * scale,
+  height: 40 * scale,
+  errorBuilder: (context, error, stackTrace) => Icon(
+    Icons.fallback,
+    size: 24 * scale,
+    color: Colors.white,
+  ),
+)
+
+// Icons
+Icon(
+  Icons.settings,
+  size: 28 * scale,
+  color: Colors.white,
+)
+```
+
+### Asset Optimization
+- **SVG Support**: Flutter handles SVG through `Image.asset()`
+- **PNG Optimization**: Standard Flutter image optimization
+- **Error Handling**: All assets have `errorBuilder` fallbacks
+
+---
+
+## 5. Icon System
+
+### Icon Sources
+1. **Material Icons**: `Icons.*` (primary)
+2. **Font Awesome**: `FontAwesomeIcons.*` (secondary)
+3. **Custom Assets**: `assets/figma_exports/*.svg` (Figma exports)
+
+### Icon Usage Pattern
+```dart
+// Material Icons
+Icon(
+  Icons.settings,
+  size: 28 * scale,
+  color: Colors.white,
+)
+
+// Font Awesome Icons
+FontAwesomeIcons.google,
+size: 24 * scale,
+color: Colors.white,
+
+// Custom SVG Icons
+Image.asset(
+  'assets/figma_exports/icon.svg',
+  width: 24 * scale,
+  height: 24 * scale,
+  errorBuilder: (context, error, stackTrace) => Icon(
+    Icons.fallback,
+    size: 24 * scale,
+    color: Colors.white,
+  ),
+)
+```
+
+### Icon Naming Convention
+- **Figma Exports**: Hash-based filenames (e.g., `ef0732e1521d2d146fd4db0ce0fd76de695f5e96.png`)
+- **Custom Icons**: Descriptive names (e.g., `google_logo.png`)
+- **Material Icons**: Standard Flutter naming (`Icons.settings`)
+
+---
+
+## 6. Styling Approach
+
+### Responsive Design System
+**Base Width**: 393px (iPhone design width)
+**Scale Factor**: `Responsive.scaleWidth(393.0)`
+
+```dart
+// Responsive scaling pattern
+final scale = Responsive.scaleWidth(393.0);
+
+// Apply to all dimensions
+Container(
+  width: 360 * scale,
+  height: 45 * scale,
+  padding: EdgeInsets.all(12 * scale),
+  child: Text(
+    'Hello',
+    style: TextStyle(fontSize: 16 * scale),
+  ),
+)
+```
+
+### Font Management
+**Primary**: Google Fonts package
+```dart
+import 'package:google_fonts/google_fonts.dart';
+
+Text(
+  'Hello World',
+  style: GoogleFonts.inter(
+    fontSize: 16 * scale,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  ),
+)
+```
+
+**Font Families Used**:
+- Inter (primary)
+- Poppins (secondary)
+- Roboto (alternative)
+- Helvetica (system fallback)
+
+### Color System
+**Usage Pattern**:
+```dart
+// Use AppColors constants
+Container(
+  color: AppColors.background,
+  child: Text(
+    'Hello',
+    style: TextStyle(color: AppColors.textPrimary),
+  ),
+)
+
+// Gradients
+Container(
+  decoration: BoxDecoration(
+    gradient: AppColors.buttonGradient,
+  ),
+)
+```
+
+### Layout Patterns
+```dart
+// Standard page structure
+Scaffold(
+  body: Container(
+    decoration: const BoxDecoration(
+      color: AppColors.background,
+    ),
+    child: SafeArea(
+      child: Column(
+        children: [
+          UserHeader(scale: scale),
+          // Page content
+        ],
+      ),
+    ),
+  ),
+)
+```
+
+---
+
+## 7. Project Structure
+
+### Directory Organization
+```
+lib/
+├── app/
+│   ├── core/
+│   │   ├── theme/
+│   │   │   ├── app_colors.dart
+│   │   │   └── text_styles.dart
+│   │   ├── config/
+│   │   │   └── app_config.dart
+│   │   └── utils/
+│   │       └── responsive.dart
+│   ├── data/
+│   │   ├── models/
+│   │   └── services/
+│   ├── modules/
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── tasks/
+│   │   ├── balance/
+│   │   └── withdraw/
+│   ├── widgets/
+│   │   ├── user_header.dart
+│   │   ├── custom_button.dart
+│   │   └── [other shared widgets]
+│   └── routes/
+│       ├── app_pages.dart
+│       └── app_routes.dart
+└── main.dart
+```
+
+### Module Structure Pattern
+```
+modules/
+└── [feature_name]/
+    ├── bindings/
+    │   └── [feature]_binding.dart
+    ├── controllers/
+    │   └── [feature]_controller.dart
+    ├── views/
+    │   └── [feature]_view.dart
+    └── widgets/
+        └── [feature]_widget.dart
+```
+
+### File Naming Conventions
+- **Views**: `[feature]_view.dart`
+- **Controllers**: `[feature]_controller.dart`
+- **Bindings**: `[feature]_binding.dart`
+- **Widgets**: `[feature]_widget.dart` or descriptive names
+- **Models**: `[entity]_model.dart`
+
+---
+
+## 8. Figma Integration Guidelines
+
+### MCP Commands Usage
+```dart
+// Get design context from Figma
+mcp_Figma_Desktop_get_design_context(
+  nodeId: "1:2",
+  clientFrameworks: "flutter",
+  clientLanguages: "dart",
+  dirForAssetWrites: "assets/figma_exports/",
+)
+
+// Get variable definitions
+mcp_Figma_Desktop_get_variable_defs(
+  nodeId: "1:2",
+  clientFrameworks: "flutter",
+  clientLanguages: "dart",
+)
+
+// Generate design system rules
+mcp_Figma_Desktop_create_design_system_rules(
+  clientFrameworks: "flutter",
+  clientLanguages: "dart",
+)
+```
+
+### Design Token Mapping
+1. **Colors**: Map Figma color values to `AppColors` constants
+2. **Typography**: Map Figma text styles to `AppTextStyles` methods
+3. **Spacing**: Map Figma spacing to `Responsive.sp()` values
+4. **Assets**: Export from Figma to `assets/figma_exports/`
+
+### Component Generation
+1. **Analyze Figma Component**: Use MCP to get component structure
+2. **Create Flutter Widget**: Generate corresponding Flutter widget
+3. **Apply Design Tokens**: Use `AppColors` and `AppTextStyles`
+4. **Make Responsive**: Apply scale factor to all dimensions
+5. **Add Error Handling**: Include `errorBuilder` for assets
+
+### Asset Export Process
+1. **Export from Figma**: Use MCP to export assets
+2. **Save to Assets**: Place in `assets/figma_exports/`
+3. **Update pubspec.yaml**: Ensure assets are registered
+4. **Implement in Code**: Use `Image.asset()` with error handling
+
+---
+
+## 9. Best Practices
+
+### Responsive Design
+- **Always use scale factor**: `dimension * scale`
+- **Test on multiple devices**: Different screen sizes
+- **Use Responsive utility**: For common spacing values
+
+### Component Design
+- **Single responsibility**: Each component has one purpose
+- **Reusable**: Accept parameters for customization
+- **Consistent**: Follow established patterns
+
+### State Management
+- **Use GetX observables**: `.obs` for reactive variables
+- **Wrap with Obx()**: For reactive UI updates
+- **Dispose controllers**: In `onClose()` method
+
+### Error Handling
+- **Asset fallbacks**: Always provide `errorBuilder`
+- **Null safety**: Handle null values gracefully
+- **User feedback**: Show appropriate error messages
+
+### Performance
+- **Const constructors**: Use `const` where possible
+- **Efficient rebuilds**: Minimize widget rebuilds
+- **Image optimization**: Use appropriate image formats
+
+---
+
+## 10. Migration Checklist
+
+### When Adding New Screens
+- [ ] Create module structure (`views/`, `controllers/`, `bindings/`)
+- [ ] Use `UserHeader` for consistent header
+- [ ] Apply responsive scaling to all dimensions
+- [ ] Use `AppColors` and `AppTextStyles`
+- [ ] Add proper error handling
+- [ ] Test on multiple screen sizes
+
+### When Creating Components
+- [ ] Place in appropriate directory (`widgets/` or module-specific)
+- [ ] Accept `scale` parameter
+- [ ] Use design tokens (`AppColors`, `AppTextStyles`)
+- [ ] Include error handling
+- [ ] Add documentation
+- [ ] Make reusable with parameters
+
+### When Integrating Figma Designs
+- [ ] Use MCP to analyze design
+- [ ] Export assets to `assets/figma_exports/`
+- [ ] Map design tokens to Flutter equivalents
+- [ ] Apply responsive scaling
+- [ ] Test across devices
+- [ ] Update documentation
+
+---
+
+## 11. Common Patterns
+
+### Page Structure
+```dart
+class FeatureView extends GetView<FeatureController> {
+  const FeatureView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final scale = Responsive.scaleWidth(393.0);
+    
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(color: AppColors.background),
+        child: SafeArea(
+          child: Column(
+            children: [
+              UserHeader(scale: scale),
+              // Page content
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Component Structure
+```dart
+class CustomComponent extends StatelessWidget {
+  final double scale;
+  final String title;
+  final VoidCallback? onTap;
+
+  const CustomComponent({
+    super.key,
+    required this.scale,
+    required this.title,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 200 * scale,
+        height: 50 * scale,
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(8 * scale),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: AppTextStyles.body(scale),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+**Last Updated**: 2025-01-20
+**Version**: 1.0.0
+**Maintained by**: BrainCount Development Team

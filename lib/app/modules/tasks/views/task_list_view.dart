@@ -6,6 +6,7 @@ import '../../../core/utils/responsive.dart';
 import '../../../widgets/brain_loader.dart';
 import '../widgets/task_filter_modal.dart';
 import '../widgets/submitted_task_card.dart';
+import '../../../widgets/user_header.dart';
 
 class TaskListView extends GetView<TaskListController> {
   const TaskListView({super.key});
@@ -21,7 +22,7 @@ class TaskListView extends GetView<TaskListController> {
           child: Column(
             children: [
               // User Header
-              _buildUserHeader(),
+              UserHeader(scale: Responsive.scaleWidth(393.0)),
               
               // Title with back button
               _buildTitleBar(),
@@ -43,76 +44,7 @@ class TaskListView extends GetView<TaskListController> {
     );
   }
 
-  Widget _buildUserHeader() {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: Responsive.md,
-        vertical: Responsive.smVertical + Responsive.sp(4),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // User Info
-          Row(
-            children: [
-              // Avatar (Reactive with Obx)
-              Obx(() => Container(
-                width: Responsive.sp(40),
-                height: Responsive.sp(40),
-                padding: EdgeInsets.all(Responsive.sp(3)),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE0B8FF),
-                  borderRadius: BorderRadius.circular(Responsive.sp(20)),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Responsive.sp(13)),
-                    image: DecorationImage(
-                      image: AssetImage(controller.userAvatar.value),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              )),
-              
-              SizedBox(width: Responsive.sp(7)),
-              
-              // User Name and ID (Reactive with Obx)
-              Obx(() => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    controller.userName.value,
-                    style: TextStyle(
-                      fontSize: Responsive.fontSize(13),
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textWhite,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  Text(
-                    'User ID: ${controller.userId.value}',
-                    style: TextStyle(
-                      fontSize: Responsive.fontSize(10),
-                      color: AppColors.textWhite,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              )),
-            ],
-          ),
-          
-          // Settings Icon
-          Image.asset(
-            'assets/figma_exports/d221e5c78d3d50402888e8534c8e50c2ea421f24.png',
-            width: Responsive.sp(28),
-            height: Responsive.sp(28),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildTitleBar() {
     return Container(

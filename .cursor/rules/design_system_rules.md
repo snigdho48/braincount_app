@@ -31,20 +31,38 @@ const Color(0xE3C08EFF) // Light purple gradient (rgba(192,142,255,0.89))
 ```
 
 ### Typography
-Fonts are managed through `pubspec.yaml` and referenced by family name:
+**Fonts are managed through Google Fonts package:**
 
+```yaml
+dependencies:
+  google_fonts: ^6.2.1
+```
+
+#### Font Families & Usage
 ```dart
-// Font Families
-'Oddlini' // Display font (Bold, weight: 700)
-'Satoshi' // Body font (Medium: 500, Bold: 700)
-'Helvetica' // Alternative body (Regular: 400, Bold: 700)
-'Poppins' // Alternative sans-serif
-'Inter' // Alternative sans-serif (Medium: 500)
-'Urbanist' // UI font (Medium: 500, SemiBold: 600)
+// Using Google Fonts (Recommended)
+import 'package:google_fonts/google_fonts.dart';
+
+Text(
+  'Hello World',
+  style: GoogleFonts.inter(
+    fontSize: 16 * scale,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
+  ),
+)
+
+// Font Families Used:
+'Oddlini'   // Display font (Bold: 700) - Headers, Titles
+'Satoshi'   // Body font (Medium: 500, Bold: 700) - Labels, UI
+'Helvetica' // Alt body (Regular: 400, Bold: 700) - Input fields
+'Poppins'   // Alt sans-serif - Cards, secondary text
+'Inter'     // Alt sans-serif (Medium: 500) - Captions
+'Urbanist'  // UI font (Medium: 500, SemiBold: 600) - Navigation
 
 // Font Sizes (scaled with responsive factor)
-48 * scale // Large display
-20 * scale // Page titles
+48 * scale // Large display (H1)
+20 * scale // Page titles (H2)
 16 * scale // Button text
 15 * scale // Input field text
 14 * scale // Body text
@@ -52,6 +70,24 @@ Fonts are managed through `pubspec.yaml` and referenced by family name:
 12 * scale // Small UI text
 11 * scale // Micro text
 10 * scale // Label text
+```
+
+#### Text Style Helper (Create if needed)
+```dart
+// lib/app/core/theme/text_styles.dart
+import 'package:google_fonts/google_fonts.dart';
+
+class AppTextStyles {
+  static TextStyle heading1(double scale) => GoogleFonts.inter(
+    fontSize: 48 * scale,
+    fontWeight: FontWeight.w700,
+  );
+  
+  static TextStyle body(double scale) => GoogleFonts.inter(
+    fontSize: 14 * scale,
+    fontWeight: FontWeight.w400,
+  );
+}
 ```
 
 ### Spacing
@@ -82,7 +118,31 @@ Components are stored in:
 - `lib/app/widgets/` - Shared/reusable components
 - `lib/app/modules/*/views/` - Module-specific view components
 
-### Key Components
+### Key Reusable Components
+
+#### UserHeader (`lib/app/widgets/user_header.dart`) ✅ NEW
+**Replaces `_buildUserHeader` across all views**
+
+```dart
+UserHeader(
+  scale: scale,
+  showSettings: true,
+  onSettingsTap: () => Get.toNamed(AppRoutes.profile),
+)
+```
+
+**Props:**
+- `scale`: double (required) - Responsive scale factor
+- `showSettings`: bool (default: true) - Show/hide settings button
+- `onSettingsTap`: VoidCallback? - Settings button callback
+
+**Used in:**
+- Dashboard View
+- Task List View
+- Balance History View
+- Withdraw View
+- Add Bank View
+- Add New Bank View
 
 #### CustomButton (`lib/app/widgets/custom_button.dart`)
 ```dart
@@ -112,6 +172,35 @@ CustomTextField(
 #### Navigation
 - `CustomBottomNavBar` - Custom bottom navigation with gradient center button
 - Uses `animated_bottom_navigation_bar` package
+
+### Common Patterns to Extract
+
+#### 1. Input Field Pattern
+Many views repeat this pattern - should be extracted:
+```dart
+Widget _buildInputField({
+  required String label,
+  required String hintText,
+  required TextEditingController controller,
+  required double scale,
+  TextInputType keyboardType = TextInputType.text,
+})
+```
+
+#### 2. Card Pattern
+Repeated card design across views:
+```dart
+Widget _buildCard({
+  required Widget child,
+  required double scale,
+  bool isSelected = false,
+})
+```
+
+#### 3. Section Title Pattern
+```dart
+Widget _buildSectionTitle(String title, double scale)
+```
 
 ## 3. Frameworks & Libraries
 
