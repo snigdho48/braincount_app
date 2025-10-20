@@ -1,11 +1,19 @@
+import 'package:braincount/app/data/services/theme_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:one_request/one_request.dart';
 
 class AppConfig {
   static void initialize() {
     _configureOneRequest();
   }
-
+static Future<void> initializeTheme() async {
+    // Initialize theme service
+  final themeService = ThemeService();
+  themeService.onInit();
+  await themeService.loadTheme();
+  Get.put(themeService);
+}
   static void _configureOneRequest() {
     // Configure loading UI with BrainCount theme
     OneRequest.loadingconfig(

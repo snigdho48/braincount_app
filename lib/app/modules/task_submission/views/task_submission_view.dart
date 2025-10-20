@@ -14,7 +14,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
@@ -107,7 +107,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+             Text(
               'Current Billboard Image:',
               style: TextStyle(
                 color: AppColors.textGrey,
@@ -144,7 +144,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                 width: double.infinity,
                 height: 150,
                 color: AppColors.cardBackground,
-                child: const Icon(
+                child:  Icon(
                   Icons.image,
                   color: AppColors.textGrey,
                   size: 48,
@@ -159,8 +159,8 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
           children: [
             TextButton.icon(
               onPressed: () {},
-              icon: const Icon(Icons.map, color: AppColors.success, size: 16),
-              label: const Text(
+              icon: Icon(Icons.map, color: AppColors.success, size: 16),
+              label: Text(
                 'See Map',
                 style: TextStyle(
                   color: AppColors.success,
@@ -222,7 +222,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                       const SizedBox(width: 8),
                       Text(
                         condition,
-                        style: const TextStyle(
+                        style:  TextStyle(
                           color: AppColors.textGrey,
                           fontSize: 13,
                         ),
@@ -243,10 +243,10 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
         TextField(
           controller: controller.notesController,
           maxLines: 3,
-          style: const TextStyle(color: AppColors.textWhite),
+          style: TextStyle(color: AppColors.textWhite),
           decoration: InputDecoration(
             hintText: 'intentional damage or hacking of display system',
-            hintStyle: const TextStyle(color: AppColors.textGrey),
+            hintStyle: TextStyle(color: AppColors.textGrey),
             filled: true,
             fillColor: AppColors.cardDark,
             border: OutlineInputBorder(
@@ -271,7 +271,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
+         Text(
           'You can select 4 images at once. Size : PDF or JPG of Max Size 120 KB',
           style: TextStyle(
             color: AppColors.textGrey,
@@ -339,7 +339,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                           onTap: () => controller.removeImage(index),
                           child: Container(
                             padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: AppColors.error,
                               shape: BoxShape.circle,
                             ),
@@ -353,7 +353,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                       ),
                     ],
                   )
-                : const Icon(
+                :  Icon(
                     Icons.add,
                     color: AppColors.textGrey,
                     size: 32,
@@ -408,7 +408,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                         children: [
                           Text(
                             '${CameraService.formatFileSize(image.fileSize)} • ',
-                            style: const TextStyle(
+                            style:  TextStyle(
                               color: AppColors.textGrey,
                               fontSize: 12,
                             ),

@@ -13,7 +13,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/services/storage_service.dart';
+import '../../../data/services/theme_service.dart';
 import '../../../routes/app_routes.dart';
 
 class ProfileController extends GetxController {
@@ -10,6 +11,13 @@ class ProfileController extends GetxController {
   // Language selection
   final selectedLanguage = 'EN'.obs;
   final availableLanguages = ['EN', 'BN'];
+  
+  // Theme service
+  final ThemeService _themeService = Get.find<ThemeService>();
+  
+  // Computed property for theme mode
+  bool get isDarkMode => _themeService.isDarkMode.value;
+  RxBool get isDarkModeObs => _themeService.isDarkMode;
 
   @override
   void onInit() {
@@ -20,6 +28,10 @@ class ProfileController extends GetxController {
   void changeLanguage(String language) {
     selectedLanguage.value = language;
     // TODO: Implement actual language change logic with GetX localization
+  }
+  
+  void toggleTheme() {
+    _themeService.toggleTheme();
   }
 
   Future<void> loadUserData() async {

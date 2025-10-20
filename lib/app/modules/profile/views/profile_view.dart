@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 import '../../../core/utils/responsive.dart';
-import '../../../widgets/user_header.dart';
+import '../../../core/theme/app_colors.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
@@ -12,9 +12,10 @@ class ProfileView extends GetView<ProfileController> {
     final scale = Responsive.scale;
     
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF232323),
+      backgroundColor: AppColors.background,
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -48,7 +49,7 @@ class ProfileView extends GetView<ProfileController> {
                             fontFamily: 'Oddlini',
                             fontSize: 20 * scale,
                             fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -87,7 +88,7 @@ class ProfileView extends GetView<ProfileController> {
             ),
           ),
         ),
-      ),
+      )),
     );
   }
 
@@ -137,7 +138,7 @@ class ProfileView extends GetView<ProfileController> {
                       child: Icon(
                         Icons.person,
                         size: 50 * scale,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                     ),
                   ),
@@ -149,7 +150,7 @@ class ProfileView extends GetView<ProfileController> {
                     width: 22 * scale,
                     height: 22 * scale,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -192,7 +193,7 @@ class ProfileView extends GetView<ProfileController> {
                           fontFamily: 'Satoshi',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                       )),
                       Text(
@@ -219,7 +220,7 @@ class ProfileView extends GetView<ProfileController> {
                       fontFamily: 'Oddlini',
                       fontSize: 20 * scale,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                     textAlign: TextAlign.center,
                   )),
@@ -230,7 +231,7 @@ class ProfileView extends GetView<ProfileController> {
                       fontFamily: 'Satoshi',
                       fontSize: 11 * scale,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                     textAlign: TextAlign.right,
                   )),
@@ -261,7 +262,7 @@ class ProfileView extends GetView<ProfileController> {
         // All three rows grouped together as one container
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF393838),
+            color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(11 * scale),
           ),
           child: Column(
@@ -272,7 +273,7 @@ class ProfileView extends GetView<ProfileController> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: const Color(0xFF232323),
+                      color: AppColors.divider,
                       width: Responsive.sp(3.05),
                     ),
                   ),
@@ -286,7 +287,7 @@ class ProfileView extends GetView<ProfileController> {
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.email,
                         size: 20 * scale,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                     ),
                     SizedBox(width: 18 * scale),
@@ -296,7 +297,7 @@ class ProfileView extends GetView<ProfileController> {
                         fontFamily: 'Helvetica',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                         letterSpacing: 0.32 * scale,
                       ),
                     ),
@@ -309,7 +310,7 @@ class ProfileView extends GetView<ProfileController> {
                           fontFamily: 'Helvetica',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF888787),
+                          color: AppColors.secondaryText,
                           letterSpacing: 0.32 * scale,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -325,7 +326,7 @@ class ProfileView extends GetView<ProfileController> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: const Color(0xFF232323),
+                      color: AppColors.divider,
                       width: Responsive.sp(3),
                     ),
                   ),
@@ -339,7 +340,7 @@ class ProfileView extends GetView<ProfileController> {
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.phone,
                         size: 24 * scale,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                     ),
                     SizedBox(width: 16 * scale),
@@ -349,7 +350,7 @@ class ProfileView extends GetView<ProfileController> {
                         fontFamily: 'Helvetica',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                         letterSpacing: 0.32 * scale,
                       ),
                     ),
@@ -360,7 +361,7 @@ class ProfileView extends GetView<ProfileController> {
                         fontFamily: 'Helvetica',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
-                        color: const Color(0xFF888787),
+                        color: AppColors.secondaryText,
                         letterSpacing: 0.32 * scale,
                       ),
                     ),
@@ -435,7 +436,7 @@ class ProfileView extends GetView<ProfileController> {
         // Both rows grouped together as one container
         Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF393838),
+            color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(11 * scale),
           ),
           child: Column(
@@ -447,7 +448,7 @@ class ProfileView extends GetView<ProfileController> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: const Color(0xFF232323),
+                      color: AppColors.divider,
                       width: Responsive.sp(3),
                     ),
                   ),
@@ -464,7 +465,7 @@ class ProfileView extends GetView<ProfileController> {
                           errorBuilder: (context, error, stackTrace) => Icon(
                             Icons.language,
                             size: 22 * scale,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                         ),
                         SizedBox(width: 16 * scale),
@@ -474,7 +475,7 @@ class ProfileView extends GetView<ProfileController> {
                             fontFamily: 'Helvetica',
                             fontSize: 16 * scale,
                             fontWeight: FontWeight.w400,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                             letterSpacing: 0.32 * scale,
                           ),
                         ),
@@ -486,7 +487,7 @@ class ProfileView extends GetView<ProfileController> {
                 
                   padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 4 * scale),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF212121),
+                    color: AppColors.tertiaryBackground,
                     borderRadius: BorderRadius.circular(24 * scale),
                   ),
                   child: Row(
@@ -498,7 +499,7 @@ class ProfileView extends GetView<ProfileController> {
                           fontFamily: 'Helvetica',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
-                          color: const Color(0xFF888787),
+                          color: AppColors.secondaryText,
                           letterSpacing: 0.24 * scale,
                         ),
                       )),
@@ -506,7 +507,7 @@ class ProfileView extends GetView<ProfileController> {
                       Icon(
                         Icons.arrow_drop_down,
                         size: 16 * scale,
-                        color: const Color(0xFF888787),
+                        color: AppColors.secondaryText,
                       ),
                     ],
                   ),
@@ -517,47 +518,68 @@ class ProfileView extends GetView<ProfileController> {
               ),
               
               // Theme Row
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 39 * scale, vertical: 20 * scale),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Image.asset(
-                          'assets/figma_exports/37e5b09f05424b21df5d9d6c983e73dff12561ea.png',
-                          width: 26 * scale,
-                          height: 26 * scale,
-                          errorBuilder: (context, error, stackTrace) => Icon(
-                            Icons.palette,
-                            size: 26 * scale,
-                            color: Colors.white,
+              GestureDetector(
+                onTap: () => _showThemeSelector(scale),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 39 * scale, vertical: 20 * scale),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/figma_exports/37e5b09f05424b21df5d9d6c983e73dff12561ea.png',
+                            width: 26 * scale,
+                            height: 26 * scale,
+                            errorBuilder: (context, error, stackTrace) => Icon(
+                              Icons.palette,
+                              size: 26 * scale,
+                              color: AppColors.primaryText,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 12 * scale),
-                        Text(
-                          'Theme:',
-                          style: TextStyle(
-                            fontFamily: 'Helvetica',
-                            fontSize: 16 * scale,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.white,
-                            letterSpacing: 0.32 * scale,
+                          SizedBox(width: 12 * scale),
+                          Text(
+                            'Theme:',
+                            style: TextStyle(
+                              fontFamily: 'Helvetica',
+                              fontSize: 16 * scale,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.primaryText,
+                              letterSpacing: 0.32 * scale,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      'Default',
-                      style: TextStyle(
-                        fontFamily: 'Helvetica',
-                        fontSize: 16 * scale,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF888787),
-                        letterSpacing: 0.32 * scale,
+                        ],
                       ),
-                    ),
-                  ],
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 4 * scale),
+                        decoration: BoxDecoration(
+                          color: AppColors.tertiaryBackground,
+                          borderRadius: BorderRadius.circular(24 * scale),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Obx(() => Text(
+                              controller.isDarkMode ? 'Dark' : 'Light',
+                              style: TextStyle(
+                                fontFamily: 'Helvetica',
+                                fontSize: 16 * scale,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.secondaryText,
+                                letterSpacing: 0.32 * scale,
+                              ),
+                            )),
+                            SizedBox(width: 5 * scale),
+                            Icon(
+                              Icons.arrow_drop_down,
+                              size: 16 * scale,
+                              color: AppColors.secondaryText,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -624,7 +646,7 @@ class ProfileView extends GetView<ProfileController> {
                           : Colors.transparent,
                       border: Border(
                         bottom: BorderSide(
-                          color: const Color(0xFF232323),
+                          color: AppColors.divider,
                           width: Responsive.sp(3),
                         ),
                       ),
@@ -642,6 +664,121 @@ class ProfileView extends GetView<ProfileController> {
                                 ? const Color(0xFF85428C)
                                 : const Color(0xFF888787),
                           ),
+                        ),
+                        if (isSelected)
+                          Icon(
+                            Icons.check_circle,
+                            color: const Color(0xFF85428C),
+                            size: 20 * scale,
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+            }).toList(),
+            
+            SizedBox(height: 20 * scale),
+          ],
+        ),
+      ),
+      isDismissible: true,
+      enableDrag: true,
+    );
+  }
+
+  void _showThemeSelector(double scale) {
+    final themes = [
+      {'name': 'Dark', 'value': true, 'icon': Icons.dark_mode},
+      {'name': 'Light', 'value': false, 'icon': Icons.light_mode},
+    ];
+
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF393838),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20 * scale),
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: EdgeInsets.only(top: 12 * scale),
+              width: 40 * scale,
+              height: 4 * scale,
+              decoration: BoxDecoration(
+                color: const Color(0xFF888787),
+                borderRadius: BorderRadius.circular(2 * scale),
+              ),
+            ),
+            
+            // Title
+            Padding(
+              padding: EdgeInsets.all(20 * scale),
+              child: Text(
+                'Select Theme',
+                style: TextStyle(
+                  fontFamily: 'Helvetica',
+                  fontSize: 18 * scale,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            
+            // Theme options
+            ...themes.map((theme) {
+              return Obx(() {
+                final isSelected = controller.isDarkMode == theme['value'];
+                return InkWell(
+                  onTap: () {
+                    controller.toggleTheme();
+                    Get.back();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20 * scale,
+                      vertical: 16 * scale,
+                    ),
+                    decoration: BoxDecoration(
+                      color: isSelected 
+                          ? const Color(0xFF85428C).withOpacity(0.2)
+                          : Colors.transparent,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: AppColors.divider,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              theme['icon'] as IconData,
+                              color: isSelected
+                                  ? const Color(0xFF85428C)
+                                  : const Color(0xFF888787),
+                              size: 24 * scale,
+                            ),
+                            SizedBox(width: 16 * scale),
+                            Text(
+                              theme['name'] as String,
+                              style: TextStyle(
+                                fontFamily: 'Helvetica',
+                                fontSize: 16 * scale,
+                                fontWeight: FontWeight.w400,
+                                color: isSelected
+                                    ? const Color(0xFF85428C)
+                                    : const Color(0xFF888787),
+                              ),
+                            ),
+                          ],
                         ),
                         if (isSelected)
                           Icon(

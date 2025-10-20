@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:one_request/one_request.dart';
 import 'app/core/config/app_config.dart';
 import 'app/core/theme/app_theme.dart';
+import 'app/data/services/theme_service.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 
@@ -12,6 +13,9 @@ void main() async {
   // Initialize app configuration (OneRequest, etc.)
   AppConfig.initialize();
   
+  // Initialize theme service
+  await AppConfig.initializeTheme();
+  
   runApp(const BrainCountApp());
 }
 
@@ -20,15 +24,19 @@ class BrainCountApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    final themeService = Get.find<ThemeService>();
+    
+    return Obx(() => GetMaterialApp(
       title: 'BrainCount',
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeService.themeMode,
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash, // Start with custom splash screen
       getPages: AppPages.routes,
       defaultTransition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
       builder: OneRequest.initLoading, // Initialize OneRequest loading overlay
-    );
+    ));
   }
 }

@@ -12,7 +12,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration:  BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
@@ -25,7 +25,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                 child: Obx(() {
                   final task = controller.task.value;
                   if (task == null) {
-                    return const Center(
+                    return  Center(
                       child: Text(
                         'Task not found',
                         style: TextStyle(color: AppColors.textGrey),
@@ -51,7 +51,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                                 width: double.infinity,
                                 height: 200,
                                 color: AppColors.cardBackground,
-                                child: const Icon(
+                                child:  Icon(
                                   Icons.image,
                                   color: AppColors.textGrey,
                                   size: 64,
@@ -106,7 +106,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                         const SizedBox(height: 8),
                         Text(
                           task.description,
-                          style: const TextStyle(
+                          style:  TextStyle(
                             fontSize: 14,
                             color: AppColors.textGrey,
                             height: 1.5,
@@ -210,7 +210,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
             width: 140,
             child: Text(
               label,
-              style: const TextStyle(
+              style:  TextStyle(
                 fontSize: 14,
                 color: AppColors.textGrey,
               ),

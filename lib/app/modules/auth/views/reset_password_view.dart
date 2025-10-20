@@ -12,7 +12,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
@@ -61,7 +61,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Enter OTP and create a new password',
                     style: TextStyle(
                       fontSize: 14,
