@@ -379,7 +379,7 @@ class DashboardView extends GetView<DashboardController> {
           
           // Label
           Positioned(
-            bottom: 21 * scale,
+            bottom: 30 * scale,
             left: 0,
             right: 0,
             child: Text(
@@ -470,7 +470,7 @@ class DashboardView extends GetView<DashboardController> {
           
           // Label
           Positioned(
-            bottom: 21 * scale,
+            bottom: 30 * scale,
             left: 0,
             right: 0,
             child: Text(
@@ -658,7 +658,7 @@ class DashboardView extends GetView<DashboardController> {
     return GestureDetector(
       onTap: () => Get.toNamed(AppRoutes.taskList),
       child: Container(
-        width: 75 * scale,
+        width: 80 * scale,
         height: 18 * scale,
         padding: EdgeInsets.symmetric(
           horizontal: 14 * scale,

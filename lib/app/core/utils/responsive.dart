@@ -68,6 +68,8 @@ class Responsive {
   // Scale factor based on design height
   static double scaleHeight(double height) => Get.height / height;
   
+  // Default scale based on Figma design width (393px)
+  static double get scale => Get.width / 393.0;
 
 }
 

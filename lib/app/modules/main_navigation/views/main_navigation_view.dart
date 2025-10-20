@@ -32,8 +32,8 @@ class MainNavigationView extends GetView<MainNavigationController> {
             children: pages,
           )),
       floatingActionButton: Container(
-        width: Responsive.sp(60),
-        height: Responsive.sp(60),
+        width: 75 * Responsive.scale,
+        height: 75 * Responsive.scale,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -46,21 +46,25 @@ class MainNavigationView extends GetView<MainNavigationController> {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
-              blurRadius: Responsive.sp(12),
-              spreadRadius: Responsive.sp(0),
-              offset: Offset(0, Responsive.sp(1)),
+              color: const Color(0xFF85428C).withOpacity(0.4),
+              blurRadius: 15 * Responsive.scale,
+              spreadRadius: 3 * Responsive.scale,
+              offset: Offset(0, -1 * Responsive.scale),
             ),
           ],
         ),
-        child: FloatingActionButton(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          onPressed: () => controller.changePage(1),
-          child: FaIcon(
-            FontAwesomeIcons.clipboardCheck,
-            color: Colors.white,
-            size: Responsive.sp(26),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => controller.changePage(1),
+            customBorder: const CircleBorder(),
+            child: Center(
+              child: FaIcon(
+                FontAwesomeIcons.clipboardCheck,
+                color: Colors.white,
+                size: 28 * Responsive.scale,
+              ),
+            ),
           ),
         ),
       ),
@@ -83,15 +87,16 @@ class MainNavigationView extends GetView<MainNavigationController> {
             backgroundColor: AppColors.cardBackground,
             activeColor: AppColors.primary,
             inactiveColor: AppColors.textGrey,
-            iconSize: Responsive.sp(26),
-            height: Responsive.sp(60),
+            iconSize: 26 * Responsive.scale,
+            height: 60 * Responsive.scale,
             splashColor: AppColors.primary.withOpacity(0.2),
             splashSpeedInMilliseconds: 300,
-            notchMargin: Responsive.sp(8),
+            notchMargin: 6 * Responsive.scale,
+            gapWidth: 100 * Responsive.scale,
             shadow: BoxShadow(
               color: Colors.black.withOpacity(0.3),
-              blurRadius: Responsive.sp(10),
-              offset: Offset(0, -Responsive.sp(2)),
+              blurRadius: 10 * Responsive.scale,
+              offset: Offset(0, -2 * Responsive.scale),
             ),
           )),
     );
