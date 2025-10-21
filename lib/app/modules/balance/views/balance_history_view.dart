@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/balance_history_controller.dart';
 import '../../../core/utils/responsive.dart';
+import '../../../core/theme/app_colors.dart';
 
 class BalanceHistoryView extends GetView<BalanceHistoryController> {
   const BalanceHistoryView({super.key});
@@ -14,10 +15,10 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
     return Scaffold(
       floatingActionButton: _buildRequestButton(scale),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Container(
-        decoration: const BoxDecoration(
-            color: Color(0xFF232323),
-          ),
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
+        ),
         child: Column(
           children: [
             Column(
@@ -31,9 +32,13 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                   width: screenWidth,
                   height: 350 * scale,
                   padding: EdgeInsets.only(top: Get.mediaQuery.padding.top),
-                       decoration: BoxDecoration(
-                    color: const Color(0xFF393838),
+                  decoration: BoxDecoration(
+                    color: AppColors.cardBackground,
                     borderRadius: BorderRadius.circular(25 * scale),
+                    border: Border.all(
+                      color: AppColors.border.withOpacity(0.2),
+                      width: 1,
+                    ),
                   ),
                   child: Stack(
                     children: [
@@ -57,7 +62,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                                     fontFamily: 'Oddlini',
                                     fontSize: 20 * scale,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                                 Text(
@@ -67,7 +72,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                                   style: TextStyle(
                                     fontFamily: 'Helvetica',
                                     fontSize: 16 * scale,
-                                    color: const Color(0xFF888787),
+                                    color: AppColors.secondaryText,
                                     height: 1.5,
                                   ),
                                 ),
@@ -109,7 +114,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                                   fontFamily: 'Oddlini',
                                   fontSize: 48 * scale,
                                   fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                  color: AppColors.primaryText,
                                 ),
                               ),
                             ],
@@ -130,7 +135,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                             child: Icon(
                               Icons.arrow_back_ios,
                               size: 20 * scale,
-                              color: Colors.white,
+                              color: AppColors.primaryText,
                             ),
                           ),
                         ),
@@ -182,6 +187,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -229,7 +235,11 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
       height: 67 * scale,
       padding: EdgeInsets.symmetric(horizontal: 21 * scale),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2929),
+        color: AppColors.cardBackground,
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.2),
+          width: 1,
+        ),
         borderRadius: BorderRadius.only(
           topLeft: isFirst ? Radius.circular(11 * scale) : Radius.zero,
           topRight: isFirst ? Radius.circular(11 * scale) : Radius.zero,
@@ -247,7 +257,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
             errorBuilder: (context, error, stackTrace) => Icon(
               Icons.info_outline,
               size: 20 * scale,
-              color: Colors.white,
+              color: AppColors.primaryText,
             ),
           ),
           SizedBox(width: 18 * scale),
@@ -257,7 +267,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
             style: TextStyle(
               fontFamily: 'Helvetica',
               fontSize: 16 * scale,
-              color: Colors.white,
+              color: AppColors.primaryText,
               letterSpacing: 0.32 * scale,
               height: 1.25,
             ),
@@ -269,7 +279,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
             style: TextStyle(
               fontFamily: 'Helvetica',
               fontSize: 16 * scale,
-              color: const Color(0xFF888787),
+              color: AppColors.secondaryText,
               letterSpacing: 0.32 * scale,
               height: 1.25,
             ),
@@ -290,7 +300,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
               'No withdrawal history found.',
               style: TextStyle(
                 fontSize: 14 * scale,
-                color: Colors.grey,
+                color: AppColors.secondaryText,
               ),
             ),
           ),
@@ -326,7 +336,11 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
       width: 360 * scale,
       padding: EdgeInsets.symmetric(horizontal: 17 * scale, vertical: 9 * scale),
       decoration: BoxDecoration(
-        color: const Color(0xFF2A2929),
+        color: AppColors.cardBackground,
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.2),
+          width: 1,
+        ),
         borderRadius: BorderRadius.only(
           topLeft: isFirst ? Radius.circular(11 * scale) : Radius.zero,
           topRight: isFirst ? Radius.circular(11 * scale) : Radius.zero,
@@ -348,7 +362,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                   style: TextStyle(
                     fontFamily: 'Helvetica',
                     fontSize: 16 * scale,
-                    color: Colors.white,
+                    color: AppColors.primaryText,
                     letterSpacing: 0.32 * scale,
                     height: 1.25,
                   ),
@@ -362,7 +376,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                           fontFamily: 'Helvetica',
                           fontWeight: FontWeight.w700,
                           fontSize: 16 * scale,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                       ),
                       TextSpan(
@@ -370,7 +384,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                         style: TextStyle(
                           fontFamily: 'Helvetica',
                           fontSize: 16 * scale,
-                          color: const Color(0xFF888787),
+                          color: AppColors.secondaryText,
                           letterSpacing: 0.32 * scale,
                         ),
                       ),
@@ -387,7 +401,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
               fontFamily: 'Helvetica',
               fontWeight: FontWeight.w300,
               fontSize: 8 * scale,
-              color: const Color(0xFF8B8B8B),
+              color: AppColors.secondaryText.withOpacity(0.7),
               letterSpacing: 0.16 * scale,
               height: 1.25,
             ),
@@ -470,7 +484,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                     fontFamily: 'Satoshi',
                     fontWeight: FontWeight.w500,
                     fontSize: 13 * scale,
-                    color: const Color(0xFF7B7B7B),
+                    color: AppColors.secondaryText,
                   ),
                 ),
                 SizedBox(width: 8 * scale),
@@ -479,7 +493,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                   duration: const Duration(milliseconds: 300),
                   child: Icon(
                     Icons.keyboard_arrow_down,
-                    color: const Color(0xFF7B7B7B),
+                    color: AppColors.secondaryText,
                     size: 20 * scale,
                   ),
                 ),

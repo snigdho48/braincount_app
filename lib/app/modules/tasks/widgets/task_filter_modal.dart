@@ -66,7 +66,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
     return Container(
       height: Get.height * 0.85,
       decoration: BoxDecoration(
-        color: const Color(0xFF121212),
+        color: AppColors.background,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(Responsive.radiusLg + Responsive.sp(8)),
           topRight: Radius.circular(Responsive.radiusLg + Responsive.sp(8)),
@@ -154,7 +154,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               alignment: Alignment.center,
               child: Icon(
                 Icons.close,
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
                 size: Responsive.iconSize,
               ),
             ),
@@ -165,7 +165,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               style: TextStyle(
                 fontSize: Responsive.fontSize(18),
                 fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
               ),
               textAlign: TextAlign.center,
             ),
@@ -189,7 +189,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               vertical: Responsive.sp(3),
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFF2D2D2D),
+              color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(Responsive.sp(15)),
             ),
             child: Row(
@@ -198,7 +198,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                 Text(
                   filter,
                   style: TextStyle(
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                     fontSize: Responsive.fontSize(14),
                     fontWeight: FontWeight.w500,
                   ),
@@ -212,7 +212,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   },
                   child: Icon(
                     Icons.close,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                     size: Responsive.sp(10),
                   ),
                 ),
@@ -238,7 +238,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
           style: TextStyle(
             fontSize: Responsive.fontSize(16),
             fontWeight: FontWeight.w500,
-            color: AppColors.textWhite,
+            color: AppColors.primaryText,
           ),
         ),
         SizedBox(height: Responsive.smVertical),
@@ -250,7 +250,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               vertical: Responsive.sp(9),
             ),
             decoration: BoxDecoration(
-              color: const Color(0xFF2D2D2D),
+              color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(Responsive.radiusSm),
             ),
             child: Row(
@@ -260,14 +260,14 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   isExpanded ? title : 'Select',
                   style: TextStyle(
                     fontSize: Responsive.fontSize(12),
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                   ),
                 ),
                 Transform.rotate(
                   angle: isExpanded ? -1.5708 : 1.5708, // 90 or -90 degrees
                   child: Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                     size: Responsive.sp(10),
                   ),
                 ),
@@ -308,7 +308,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                     height: Responsive.sp(20),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: const Color(0xFF334D66),
+                        color: AppColors.border,
                         width: 2,
                       ),
                       borderRadius: BorderRadius.circular(Responsive.sp(4)),
@@ -317,7 +317,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                     child: isSelected
                         ? Icon(
                             Icons.check,
-                            color: AppColors.textWhite,
+                            color: Colors.white,
                             size: Responsive.sp(14),
                           )
                         : null,
@@ -328,7 +328,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                       item,
                       style: TextStyle(
                         fontSize: Responsive.fontSize(16),
-                        color: AppColors.textWhite,
+                        color: AppColors.primaryText,
                       ),
                     ),
                   ),
@@ -346,7 +346,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
       width: double.infinity,
       padding: EdgeInsets.all(Responsive.md),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(Responsive.radiusMd),
       ),
       child: Column(
@@ -363,7 +363,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                 },
                 icon: Icon(
                   Icons.chevron_left,
-                  color: AppColors.textWhite,
+                  color: AppColors.primaryText,
                   size: Responsive.sp(18),
                 ),
                 padding: EdgeInsets.zero,
@@ -375,7 +375,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   style: TextStyle(
                     fontSize: Responsive.fontSize(16),
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -388,7 +388,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                 },
                 icon: Icon(
                   Icons.chevron_right,
-                  color: AppColors.textWhite,
+                  color: AppColors.primaryText,
                   size: Responsive.sp(18),
                 ),
                 padding: EdgeInsets.zero,
@@ -426,7 +426,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   style: TextStyle(
                     fontSize: Responsive.fontSize(13),
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                   ),
                 ),
               ),
@@ -473,7 +473,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   width: cellSize,
                   height: cellSize,
                   decoration: BoxDecoration(
-                    color: isSelected || isStartOrEnd ? const Color(0xFF2D2D2D) : Colors.transparent,
+                    color: isSelected || isStartOrEnd ? AppColors.cardBackground.withOpacity(0.5) : Colors.transparent,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(isStartOrEnd && (startDate != null && _isSameDay(date, startDate!)) ? cellSize / 2 : 0),
                       bottomLeft: Radius.circular(isStartOrEnd && (startDate != null && _isSameDay(date, startDate!)) ? cellSize / 2 : 0),
@@ -495,7 +495,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                         style: TextStyle(
                           fontSize: Responsive.fontSize(13),
                           fontWeight: FontWeight.w500,
-                          color: AppColors.textWhite,
+                          color: isStartOrEnd ? Colors.white : AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -537,7 +537,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   style: TextStyle(
                     fontSize: Responsive.fontSize(14),
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textWhite,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -550,7 +550,8 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               child: Container(
                 height: Responsive.sp(40),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF243647),
+                  color: AppColors.cardBackground,
+                  border: Border.all(color: AppColors.border, width: 1),
                   borderRadius: BorderRadius.circular(Responsive.radiusSm),
                 ),
                 alignment: Alignment.center,
@@ -559,7 +560,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                   style: TextStyle(
                     fontSize: Responsive.fontSize(14),
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                   ),
                 ),
               ),

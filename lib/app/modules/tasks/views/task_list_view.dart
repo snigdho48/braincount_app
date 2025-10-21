@@ -6,17 +6,18 @@ import '../../../core/utils/responsive.dart';
 import '../../../widgets/brain_loader.dart';
 import '../widgets/task_filter_modal.dart';
 import '../widgets/submitted_task_card.dart';
-import '../../../widgets/user_header.dart';
+import '../../../data/services/theme_service.dart';
 
 class TaskListView extends GetView<TaskListController> {
   const TaskListView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF232323), // As per Figma
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
           child: Column(
@@ -40,7 +41,7 @@ class TaskListView extends GetView<TaskListController> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 
@@ -82,7 +83,7 @@ class TaskListView extends GetView<TaskListController> {
             style: TextStyle(
               fontSize: Responsive.fontSize(20),
               fontWeight: FontWeight.bold,
-              color: AppColors.textWhite,
+              color: AppColors.primaryText,
             ),
           ),
         ],
@@ -102,8 +103,19 @@ class TaskListView extends GetView<TaskListController> {
       ),
       height: Responsive.sp(43),
       decoration: BoxDecoration(
-        color: const Color(0xFF2D2D2D),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(Responsive.sp(8)),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,7 +130,7 @@ class TaskListView extends GetView<TaskListController> {
                   height: Responsive.sp(18),
                   errorBuilder: (context, error, stackTrace) => Icon(
                     Icons.search,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                     size: Responsive.sp(18),
                   ),
                 ),
@@ -128,14 +140,14 @@ class TaskListView extends GetView<TaskListController> {
                     controller: controller.searchController,
                     style: TextStyle(
                       fontSize: Responsive.fontSize(12),
-                      color: AppColors.textWhite,
+                      color: AppColors.primaryText,
                       letterSpacing: 0.24,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Search',
                       hintStyle: TextStyle(
                         fontSize: Responsive.fontSize(12),
-                        color: AppColors.textWhite.withValues(alpha: 0.5),
+                        color: AppColors.secondaryText,
                         letterSpacing: 0.24,
                       ),
                       border: InputBorder.none,
@@ -177,7 +189,7 @@ class TaskListView extends GetView<TaskListController> {
                   height: Responsive.sp(15),
                   errorBuilder: (context, error, stackTrace) => Icon(
                     Icons.filter_alt,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                     size: Responsive.sp(15),
                   ),
                 ),
@@ -190,76 +202,120 @@ class TaskListView extends GetView<TaskListController> {
   }
 
   Widget _buildTabFilters() {
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+    final scale = Responsive.scaleWidth(393.0);
+
     return Container(
       margin: EdgeInsets.only(
       // Container margin + padding + left offset from Figma
         top: Responsive.smVertical,
         bottom: Responsive.smVertical,
       ),
+      padding: EdgeInsets.symmetric(horizontal: Responsive.sp(10) ,vertical: Responsive.sp(4)),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.transparent : const Color(0xFFFFFFFF).withOpacity(0.4),
+        borderRadius: BorderRadius.circular(Responsive.sp(8)),
+      ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildTabItem(
-            'Task List',
-            'assets/figma_exports/8aa6fba88f740008d70c33a46ba833ba49188fb8.svg',
-            controller.selectedFilter.value == 'all',
-            () => controller.filterTasks('all'),
-          ),
-          SizedBox(width: Responsive.sp(6)),
-          _buildTabItem(
-            'Pending',
-            'assets/figma_exports/d62224f98de08e0db9c557c2ceb68c638014c840.svg',
-            controller.selectedFilter.value == 'pending',
-            () => controller.filterTasks('pending'),
-          ),
-          SizedBox(width: Responsive.sp(6)),
-          _buildTabItem(
-            'Submitted',
-            'assets/figma_exports/cfead7e94754971181d0ed1a699867244aa04b4c.svg',
-            controller.selectedFilter.value == 'submitted',
-            () => controller.filterTasks('submitted'),
-          ),
+              'Task List',
+              Icons.list,
+              controller.selectedFilter.value == 'all',
+              () => controller.changeFilter('all'),
+              scale,
+            ),
+            SizedBox(width: 6 * scale),
+            _buildTabItem(
+              'Pending',
+              Icons.pending,
+              controller.selectedFilter.value == 'pending',
+              () => controller.changeFilter('pending'),
+              scale,
+            ),
+            SizedBox(width: 6 * scale),
+            _buildTabItem(
+              'Submitted',
+              Icons.check_circle_outline,
+              controller.selectedFilter.value == 'submitted',
+              () => controller.changeFilter('submitted'),
+              scale,
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildTabItem(String title, String iconPath, bool isActive, VoidCallback onTap) {
+    Widget _buildTabItem(String title, IconData icon, bool isActive,
+      VoidCallback onTap, double scale) {
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: Responsive.sp(109), // Fixed width as per Figma
-        height: Responsive.sp(30),
+        width: 109 * scale,
+        height: 30 * scale,
         padding: EdgeInsets.symmetric(
-          vertical: Responsive.sp(7),
+          horizontal: 17 * scale,
+          vertical: 7 * scale,
         ),
         decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF646397) : Colors.transparent,
-          borderRadius: BorderRadius.circular(Responsive.sp(6)),
+          color: isActive
+              ? (isDark
+                  ? const Color(0xFF646397)
+                  : Color.fromARGB(255, 155, 104, 159))
+              : (isDark
+                  ? AppColors.cardBackground.withOpacity(0.5)
+                  : const Color(0xFFFAFAFA)),
+          borderRadius: BorderRadius.circular(6 * scale),
+          border: !isActive
+              ? Border.all(
+                  color: isDark
+                      ? AppColors.border.withOpacity(0.3)
+                      : AppColors.border.withOpacity(0.25),
+                  width: 1,
+                )
+              : null,
+          boxShadow: !isActive && !isDark
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 3,
+                    offset: const Offset(0, 1),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              iconPath,
-              width: Responsive.sp(title == 'Task List' ? 11.27 : 13),
-              height: Responsive.sp(title == 'Task List' ? 13.338 : 12),
-              color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.list,
-                size: Responsive.sp(12),
-                color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
-              ),
+            Icon(
+              icon,
+              size: 13 * scale,
+              color: isActive
+                  ? isDark
+                      ? AppColors.primaryText
+                      : AppColors.textWhite
+                  : AppColors.secondaryText,
             ),
-            SizedBox(width: Responsive.sp(11)),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: Responsive.fontSize(12),
-                color: isActive ? AppColors.textWhite : const Color(0xFF6B7C97),
-                letterSpacing: 0.24,
-                height: 1.25,
+            SizedBox(width: 6 * scale),
+            Flexible(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 12 * scale,
+                  color: isActive
+                      ? isDark
+                          ? AppColors.primaryText
+                          : AppColors.textWhite
+                      : AppColors.secondaryText,
+                  letterSpacing: 0.24,
+                  height: 1.25,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -268,13 +324,25 @@ class TaskListView extends GetView<TaskListController> {
     );
   }
 
+
   Widget _buildTaskListContainer() {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Responsive.sp(7)),
       padding: EdgeInsets.all(Responsive.sp(11)),
       decoration: BoxDecoration(
-        color: const Color(0xFF2D2D2D),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(Responsive.sp(10)),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Obx(() {
         if (controller.isLoading.value) {
@@ -287,7 +355,7 @@ class TaskListView extends GetView<TaskListController> {
               'No tasks found',
               style: TextStyle(
                 fontSize: Responsive.fontSize(14),
-                color: AppColors.textGrey,
+                color: AppColors.secondaryText,
               ),
             ),
           );

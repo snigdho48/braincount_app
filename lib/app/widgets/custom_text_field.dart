@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: Responsive.fontSize(14),
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -61,14 +61,14 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           maxLines: maxLines,
           style: TextStyle(
-            color: AppColors.textWhite,
+            color: AppColors.primaryText,
             fontSize: Responsive.fontSize(15),
           ),
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: AppColors.textGrey.withOpacity(0.6),
+              color: AppColors.secondaryText.withOpacity(0.6),
               fontSize: Responsive.fontSize(14),
             ),
             prefixIcon: prefixIcon != null
@@ -76,14 +76,14 @@ class CustomTextField extends StatelessWidget {
                     padding: EdgeInsets.all(Responsive.sp(12)),
                     child: FaIcon(
                       prefixIcon,
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       size: Responsive.iconSizeSm,
                     ),
                   )
                 : null,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: AppColors.cardDark,
+            fillColor: AppColors.cardBackground,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Responsive.radiusMd),
               borderSide: BorderSide.none,

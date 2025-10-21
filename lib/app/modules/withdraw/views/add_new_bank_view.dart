@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/withdraw_controller.dart';
 import '../../../widgets/user_header.dart';
+import '../../../core/theme/app_colors.dart';
 
 class AddNewBankView extends GetView<WithdrawController> {
   const AddNewBankView({super.key});
@@ -12,15 +13,15 @@ class AddNewBankView extends GetView<WithdrawController> {
     final scale = Responsive.scaleWidth(393.0);
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF232323),
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
           child: Column(
             children: [
               // User Header
-              UserHeader(scale: scale),
+             // UserHeader(scale: scale),
               
               SizedBox(height: 6 * scale),
               
@@ -36,7 +37,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                         child: Icon(
                           Icons.arrow_back_ios,
                           size: 20 * scale,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -47,7 +48,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                           fontFamily: 'Oddlini',
                           fontSize: 20 * scale,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -74,7 +75,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                       errorBuilder: (context, error, stackTrace) => Icon(
                         Icons.account_balance,
                         size: 42 * scale,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                     ),
                     SizedBox(width: 19 * scale),
@@ -90,7 +91,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                               fontFamily: 'Oddlini',
                               fontSize: 20 * scale,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: AppColors.primaryText,
                             ),
                           ),
                           SizedBox(height: 2 * scale),
@@ -100,7 +101,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                               fontFamily: 'Inter',
                               fontSize: 11 * scale,
                               fontWeight: FontWeight.w500,
-                              color: const Color(0xFFA9ACB4),
+                              color: AppColors.secondaryText,
                             ),
                             maxLines: 2,
                           ),
@@ -179,7 +180,7 @@ class AddNewBankView extends GetView<WithdrawController> {
             ],
           ),
         ),
-      ),
+      )),
       // Add Button (floating at bottom)
       floatingActionButton: Container(
         width: 216 * scale,
@@ -274,7 +275,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                     fontFamily: 'Helvetica',
                     fontSize: 10 * scale,
                     fontWeight: FontWeight.w400,
-                    color: const Color(0xFF878787), // Grey for inactive
+                    color: AppColors.secondaryText.withOpacity(0.7),
                   ),
                 ),
         ),
@@ -285,11 +286,11 @@ class AddNewBankView extends GetView<WithdrawController> {
         Container(
           height: 41 * scale,
           decoration: BoxDecoration(
-            color: const Color(0xFF303030),
+            color: AppColors.cardBackground,
             borderRadius: BorderRadius.circular(8 * scale),
             border: isActive
-                ? Border.all(color: Colors.white, width: 1)
-                : Border.all(color: const Color(0xFF878787), width: 1),
+                ? Border.all(color: AppColors.border.withOpacity(0.5), width: 1)
+                : Border.all(color: AppColors.border.withOpacity(0.2), width: 1),
           ),
           child: Row(
             children: [
@@ -302,7 +303,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                     fontFamily: 'Helvetica',
                     fontSize: 15 * scale,
                     fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                    color: AppColors.primaryText,
                   ),
                   decoration: InputDecoration(
                     hintText: hintText,
@@ -310,7 +311,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                       fontFamily: 'Helvetica',
                       fontSize: 15 * scale,
                       fontWeight: FontWeight.w400,
-                      color: const Color(0xFFA9ACB4),
+                      color: AppColors.secondaryText,
                     ),
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
@@ -326,7 +327,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                 child: Icon(
                   _getIconForPath(iconPath),
                   size: 19 * scale,
-                  color: Colors.white,
+                  color: AppColors.primaryText,
                 ),
               ),
             ],

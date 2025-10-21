@@ -4,14 +4,16 @@ import 'package:intl/intl.dart';
 import '../controllers/task_details_controller.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/custom_button.dart';
+import '../../../core/utils/responsive.dart';
 
 class TaskDetailsView extends GetView<TaskDetailsController> {
   const TaskDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
-      body: Container(
+      body: Obx(() => Container(
         decoration:  BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
@@ -28,7 +30,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                     return  Center(
                       child: Text(
                         'Task not found',
-                        style: TextStyle(color: AppColors.textGrey),
+                        style: TextStyle(color: AppColors.secondaryText),
                       ),
                     );
                   }
@@ -53,7 +55,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                                 color: AppColors.cardBackground,
                                 child:  Icon(
                                   Icons.image,
-                                  color: AppColors.textGrey,
+                                  color: AppColors.secondaryText,
                                   size: 64,
                                 ),
                               );
@@ -64,10 +66,10 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                         // Task Title
                         Text(
                           task.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textWhite,
+                            color: AppColors.primaryText,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -95,12 +97,12 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                           ),
                         const SizedBox(height: 16),
                         // Description
-                        const Text(
+                        Text(
                           'Description:',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textWhite,
+                            color: AppColors.primaryText,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -108,7 +110,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                           task.description,
                           style:  TextStyle(
                             fontSize: 14,
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                             height: 1.5,
                           ),
                         ),
@@ -118,7 +120,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                           Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppColors.cardDark,
+                              color: AppColors.cardBackground,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: AppColors.success.withOpacity(0.3),
@@ -127,12 +129,12 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Submission Information',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.textWhite,
+                                    color: AppColors.primaryText,
                                   ),
                                 ),
                                 const SizedBox(height: 12),
@@ -167,29 +169,29 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 
   Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
+    return Container(
+      padding: EdgeInsets.only(bottom: Responsive.lg),
       child: Row(
         children: [
           IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColors.textWhite,
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.primaryText,
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
               'Task Details',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
               ),
               textAlign: TextAlign.center,
             ),
@@ -208,11 +210,11 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
         children: [
           SizedBox(
             width: 140,
-            child: Text(
+            child:               Text(
               label,
               style:  TextStyle(
                 fontSize: 14,
-                color: AppColors.textGrey,
+                color: AppColors.secondaryText,
               ),
             ),
           ),
@@ -221,7 +223,7 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
               value,
               style: TextStyle(
                 fontSize: 14,
-                color: statusColor ?? AppColors.textWhite,
+                color: statusColor ?? AppColors.primaryText,
                 fontWeight: FontWeight.w500,
               ),
             ),

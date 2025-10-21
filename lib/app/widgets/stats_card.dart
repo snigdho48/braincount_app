@@ -22,7 +22,7 @@ class StatsCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(Responsive.sp(12)),
       decoration: BoxDecoration(
-        color: AppColors.cardDark,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(Responsive.radiusLg),
         border: Border.all(
           color: color.withOpacity(0.3),
@@ -49,7 +49,7 @@ class StatsCard extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                color: AppColors.textGrey,
+                color: AppColors.secondaryText,
                 fontSize: Responsive.fontSize(10),
               ),
               textAlign: TextAlign.center,
@@ -62,7 +62,7 @@ class StatsCard extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
                 fontSize: Responsive.fontSize(16),
                 fontWeight: FontWeight.bold,
               ),

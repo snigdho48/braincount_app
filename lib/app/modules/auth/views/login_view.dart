@@ -35,8 +35,8 @@ class LoginView extends GetView<LoginController> {
                     alignment: Alignment.centerLeft,
                     child: IconButton(
                       icon: Icon(
-                        Icons.arrow_back,
-                        color: AppColors.textWhite,
+                        Icons.arrow_back_ios,
+                        color: AppColors.primaryText,
                         size: Responsive.iconSize,
                       ),
                       onPressed: () => Get.back(),
@@ -82,7 +82,7 @@ class LoginView extends GetView<LoginController> {
                     style: TextStyle(
                       fontSize: Responsive.fontSize(20),
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textWhite,
+                      color: AppColors.primaryText,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -117,7 +117,7 @@ class LoginView extends GetView<LoginController> {
                             controller.obscurePassword.value
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                             size: Responsive.iconSizeSm,
                           ),
                           onPressed: controller.togglePasswordVisibility,
@@ -170,7 +170,7 @@ class LoginView extends GetView<LoginController> {
                         child: Text(
                           'or login with',
                           style: TextStyle(
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                             fontSize: Responsive.fontSize(14),
                           ),
                         ),
@@ -190,7 +190,7 @@ class LoginView extends GetView<LoginController> {
                     child: Container(
                       height: Responsive.buttonHeight,
                       decoration: BoxDecoration(
-                        color: AppColors.cardDark,
+                        color: AppColors.cardBackground,
                         borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
                         border: Border.all(
                           color: AppColors.borderColor,
@@ -211,7 +211,7 @@ class LoginView extends GetView<LoginController> {
                             style: TextStyle(
                               fontSize: Responsive.fontSize(16),
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textWhite,
+                              color: AppColors.primaryText,
                             ),
                           ),
                         ],
@@ -226,7 +226,7 @@ class LoginView extends GetView<LoginController> {
                       Text(
                         "Don't have an account? ",
                         style: TextStyle(
-                          color: AppColors.textGrey,
+                          color: AppColors.secondaryText,
                           fontSize: Responsive.fontSize(14),
                         ),
                       ),

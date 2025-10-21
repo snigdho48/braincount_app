@@ -60,7 +60,7 @@ class BrainLoader extends StatelessWidget {
             Text(
               message!,
               style: TextStyle(
-                color: AppColors.textGrey,
+                color: AppColors.secondaryText,
                 fontSize: Responsive.fontSize(14),
               ),
             )

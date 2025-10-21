@@ -87,7 +87,7 @@ class SplashView extends GetView<SplashController> {
                       style: TextStyle(
                         fontSize: Responsive.fontSize(32),
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textWhite,
+                        color: AppColors.primaryText,
                         letterSpacing: 2,
                       ),
                     );
@@ -123,7 +123,7 @@ class SplashView extends GetView<SplashController> {
                 'Task-Based Earnings Platform',
                 style: TextStyle(
                   fontSize: Responsive.fontSize(14),
-                  color: AppColors.textGrey.withOpacity(0.8),
+                  color: AppColors.secondaryText.withOpacity(0.8),
                   letterSpacing: 1,
                 ),
               )

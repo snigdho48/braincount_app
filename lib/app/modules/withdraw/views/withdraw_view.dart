@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../controllers/withdraw_controller.dart';
 import '../../../routes/app_routes.dart';
 import '../../../widgets/user_header.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../data/services/theme_service.dart';
 
 class WithdrawView extends GetView<WithdrawController> {
   const WithdrawView({super.key});
@@ -17,16 +19,16 @@ class WithdrawView extends GetView<WithdrawController> {
           ? _buildWithdrawButton(scale, context)
           : const SizedBox.shrink()),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF232323),
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
           child: Column(
             children: [
               // User Header
               const SizedBox.shrink(),
-              UserHeader(scale: scale),
+             // UserHeader(scale: scale),
               
               SizedBox(height: 16 * scale),
               
@@ -42,7 +44,7 @@ class WithdrawView extends GetView<WithdrawController> {
                         child: Icon(
                           Icons.arrow_back_ios,
                           size: 20 * scale,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -53,7 +55,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           fontFamily: 'Oddlini',
                           fontSize: 20 * scale,
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -123,7 +125,7 @@ class WithdrawView extends GetView<WithdrawController> {
                             fontFamily: 'Satoshi',
                             fontSize: 13 * scale,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF7B7B7B),
+                            color: AppColors.secondaryText,
                           ),
                         ),
                         
@@ -167,7 +169,7 @@ class WithdrawView extends GetView<WithdrawController> {
             ],
           ),
         ),
-      ),
+      )),
     );
   }
 
@@ -188,11 +190,11 @@ class WithdrawView extends GetView<WithdrawController> {
         width: 360 * scale,
         padding: EdgeInsets.all(12 * scale),
         decoration: BoxDecoration(
-          color: const Color(0xFF393838),
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(11 * scale),
           border: isSelected
-              ? Border.all(color: const Color(0xFF0A97F5), width: 2)
-              : null,
+              ? Border.all(color: AppColors.info, width: 2)
+              : Border.all(color: AppColors.border.withOpacity(0.2), width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -213,7 +215,7 @@ class WithdrawView extends GetView<WithdrawController> {
               errorBuilder: (context, error, stackTrace) => Icon(
                 Icons.account_balance,
                 size: 24 * scale,
-                color: Colors.white,
+                color: AppColors.primaryText,
               ),
             ),
           ),
@@ -229,7 +231,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Poppins',
                     fontSize: 14 * scale,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.primaryText,
                   ),
                 ),
                 SizedBox(height: 2 * scale),
@@ -239,7 +241,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Poppins',
                     fontSize: 12 * scale,
                     fontWeight: FontWeight.w400,
-                    color: Colors.white,
+                    color: AppColors.secondaryText,
                   ),
                 ),
               ],
@@ -255,7 +257,7 @@ class WithdrawView extends GetView<WithdrawController> {
                   fontFamily: 'Poppins',
                   fontSize: 14 * scale,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF0A97F5),
+                  color: AppColors.info,
                   letterSpacing: 0.14 * scale,
                 ),
               ),
@@ -333,7 +335,7 @@ class WithdrawView extends GetView<WithdrawController> {
         bottom: Get.mediaQuery.viewInsets.bottom,
       ),
       decoration: BoxDecoration(
-        color: const Color(0xFF232323),
+        color: AppColors.background,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25 * scale),
           topRight: Radius.circular(25 * scale),
@@ -356,7 +358,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       fontFamily: 'Oddlini',
                       fontSize: 20 * scale,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                   ),
                 ),
@@ -369,7 +371,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       child: Icon(
                         Icons.close,
                         size: 24 * scale,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                     ),
                   ),
@@ -384,10 +386,10 @@ class WithdrawView extends GetView<WithdrawController> {
               width: double.infinity,
               padding: EdgeInsets.all(16 * scale),
               decoration: BoxDecoration(
-                color: const Color(0xFF393838),
+                color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(11 * scale),
                 border: Border.all(
-                  color: const Color(0xFF0A97F5),
+                  color: AppColors.info,
                   width: 2,
                 ),
               ),
@@ -404,13 +406,13 @@ class WithdrawView extends GetView<WithdrawController> {
                             errorBuilder: (context, error, stackTrace) => Icon(
                               Icons.account_balance,
                               size: 32 * scale,
-                              color: const Color(0xFF0A97F5),
+                              color: AppColors.info,
                             ),
                           )
                         : Icon(
                             Icons.account_balance,
                             size: 32 * scale,
-                            color: const Color(0xFF0A97F5),
+                            color: AppColors.info,
                           ),
                   ),
                   SizedBox(width: 16 * scale),
@@ -424,7 +426,7 @@ class WithdrawView extends GetView<WithdrawController> {
                             fontFamily: 'Poppins',
                             fontSize: 16 * scale,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                         ),
                         SizedBox(height: 4 * scale),
@@ -434,7 +436,7 @@ class WithdrawView extends GetView<WithdrawController> {
                             fontFamily: 'Poppins',
                             fontSize: 14 * scale,
                             fontWeight: FontWeight.w400,
-                            color: const Color(0xFF888787),
+                            color: AppColors.secondaryText,
                           ),
                         ),
                       ],
@@ -453,7 +455,7 @@ class WithdrawView extends GetView<WithdrawController> {
                 fontFamily: 'Satoshi',
                 fontSize: 14 * scale,
                 fontWeight: FontWeight.w500,
-                color: const Color(0xFF7B7B7B),
+                color: AppColors.secondaryText,
               ),
             ),
             
@@ -469,10 +471,10 @@ class WithdrawView extends GetView<WithdrawController> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 16 * scale),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF303030),
+                      color: AppColors.cardBackground,
                       borderRadius: BorderRadius.circular(8 * scale),
                       border: Border.all(
-                        color: hasError ? Colors.red : const Color(0xFF303030),
+                        color: hasError ? AppColors.error : AppColors.border.withOpacity(0.2),
                         width: 1,
                       ),
                     ),
@@ -484,7 +486,7 @@ class WithdrawView extends GetView<WithdrawController> {
                         fontFamily: 'Helvetica',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
-                        color: Colors.white,
+                        color: AppColors.primaryText,
                       ),
                       decoration: InputDecoration(
                         hintText: 'Enter amount',
@@ -492,7 +494,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           fontFamily: 'Helvetica',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
-                          color: Colors.white.withOpacity(0.5),
+                          color: AppColors.secondaryText,
                         ),
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
@@ -505,7 +507,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           fontFamily: 'Helvetica',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ),
@@ -519,7 +521,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           fontFamily: 'Helvetica',
                           fontSize: 12 * scale,
                           fontWeight: FontWeight.w400,
-                          color: Colors.red,
+                          color: AppColors.error,
                         ),
                       ),
                     ),
@@ -539,7 +541,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Helvetica',
                     fontSize: 13 * scale,
                     fontWeight: FontWeight.w400,
-                    color: const Color(0xFF27AF40),
+                    color: AppColors.success,
                   ),
                 ),
                 Text(
@@ -548,7 +550,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Helvetica',
                     fontSize: 13 * scale,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: AppColors.primaryText,
                   ),
                 ),
               ],
@@ -647,7 +649,7 @@ class WithdrawView extends GetView<WithdrawController> {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(11 * scale),
           border: Border.all(
-            color: const Color(0xFF737373), // neutral-500
+            color: AppColors.border.withOpacity(0.4),
             width: 1,
           ),
         ),
@@ -675,7 +677,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           child: Icon(
                             Icons.phone_android,
                             size: 24 * scale,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                         ),
                       ),
@@ -688,7 +690,7 @@ class WithdrawView extends GetView<WithdrawController> {
                           errorBuilder: (context, error, stackTrace) => Icon(
                             Icons.phone_android,
                             size: 20 * scale,
-                            color: Colors.white,
+                            color: AppColors.primaryText,
                           ),
                         ),
                       ),
@@ -701,7 +703,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.add_circle_outline,
                       size: 42 * scale,
-                      color: Colors.white,
+                      color: AppColors.primaryText,
                     ),
                   ),
           ),
@@ -718,7 +720,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Oddlini',
                     fontSize: 20 * scale,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: AppColors.primaryText,
                   ),
                 ),
                 SizedBox(height: 2 * scale),
@@ -728,7 +730,7 @@ class WithdrawView extends GetView<WithdrawController> {
                     fontFamily: 'Inter',
                     fontSize: 11 * scale,
                     fontWeight: FontWeight.w500,
-                    color: const Color(0xFFA9ACB4),
+                    color: AppColors.secondaryText,
                   ),
                   maxLines: 2,
                 ),

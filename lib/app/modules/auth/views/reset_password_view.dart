@@ -27,9 +27,9 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back,
-                        color: AppColors.textWhite,
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: AppColors.primaryText,
                       ),
                       onPressed: () => Get.back(),
                     ),
@@ -51,12 +51,12 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                   ),
                   const SizedBox(height: 40),
                   // Title
-                  const Text(
+                  Text(
                     'New Password',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textWhite,
+                      color: AppColors.primaryText,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -65,7 +65,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                     'Enter OTP and create a new password',
                     style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -109,7 +109,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                             controller.obscureNewPassword.value
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                           ),
                           onPressed: controller.toggleNewPasswordVisibility,
                         ),
@@ -136,7 +136,7 @@ class ResetPasswordView extends GetView<ResetPasswordController> {
                             controller.obscureConfirmPassword.value
                                 ? Icons.visibility_off
                                 : Icons.visibility,
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                           ),
                           onPressed: controller.toggleConfirmPasswordVisibility,
                         ),

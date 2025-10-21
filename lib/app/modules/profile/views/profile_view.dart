@@ -80,6 +80,11 @@ class ProfileView extends GetView<ProfileController> {
                       // Preferences Section
                       _buildPreferencesSection(scale),
                       
+                      SizedBox(height: 30 * scale),
+                      
+                      // Logout Button
+                      _buildLogoutButton(scale),
+                      
                       SizedBox(height: 100 * scale), // Bottom padding for nav
                     ],
                   ),
@@ -89,6 +94,55 @@ class ProfileView extends GetView<ProfileController> {
           ),
         ),
       )),
+    );
+  }
+
+  Widget _buildLogoutButton(double scale) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16 * scale),
+      child: GestureDetector(
+        onTap: controller.navigateToLogin,
+        child: Container(
+          width: double.infinity,
+          height: 50 * scale,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFFFF4B4B),
+                Color(0xFFE63946),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(11 * scale),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFE63946).withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.logout,
+                size: 20 * scale,
+                color: Colors.white,
+              ),
+              SizedBox(width: 10 * scale),
+              Text(
+                'Logout',
+                style: TextStyle(
+                  fontFamily: 'Oddlini',
+                  fontSize: 16 * scale,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -487,8 +541,12 @@ class ProfileView extends GetView<ProfileController> {
                 
                   padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 4 * scale),
                   decoration: BoxDecoration(
-                    color: AppColors.tertiaryBackground,
+                    color: controller.isDarkMode ? AppColors.tertiaryBackground : AppColors.shadowColor,
                     borderRadius: BorderRadius.circular(24 * scale),
+                    border: Border.all(
+                      color: controller.isDarkMode ? AppColors.divider : AppColors.divider,
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -553,8 +611,14 @@ class ProfileView extends GetView<ProfileController> {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10 * scale, vertical: 4 * scale),
                         decoration: BoxDecoration(
-                          color: AppColors.tertiaryBackground,
+                          color: controller.isDarkMode
+                              ? AppColors.tertiaryBackground
+                              : AppColors.shadowColor,
                           borderRadius: BorderRadius.circular(24 * scale),
+                          border: Border.all(
+                            color: controller.isDarkMode ? AppColors.divider : AppColors.divider,
+                            width: 1,
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -593,7 +657,7 @@ class ProfileView extends GetView<ProfileController> {
     Get.bottomSheet(
       Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF393838),
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20 * scale),
           ),
@@ -607,7 +671,7 @@ class ProfileView extends GetView<ProfileController> {
               width: 40 * scale,
               height: 4 * scale,
               decoration: BoxDecoration(
-                color: const Color(0xFF888787),
+                color: AppColors.secondaryText,
                 borderRadius: BorderRadius.circular(2 * scale),
               ),
             ),
@@ -621,7 +685,7 @@ class ProfileView extends GetView<ProfileController> {
                   fontFamily: 'Helvetica',
                   fontSize: 18 * scale,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.primaryText,
                 ),
               ),
             ),
@@ -642,7 +706,7 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected 
-                          ? const Color(0xFF85428C).withOpacity(0.2)
+                          ? AppColors.primary.withOpacity(0.1)
                           : Colors.transparent,
                       border: Border(
                         bottom: BorderSide(
@@ -661,14 +725,14 @@ class ProfileView extends GetView<ProfileController> {
                             fontSize: 16 * scale,
                             fontWeight: FontWeight.w400,
                             color: isSelected
-                                ? const Color(0xFF85428C)
-                                : const Color(0xFF888787),
+                                ? AppColors.primary
+                                : AppColors.secondaryText,
                           ),
                         ),
                         if (isSelected)
                           Icon(
                             Icons.check_circle,
-                            color: const Color(0xFF85428C),
+                            color: AppColors.primary,
                             size: 20 * scale,
                           ),
                       ],
@@ -696,7 +760,7 @@ class ProfileView extends GetView<ProfileController> {
     Get.bottomSheet(
       Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF393838),
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20 * scale),
           ),
@@ -710,7 +774,7 @@ class ProfileView extends GetView<ProfileController> {
               width: 40 * scale,
               height: 4 * scale,
               decoration: BoxDecoration(
-                color: const Color(0xFF888787),
+                color: AppColors.secondaryText,
                 borderRadius: BorderRadius.circular(2 * scale),
               ),
             ),
@@ -724,7 +788,7 @@ class ProfileView extends GetView<ProfileController> {
                   fontFamily: 'Helvetica',
                   fontSize: 18 * scale,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.primaryText,
                 ),
               ),
             ),
@@ -745,7 +809,7 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                     decoration: BoxDecoration(
                       color: isSelected 
-                          ? const Color(0xFF85428C).withOpacity(0.2)
+                          ? AppColors.primary.withOpacity(0.1)
                           : Colors.transparent,
                       border: Border(
                         bottom: BorderSide(
@@ -762,8 +826,8 @@ class ProfileView extends GetView<ProfileController> {
                             Icon(
                               theme['icon'] as IconData,
                               color: isSelected
-                                  ? const Color(0xFF85428C)
-                                  : const Color(0xFF888787),
+                                  ? AppColors.primary
+                                  : AppColors.secondaryText,
                               size: 24 * scale,
                             ),
                             SizedBox(width: 16 * scale),
@@ -774,8 +838,8 @@ class ProfileView extends GetView<ProfileController> {
                                 fontSize: 16 * scale,
                                 fontWeight: FontWeight.w400,
                                 color: isSelected
-                                    ? const Color(0xFF85428C)
-                                    : const Color(0xFF888787),
+                                    ? AppColors.primary
+                                    : AppColors.secondaryText,
                               ),
                             ),
                           ],
@@ -783,7 +847,7 @@ class ProfileView extends GetView<ProfileController> {
                         if (isSelected)
                           Icon(
                             Icons.check_circle,
-                            color: const Color(0xFF85428C),
+                            color: AppColors.primary,
                             size: 20 * scale,
                           ),
                       ],

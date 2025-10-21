@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:braincount/app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,9 @@ import '../../../widgets/user_header.dart';
 import '../../../widgets/brain_loader.dart';
 import '../../../routes/app_routes.dart';
 import '../../tasks/widgets/submitted_task_card.dart';
+import '../../../data/services/theme_service.dart';
+import '../../main_navigation/controllers/main_navigation_controller.dart';
+import '../../tasks/controllers/task_list_controller.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -17,9 +21,9 @@ class DashboardView extends GetView<DashboardController> {
     final scale = Responsive.scaleWidth(393.0);
     
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF160531),
+      body: Obx(() => Container(
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
           child: Obx(() {
@@ -31,9 +35,8 @@ class DashboardView extends GetView<DashboardController> {
               child: Column(
                 children: [
                   // User Header
-                  UserHeader(scale: scale, onSettingsTap: controller.goToSettings),
+                  UserHeader(scale: scale),
                   
-                  SizedBox(height: 16 * scale),
                   
                   // Dashboard Title
                   _buildTitle(scale),
@@ -43,7 +46,7 @@ class DashboardView extends GetView<DashboardController> {
                   // 3D Task Map
                   _build3DTaskMap(scale),
                   
-                  SizedBox(height: 30 * scale),
+                  SizedBox(height: 35 * scale),
                   
                   // Summary Title
                   _buildSummaryTitle(scale),
@@ -64,7 +67,7 @@ class DashboardView extends GetView<DashboardController> {
             );
           }),
         ),
-      ),
+      )),
     );
   }
 
@@ -76,7 +79,7 @@ class DashboardView extends GetView<DashboardController> {
       style: TextStyle(
         fontSize: 24 * scale,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: AppColors.primaryText,
       ),
     );
   }
@@ -109,8 +112,8 @@ class DashboardView extends GetView<DashboardController> {
                       center: const Alignment(0, 0),
                       radius: 1.0,
                       colors: [
-                        const Color(0xFF967FCA).withValues(alpha: 0.3),
-                        const Color(0xFF160531).withValues(alpha: 0.1),
+                        AppColors.primary.withValues(alpha: 0.3),
+                        AppColors.background.withValues(alpha: 0.1),
                       ],
                     ),
                   ),
@@ -118,7 +121,7 @@ class DashboardView extends GetView<DashboardController> {
                     child: Icon(
                       Icons.location_city,
                       size: 80 * scale,
-                      color: Colors.white.withValues(alpha: 0.3),
+                      color: AppColors.secondaryText.withValues(alpha: 0.3),
                     ),
                   ),
                 );
@@ -135,15 +138,15 @@ class DashboardView extends GetView<DashboardController> {
           
           // Task Card 2 (Center-right on buildings)
           Positioned(
-            top: 119 * scale,
+            top: 110 * scale,
             left: 125 * scale,
             child: _build3DTaskCard('Task 4', scale),
           ),
           
           // Withdraw Button (bottom-right)
           Positioned(
-            bottom: -10 * scale,
-            right: 30 * scale,
+            bottom: -20 * scale,
+            right:10 * scale,
             child: _buildWithdrawButton(scale),
           ),
         ],
@@ -152,75 +155,95 @@ class DashboardView extends GetView<DashboardController> {
   }
 
   Widget _build3DTaskCard(String taskName, double scale) {
-    return Container(
-      height: 49 * scale,
-      width: 161 * scale,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(7 * scale),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 4 * scale,
-            offset: Offset(0, 4 * scale),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Task name
-          Positioned(
-            left: 15 * scale,
-            top: 10 * scale,
-            child: Text(
-              taskName,
-              style: TextStyle(
-                fontSize: 15 * scale,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                letterSpacing: -0.15,
-                height: 1.5,
-              ),
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+    
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(7 * scale),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          height: 49 * scale,
+          width: 161 * scale,
+          decoration: BoxDecoration(
+            color: isDark 
+                ? Colors.white.withOpacity(0.1)
+                : Colors.white.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(7 * scale),
+            border: Border.all(
+              color: isDark 
+                  ? Colors.white.withOpacity(0.2)
+                  : Colors.white.withOpacity(0.4),
+              width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10 * scale,
+                offset: Offset(0, 4 * scale),
+              ),
+            ],
           ),
-          
-          // View button
-          Positioned(
-            right: 11 * scale,
-            top: 11 * scale,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 11 * scale,
-                vertical: 4 * scale,
-              ),
-              decoration: BoxDecoration(
-                color: const Color(0xFFA072CF),
-                borderRadius: BorderRadius.circular(15 * scale),
-              ),
-              child: Text(
-                'View',
-                style: TextStyle(
-                  fontSize: 12 * scale,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: -0.12,
-                  height: 1.5,
+          child: Stack(
+            children: [
+              // Task name
+              Positioned(
+                left: 15 * scale,
+                top: 10 * scale,
+                child: Text(
+                  taskName,
+                  style: TextStyle(
+                    fontSize: 15 * scale,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryText,
+                    letterSpacing: -0.15,
+                    height: 1.5,
+                  ),
                 ),
               ),
-            ),
+              
+              // View button
+              Positioned(
+                right: 11 * scale,
+                top: 11 * scale,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 11 * scale,
+                    vertical: 4 * scale,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(15 * scale),
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.2),
+                      width: 1,
+                    ),
+                  ),
+                  child: Text(
+                    'View',
+                    style: TextStyle(
+                      fontSize: 12 * scale,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: -0.12,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+              
+              // Arrow at bottom
+              Positioned(
+                bottom: -7 * scale,
+                left: 36 * scale,
+                child: Icon(
+                  Icons.arrow_drop_down,
+                  color: AppColors.primaryText,
+                  size: 14 * scale,
+                ),
+              ),
+            ],
           ),
-          
-          // Arrow at bottom
-          Positioned(
-            bottom: -7 * scale,
-            left: 36 * scale,
-            child: Icon(
-              Icons.arrow_drop_down,
-              color: Colors.white,
-              size: 14 * scale,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -280,7 +303,7 @@ class DashboardView extends GetView<DashboardController> {
       style: TextStyle(
         fontSize: 24 * scale,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: AppColors.primaryText,
       ),
     );
   }
@@ -329,8 +352,19 @@ class DashboardView extends GetView<DashboardController> {
       width: 78 * scale,
       height: 100 * scale,
       decoration: BoxDecoration(
-        color: const Color(0xFF322647),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(6 * scale),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -388,7 +422,7 @@ class DashboardView extends GetView<DashboardController> {
               style: TextStyle(
                 fontSize: 6 * scale,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.primaryText,
                 letterSpacing: 0.12,
                 height: 1.25,
               ),
@@ -406,7 +440,7 @@ class DashboardView extends GetView<DashboardController> {
               style: TextStyle(
                 fontSize: 14 * scale,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.primaryText,
               ),
             ),
           ),
@@ -420,8 +454,19 @@ class DashboardView extends GetView<DashboardController> {
       width: 78 * scale,
       height: 100 * scale,
       decoration: BoxDecoration(
-        color: const Color(0xFF322647),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(6 * scale),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Stack(
         children: [
@@ -479,7 +524,7 @@ class DashboardView extends GetView<DashboardController> {
               style: TextStyle(
                 fontSize: 6 * scale,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.primaryText,
                 letterSpacing: 0.12,
                 height: 1.25,
               ),
@@ -499,7 +544,7 @@ class DashboardView extends GetView<DashboardController> {
                 style: TextStyle(
                   fontSize: 14 * scale,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppColors.primaryText,
                 ),
               ),
             ),
@@ -514,8 +559,19 @@ class DashboardView extends GetView<DashboardController> {
       margin: EdgeInsets.symmetric(horizontal: 11.5 * scale),
       padding: EdgeInsets.symmetric(vertical: 10 * scale),
       decoration: BoxDecoration(
-        color: const Color(0xFF281C3E),
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(10 * scale),
+        border: Border.all(
+          color: AppColors.border.withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -532,41 +588,52 @@ class DashboardView extends GetView<DashboardController> {
   }
 
   Widget _buildTabFilters(double scale) {
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+    
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: 11 * scale),
-      child: Obx(() => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildTabItem(
-            'Task List',
-            Icons.list,
-            controller.selectedFilter.value == 'all',
-            () => controller.changeFilter('all'),
-            scale,
-          ),
-          SizedBox(width: 6 * scale),
-          _buildTabItem(
-            'Pending',
-            Icons.pending,
-            controller.selectedFilter.value == 'pending',
-            () => controller.changeFilter('pending'),
-            scale,
-          ),
-          SizedBox(width: 6 * scale),
-          _buildTabItem(
-            'Submitted',
-            Icons.check_circle_outline,
-            controller.selectedFilter.value == 'submitted',
-            () => controller.changeFilter('submitted'),
-            scale,
-          ),
-        ],
-      )),
+      child: Container(
+        padding: EdgeInsets.all(4 * scale),
+        decoration: BoxDecoration(
+          color: isDark ? Colors.transparent : const Color(0xFFFFFFFF).withOpacity(0.4),
+          borderRadius: BorderRadius.circular(8 * scale),
+        ),
+        child: Obx(() => Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildTabItem(
+              'Task List',
+              Icons.list,
+              controller.selectedFilter.value == 'all',
+              () => controller.changeFilter('all'),
+              scale,
+            ),
+            SizedBox(width: 6 * scale),
+            _buildTabItem(
+              'Pending',
+              Icons.pending,
+              controller.selectedFilter.value == 'pending',
+              () => controller.changeFilter('pending'),
+              scale,
+            ),
+            SizedBox(width: 6 * scale),
+            _buildTabItem(
+              'Submitted',
+              Icons.check_circle_outline,
+              controller.selectedFilter.value == 'submitted',
+              () => controller.changeFilter('submitted'),
+              scale,
+            ),
+          ],
+        )),
+      ),
     );
   }
 
   Widget _buildTabItem(String title, IconData icon, bool isActive, VoidCallback onTap, double scale) {
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -576,29 +643,46 @@ class DashboardView extends GetView<DashboardController> {
           horizontal: 17 * scale,
           vertical: 7 * scale,
         ),
-        decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF646397) : Colors.transparent,
-          borderRadius: BorderRadius.circular(6 * scale),
-        ),
+         decoration: BoxDecoration(
+           color: isActive 
+               ? (isDark?const Color(0xFF646397) :Color.fromARGB(255, 155, 104, 159))
+               : (isDark ? AppColors.cardBackground.withOpacity(0.5) : const Color(0xFFFAFAFA)),
+           borderRadius: BorderRadius.circular(6 * scale),
+           border: !isActive ? Border.all(
+             color: isDark ? AppColors.border.withOpacity(0.3) : AppColors.border.withOpacity(0.25),
+             width: 1,
+           ) : null,
+           boxShadow: !isActive && !isDark ? [
+             BoxShadow(
+               color: Colors.black.withOpacity(0.06),
+               blurRadius: 3,
+               offset: const Offset(0, 1),
+             ),
+           ] : null,
+         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 13 * scale,
-              color: isActive ? Colors.white : const Color(0xFF6B7C97),
-            ),
+             Icon(
+               icon,
+               size: 13 * scale,
+              color: isActive
+                  ? isDark
+                      ? AppColors.primaryText
+                      : AppColors.textWhite
+                  : AppColors.secondaryText,
+             ),
             SizedBox(width: 6 * scale),
             Flexible(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12 * scale,
-                  color: isActive ? Colors.white : const Color(0xFF6B7C97),
-                  letterSpacing: 0.24,
-                  height: 1.25,
-                ),
+               child: Text(
+                 title,
+               style: TextStyle(
+                 fontSize: 12 * scale,
+                 color: isActive ?isDark? AppColors.primaryText : AppColors.textWhite: AppColors.secondaryText,
+                 letterSpacing: 0.24,
+                 height: 1.25,
+               ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -615,13 +699,13 @@ class DashboardView extends GetView<DashboardController> {
       if (tasks.isEmpty) {
         return Padding(
           padding: EdgeInsets.all(40 * scale),
-          child: Text(
-            'No tasks available',
-            style: TextStyle(
-              color: AppColors.textGrey,
-              fontSize: 14 * scale,
+            child: Text(
+              'No tasks available',
+              style: TextStyle(
+                color: AppColors.secondaryText,
+                fontSize: 14 * scale,
+              ),
             ),
-          ),
         );
       }
       
@@ -656,7 +740,20 @@ class DashboardView extends GetView<DashboardController> {
 
   Widget _buildSeeMoreButton(double scale) {
     return GestureDetector(
-      onTap: () => Get.toNamed(AppRoutes.taskList),
+      onTap: () {
+        // Switch to tasks tab (index 1) in bottom navigation
+        try {
+          final navController = Get.find<MainNavigationController>();
+          navController.changePage(1);
+          
+          // Set task list filter to match the current dashboard filter
+          final taskController = Get.find<TaskListController>();
+          taskController.filterTasks(controller.selectedFilter.value);
+        } catch (e) {
+          // Fallback to navigation if controllers not found
+          Get.toNamed(AppRoutes.taskList);
+        }
+      },
       child: Container(
         width: 80 * scale,
         height: 18 * scale,

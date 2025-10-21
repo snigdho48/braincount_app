@@ -62,7 +62,7 @@ class ErrorModal extends StatelessWidget {
               style: TextStyle(
                 fontSize: Responsive.fontSize(24),
                 fontWeight: FontWeight.bold,
-                color: AppColors.textWhite,
+                color: AppColors.primaryText,
               ),
               textAlign: TextAlign.center,
             ),
@@ -71,7 +71,7 @@ class ErrorModal extends StatelessWidget {
               message,
               style: TextStyle(
                 fontSize: Responsive.fontSize(14),
-                color: AppColors.textGrey,
+                color: AppColors.secondaryText,
               ),
               textAlign: TextAlign.center,
             ),

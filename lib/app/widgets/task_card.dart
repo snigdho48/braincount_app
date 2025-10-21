@@ -22,7 +22,7 @@ class TaskCard extends StatelessWidget {
         margin: EdgeInsets.only(bottom: Responsive.sp(12)),
         padding: EdgeInsets.all(Responsive.sp(12)),
         decoration: BoxDecoration(
-          color: AppColors.cardDark,
+          color: AppColors.cardBackground,
           borderRadius: BorderRadius.circular(Responsive.radiusLg),
           border: Border.all(
             color: AppColors.success.withOpacity(0.3),
@@ -46,7 +46,7 @@ class TaskCard extends StatelessWidget {
                     color: AppColors.cardBackground,
                     child: Icon(
                       Icons.image,
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       size: Responsive.iconSize,
                     ),
                   );
@@ -64,7 +64,7 @@ class TaskCard extends StatelessWidget {
                       Text(
                         '${task.id}: ',
                         style: TextStyle(
-                          color: AppColors.textGrey,
+                          color: AppColors.secondaryText,
                           fontSize: Responsive.fontSize(12),
                         ),
                       ),
@@ -72,7 +72,7 @@ class TaskCard extends StatelessWidget {
                         child: Text(
                           task.title,
                           style: TextStyle(
-                            color: AppColors.textWhite,
+                            color: AppColors.primaryText,
                             fontSize: Responsive.fontSize(14),
                             fontWeight: FontWeight.w600,
                           ),
@@ -86,21 +86,21 @@ class TaskCard extends StatelessWidget {
                   Text(
                     'Submission Status: ${task.submissionStatus ?? "Accepted"}',
                     style: TextStyle(
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       fontSize: Responsive.fontSize(12),
                     ),
                   ),
                   Text(
                     'Submitted Status: ${task.submittedStatus ?? "Good"}',
                     style: TextStyle(
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       fontSize: Responsive.fontSize(12),
                     ),
                   ),
                   Text(
                     'View: ${task.views}',
                     style: TextStyle(
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       fontSize: Responsive.fontSize(12),
                     ),
                   ),
@@ -114,7 +114,7 @@ class TaskCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: AppColors.textGrey,
+                  color: AppColors.secondaryText,
                   size: Responsive.sp(16),
                 ),
                 SizedBox(height: Responsive.sp(24)),

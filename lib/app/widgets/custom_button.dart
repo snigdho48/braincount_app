@@ -50,7 +50,7 @@ class CustomButton extends StatelessWidget {
                 height: Responsive.iconSize,
                 width: Responsive.iconSize,
                 child: CircularProgressIndicator(
-                  color: AppColors.textWhite,
+                  color: Colors.white,
                   strokeWidth: Responsive.sp(2),
                 ),
               )
@@ -58,7 +58,7 @@ class CustomButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, color: AppColors.textWhite, size: Responsive.iconSize),
+                    Icon(icon, color: Colors.white, size: Responsive.iconSize),
                     SizedBox(width: Responsive.sm),
                   ],
                   Text(
@@ -66,7 +66,7 @@ class CustomButton extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Responsive.fontSize(16),
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textWhite,
+                      color: Colors.white,
                     ),
                   ),
                 ],

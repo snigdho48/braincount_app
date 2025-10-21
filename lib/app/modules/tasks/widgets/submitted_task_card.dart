@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/responsive.dart';
 import '../../../data/models/task_model.dart';
+import '../../../data/services/theme_service.dart';
 
 class SubmittedTaskCard extends StatelessWidget {
   final TaskModel task;
@@ -17,6 +19,10 @@ class SubmittedTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Use a solid light grey background in light mode for better card appearance
+    final isDark = Get.find<ThemeService>().isDarkMode.value;
+    final cardColor = isDark ? AppColors.cardBackground : Colors.white;
+    
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -25,8 +31,24 @@ class SubmittedTaskCard extends StatelessWidget {
             margin: EdgeInsets.only(bottom: Responsive.sp(12)),
             padding: EdgeInsets.all(Responsive.sp(14)),
             decoration: BoxDecoration(
-              color: const Color(0xFF365138), // Green background as per Figma
+              color: cardColor,
               borderRadius: BorderRadius.circular(Responsive.sp(10)),
+              border: Border.all(
+                color: isDark 
+                    ? AppColors.success.withOpacity(0.5) 
+                    : AppColors.success.withOpacity(0.2),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark 
+                      ? Colors.black.withOpacity(0.3)
+                      : Colors.black.withOpacity(0.15),
+                  blurRadius: isDark ? 8 : 12,
+                  offset: Offset(0, isDark ? 2 : 4),
+                  spreadRadius: isDark ? 0 : 1,
+                ),
+              ],
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +60,7 @@ class SubmittedTaskCard extends StatelessWidget {
                 '${(index + 1).toString().padLeft(2, '0')}:',
                 style: TextStyle(
                   fontSize: Responsive.fontSize(12),
-                  color: AppColors.textWhite,
+                  color: AppColors.primaryText,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -55,7 +77,7 @@ class SubmittedTaskCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: Responsive.fontSize(15),
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textWhite,
+                      color: AppColors.primaryText,
                       letterSpacing: -0.15,
                       height: 1.5,
                     ),
@@ -93,7 +115,7 @@ class SubmittedTaskCard extends StatelessWidget {
                               'Submission Status: ${task.submissionStatus ?? 'Accepted'}',
                               style: TextStyle(
                                 fontSize: Responsive.fontSize(9),
-                                color: AppColors.textWhite,
+                                color: AppColors.primaryText,
                                 height: 1.25,
                                 letterSpacing: 0.18,
                               ),
@@ -103,7 +125,7 @@ class SubmittedTaskCard extends StatelessWidget {
                               'Submitted Status: ${task.submittedStatus ?? 'Good'}',
                               style: TextStyle(
                                 fontSize: Responsive.fontSize(9),
-                                color: AppColors.textWhite,
+                                color: AppColors.primaryText,
                                 height: 1.25,
                                 letterSpacing: 0.18,
                               ),
@@ -113,7 +135,7 @@ class SubmittedTaskCard extends StatelessWidget {
                               'View: ${task.views}',
                               style: TextStyle(
                                 fontSize: Responsive.fontSize(9),
-                                color: AppColors.textWhite,
+                                color: AppColors.primaryText,
                                 height: 1.25,
                                 letterSpacing: 0.18,
                               ),
@@ -124,11 +146,11 @@ class SubmittedTaskCard extends StatelessWidget {
                       
                       // Arrow icon
                       Transform.rotate(
-                        angle: -1.579, // 268.584 degrees in radians
+                        angle: 0, // 268.584 degrees in radians
                         child: Icon(
                           Icons.arrow_forward_ios,
                           size: Responsive.sp(12),
-                          color: AppColors.textWhite,
+                          color: AppColors.primaryText,
                         ),
                       ),
                     ],
@@ -153,8 +175,8 @@ class SubmittedTaskCard extends StatelessWidget {
     final deadlineText = '${task.deadline!.day.toString().padLeft(2, '0')}/${task.deadline!.month.toString().padLeft(2, '0')}/${task.deadline!.year.toString().substring(2)}';
     
     return Positioned(
-      right: Responsive.sp(15),
-      bottom: Responsive.sp(14),
+      right: Responsive.sp(10),
+      bottom: Responsive.sp(25),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: Responsive.sp(6),
@@ -162,7 +184,7 @@ class SubmittedTaskCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(Responsive.sp(12)),
-          border: Border.all(color: const Color(0xFFFF2929).withOpacity(0.3)),
+          border: Border.all(color: AppColors.error.withOpacity(0.5)),
         ),
         child: RichText(
           text: TextSpan(
@@ -176,13 +198,13 @@ class SubmittedTaskCard extends StatelessWidget {
                 text: 'Exp: ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFFFF2929),
+                  color: AppColors.error,
                 ),
               ),
               TextSpan(
                 text: deadlineText,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.primaryText,
                 ),
               ),
             ],

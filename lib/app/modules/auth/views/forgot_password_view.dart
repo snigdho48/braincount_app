@@ -35,8 +35,8 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                     alignment: Alignment.centerLeft,
                     child: IconButton(
                       icon: Icon(
-                        Icons.arrow_back,
-                        color: AppColors.textWhite,
+                        Icons.arrow_back_ios,
+                        color: AppColors.primaryText,
                         size: Responsive.iconSize,
                       ),
                       onPressed: () => Get.back(),
@@ -49,7 +49,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                     style: TextStyle(
                       fontSize: Responsive.fontSize(20),
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textWhite,
+                      color: AppColors.primaryText,
                     ),
                   ),
                   SizedBox(height: Responsive.mdVertical),
@@ -57,7 +57,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                   Text(
                     'No worries! Enter your email address below and we will send you a code to reset password.',
                     style: TextStyle(
-                      color: AppColors.textGrey,
+                      color: AppColors.secondaryText,
                       fontSize: Responsive.fontSize(14),
                       height: 1.5,
                     ),

@@ -33,8 +33,8 @@ class OtpView extends GetView<OtpController> {
                   alignment: Alignment.centerLeft,
                   child: IconButton(
                     icon: Icon(
-                      Icons.arrow_back,
-                      color: AppColors.textWhite,
+                      Icons.arrow_back_ios,
+                      color: AppColors.primaryText,
                       size: Responsive.iconSize,
                     ),
                     onPressed: () => Get.back(),
@@ -47,7 +47,7 @@ class OtpView extends GetView<OtpController> {
                     width: Responsive.sp(230),
                     height: Responsive.sp(230),
                     decoration: BoxDecoration(
-                      color: AppColors.cardDark,
+                      color: AppColors.cardBackground,
                       borderRadius: BorderRadius.circular(Responsive.radiusXl),
                     ),
                     child: Icon(
@@ -59,12 +59,12 @@ class OtpView extends GetView<OtpController> {
                 ),
                 SizedBox(height: Responsive.xlVertical),
                 // Title
-                Text(
+                  Text(
                   'OTP Verification',
                   style: TextStyle(
                     fontSize: Responsive.fontSize(20),
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textWhite,
+                    color: AppColors.primaryText,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -73,7 +73,7 @@ class OtpView extends GetView<OtpController> {
                 Text(
                   'Enter email and phone number to send one time Password',
                   style: TextStyle(
-                    color: AppColors.textGrey,
+                    color: AppColors.secondaryText,
                     fontSize: Responsive.fontSize(14),
                     height: 1.5,
                   ),

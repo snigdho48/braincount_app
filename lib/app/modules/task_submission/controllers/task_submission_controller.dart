@@ -30,6 +30,7 @@ class TaskSubmissionController extends GetxController {
     'Communication Right',
     'Communication Wrong',
     'Communication Missing',
+    'If other please write',
   ];
 
   @override
@@ -50,6 +51,10 @@ class TaskSubmissionController extends GetxController {
   void toggleCondition(String condition) {
     if (selectedConditions.contains(condition)) {
       selectedConditions.remove(condition);
+      // Clear notes when unchecking "If other please write"
+      if (condition == 'If other please write') {
+        notesController.clear();
+      }
     } else {
       selectedConditions.add(condition);
     }
@@ -145,6 +150,16 @@ class TaskSubmissionController extends GetxController {
         Get.context!,
         title: 'Validation Error',
         message: 'Please select at least one billboard condition',
+      );
+      return;
+    }
+
+    if (selectedConditions.contains('If other please write') && 
+        notesController.text.trim().isEmpty) {
+      ErrorModal.show(
+        Get.context!,
+        title: 'Validation Error',
+        message: 'Please write your notes when selecting "If other please write"',
       );
       return;
     }

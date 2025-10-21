@@ -19,6 +19,10 @@ class ProfileController extends GetxController {
   bool get isDarkMode => _themeService.isDarkMode.value;
   RxBool get isDarkModeObs => _themeService.isDarkMode;
 
+  void navigateToLogin() {
+    Get.offAllNamed(AppRoutes.login);
+  }
+
   @override
   void onInit() {
     super.onInit();

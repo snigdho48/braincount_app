@@ -35,8 +35,8 @@ class RegisterView extends GetView<RegisterController> {
                           alignment: Alignment.centerLeft,
                           child: IconButton(
                             icon: Icon(
-                              Icons.arrow_back,
-                              color: AppColors.textWhite,
+                              Icons.arrow_back_ios,
+                              color: AppColors.primaryText,
                               size: Responsive.iconSize,
                             ),
                             onPressed: () => Get.back(),
@@ -49,7 +49,7 @@ class RegisterView extends GetView<RegisterController> {
                           style: TextStyle(
                             fontSize: Responsive.fontSize(20),
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textWhite,
+                            color: AppColors.primaryText,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -134,7 +134,7 @@ class RegisterView extends GetView<RegisterController> {
                                   controller.obscurePassword.value
                                       ? Icons.visibility_off
                                       : Icons.visibility,
-                                  color: AppColors.textGrey,
+                                  color: AppColors.secondaryText,
                                   size: Responsive.iconSizeSm,
                                 ),
                                 onPressed: controller.togglePasswordVisibility,
@@ -161,7 +161,7 @@ class RegisterView extends GetView<RegisterController> {
                         Text(
                           'By continuing, you agree to our Terms of Service and Privacy Policy.',
                           style: TextStyle(
-                            color: AppColors.textGrey,
+                            color: AppColors.secondaryText,
                             fontSize: Responsive.fontSize(12),
                           ),
                           textAlign: TextAlign.center,

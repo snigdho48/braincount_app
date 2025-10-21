@@ -86,7 +86,7 @@ class MainNavigationView extends GetView<MainNavigationController> {
             },
             backgroundColor: AppColors.cardBackground,
             activeColor: AppColors.primary,
-            inactiveColor: AppColors.textGrey,
+            inactiveColor: AppColors.secondaryText,
             iconSize: 26 * Responsive.scale,
             height: 60 * Responsive.scale,
             splashColor: AppColors.primary.withOpacity(0.2),
