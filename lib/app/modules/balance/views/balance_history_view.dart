@@ -15,7 +15,9 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
     return Scaffold(
       floatingActionButton: _buildRequestButton(scale),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Obx(() => Container(
+      body: Obx(() => AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),

@@ -17,7 +17,9 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
     final themeService = Get.find<ThemeService>();
     
     return Scaffold(
-      body: Obx(() => Container(
+      body: Obx(() => AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),

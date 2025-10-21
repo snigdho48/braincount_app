@@ -19,7 +19,9 @@ class WithdrawView extends GetView<WithdrawController> {
           ? _buildWithdrawButton(scale, context)
           : const SizedBox.shrink()),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: Obx(() => Container(
+      body: Obx(() => AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),

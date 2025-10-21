@@ -13,7 +13,9 @@ class AddBankView extends GetView<WithdrawController> {
     final scale = Responsive.scaleWidth(393.0);
 
     return Scaffold(
-      body: Obx(() => Container(
+      body: Obx(() => AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
         decoration: BoxDecoration(
           gradient: AppColors.backgroundGradient,
         ),
