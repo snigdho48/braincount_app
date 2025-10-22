@@ -31,7 +31,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
               // Content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(Responsive.lg),
+                  padding: EdgeInsets.all(Responsive.md),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -58,7 +58,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                       SizedBox(height: Responsive.lgVertical),
                       // Upload List
                       _buildUploadList(),
-                      SizedBox(height: Responsive.xlVertical),
+                      SizedBox(height: Responsive.lgVertical),
                       // Submit Button
                       Obx(() => CustomButton(
                             text: 'Submit',
@@ -79,9 +79,9 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
 
   Widget _buildHeader() {
     return Container(
-      padding: EdgeInsets.only(bottom: Responsive.lg),
+      padding: EdgeInsets.only(bottom: Responsive.sm),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground.withOpacity(0.5),
+        color: Colors.transparent,
       ),
       child: Row(
         children: [
@@ -187,87 +187,96 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
   }
 
   Widget _buildConditionSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: Responsive.md, vertical: Responsive.lg),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(Responsive.radiusLg),
+      ),
+      child:  Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           'Billboard Condition:',
+          textAlign: TextAlign.center,
           style: TextStyle(
             color: AppColors.primaryText,
             fontSize: Responsive.fontSize(16),
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: Responsive.smVertical),
+        SizedBox(height: Responsive.md),
         Obx(() {
-          final conditions = controller.conditionOptions;
-          return Column(
-            children: List.generate(
-              (conditions.length / 2).ceil(),
-              (rowIndex) {
-                final startIndex = rowIndex * 2;
-                final endIndex = (startIndex + 2).clamp(0, conditions.length);
-                final rowItems = conditions.sublist(startIndex, endIndex);
-                
-                return Padding(
-                  padding: EdgeInsets.only(bottom: Responsive.sp(8)),
-                  child: Row(
-                    children: [
-                      ...rowItems.map((condition) {
-                        final isSelected = controller.selectedConditions.contains(condition);
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () => controller.toggleCondition(condition),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: Responsive.sp(20),
-                                  height: Responsive.sp(20),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? AppColors.primary
-                                        : Colors.transparent,
-                                    border: Border.all(
-                                      color: AppColors.borderColor,
-                                      width: 2,
+            final conditions = controller.conditionOptions;
+            return Column(
+              children: List.generate(
+                (conditions.length / 2).ceil(),
+                (rowIndex) {
+                  final startIndex = rowIndex * 2;
+                  final endIndex = (startIndex + 2).clamp(0, conditions.length);
+                  final rowItems = conditions.sublist(startIndex, endIndex);
+                  
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: Responsive.sp(8)),
+                    child: Row(
+                      children: [
+                        ...rowItems.map((condition) {
+                          final isSelected = controller.selectedConditions.contains(condition);
+                          return Expanded(
+                            child: GestureDetector(
+                              onTap: () => controller.toggleCondition(condition),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: Responsive.sp(20),
+                                    height: Responsive.sp(20),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? AppColors.primary
+                                          : Colors.transparent,
+                                      border: Border.all(
+                                        color: AppColors.borderColor,
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(Responsive.sp(4)),
                                     ),
-                                    borderRadius: BorderRadius.circular(Responsive.sp(4)),
+                                    child: isSelected
+                                        ? Icon(
+                                            Icons.check,
+                                            size: Responsive.sp(14),
+                                            color: Colors.white,
+                                          )
+                                        : null,
                                   ),
-                                  child: isSelected
-                                      ? Icon(
-                                          Icons.check,
-                                          size: Responsive.sp(14),
-                                          color: Colors.white,
-                                        )
-                                      : null,
-                                ),
-                                SizedBox(width: Responsive.sp(8)),
-                                Expanded(
-                                  child: Text(
-                                    condition,
-                                    style: TextStyle(
-                                      color: AppColors.secondaryText,
-                                      fontSize: Responsive.fontSize(13),
+                                  SizedBox(width: Responsive.sp(8)),
+                                  Expanded(
+                                    child: Text(
+                                      condition,
+                                      style: TextStyle(
+                                        color: AppColors.secondaryText,
+                                        fontSize: Responsive.fontSize(13),
+                                      ),
+                                      maxLines: 2,
                                     ),
-                                    maxLines: 2,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                      // Add empty space if odd number of items
-                      if (rowItems.length == 1) Expanded(child: SizedBox()),
-                    ],
-                  ),
-                );
-              },
-            ),
-          );
-        }),
+                          );
+                        }),
+                        // Add empty space if odd number of items
+                        if (rowItems.length == 1) Expanded(child: SizedBox()),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          }),
+      
       ],
+        ),
     );
   }
 
@@ -330,23 +339,17 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
             _buildImageSlot(3),
           ],
         ),
-        SizedBox(height: Responsive.mdVertical),
-        // Browse Files Button
-        CustomButton(
-          text: 'Browse files',
-          onPressed: controller.browseImage,
-          height: Responsive.sp(48),
-        ),
       ],
     );
   }
 
   Widget _buildImageSlot(int index) {
     return Obx(() {
-      final hasImage = controller.submittedImages.length > index;
+      final hasImage = controller.submittedImages.containsKey(index);
+      final isUploading = controller.isUploading.contains(index);
       
       return GestureDetector(
-        onTap: hasImage ? null : controller.captureImage,
+        onTap: hasImage ? null : () => controller.captureImage(index),
         child: DottedBorder(
           color: AppColors.borderColor,
           strokeWidth: 2,
@@ -356,37 +359,40 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
           child: Container(
             width: Responsive.sp(70),
             height: Responsive.sp(70),
+            clipBehavior: Clip.none,
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(Responsive.radiusLg),
             ),
             child: hasImage
                 ? Stack(
+                    clipBehavior: Clip.none,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(Responsive.radiusLg),
                         child: Image.memory(
                           base64Decode(
-                              controller.submittedImages[index].base64Data),
+                              controller.submittedImages[index]!.base64Data),
                           width: Responsive.sp(70),
                           height: Responsive.sp(70),
                           fit: BoxFit.cover,
                         ),
                       ),
+                      // Reload button
                       Positioned(
-                        top: Responsive.sp(2),
-                        right: Responsive.sp(2),
+                        top: Responsive.sp(-9),
+                        right: Responsive.sp(-8),
                         child: GestureDetector(
-                          onTap: () => controller.removeImage(index),
+                          onTap: () => controller.captureImage(index),
                           child: Container(
-                            padding: EdgeInsets.all(Responsive.sp(2)),
+                            padding: EdgeInsets.all(Responsive.sp(0)),
                             decoration: BoxDecoration(
-                              color: AppColors.error,
+                              color: AppColors.primary,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              Icons.close,
-                              size: Responsive.sp(12),
+                              Icons.refresh,
+                              size: Responsive.sp(20),
                               color: Colors.white,
                             ),
                           ),
@@ -394,11 +400,24 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                       ),
                     ],
                   )
-                :  Icon(
-                    Icons.add,
-                    color: AppColors.secondaryText,
-                    size: Responsive.sp(32),
-                  ),
+                : isUploading
+                    ? Center(
+                        child: SizedBox(
+                          width: Responsive.sp(24),
+                          height: Responsive.sp(24),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primary,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Icon(
+                        Icons.add,
+                        color: AppColors.secondaryText,
+                        size: Responsive.sp(32),
+                      ),
           ),
         ),
       );
@@ -412,7 +431,7 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
       }
 
       return Column(
-        children: controller.submittedImages.asMap().entries.map((entry) {
+        children: controller.submittedImages.entries.map((entry) {
           final index = entry.key;
           final image = entry.value;
           final isUploading = controller.isUploading.contains(index);
@@ -496,14 +515,6 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                     ],
                   ),
                 ),
-                if (!isUploading)
-                  IconButton(
-                    onPressed: () => controller.removeImage(index),
-                    icon: const Icon(
-                      Icons.delete,
-                      color: AppColors.error,
-                    ),
-                  ),
               ],
             ),
           );

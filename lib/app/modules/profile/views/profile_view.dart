@@ -795,7 +795,7 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 );
               });
-            }).toList(),
+            }),
             
             SizedBox(height: 20 * scale),
           ],
@@ -910,7 +910,7 @@ class ProfileView extends GetView<ProfileController> {
                   ),
                 );
               });
-            }).toList(),
+            }),
             
             SizedBox(height: 20 * scale),
           ],

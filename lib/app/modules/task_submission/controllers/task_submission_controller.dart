@@ -11,7 +11,7 @@ class TaskSubmissionController extends GetxController {
   final task = Rxn<TaskModel>();
   final selectedConditions = <String>[].obs;
   final notesController = TextEditingController();
-  final submittedImages = <SubmissionImage>[].obs;
+  final submittedImages = <int, SubmissionImage>{}.obs;
   final isUploading = <int>[].obs;
   final isSubmitting = false.obs;
 
@@ -60,88 +60,36 @@ class TaskSubmissionController extends GetxController {
     }
   }
 
-  Future<void> captureImage() async {
-    if (submittedImages.length >= maxImages) {
-      ErrorModal.show(
-        Get.context!,
-        title: 'Limit Reached',
-        message: 'You can only upload up to $maxImages images',
-      );
-      return;
-    }
-
+  Future<void> captureImage(int index) async {
     try {
+      isUploading.add(index);
+
       final base64Image = await CameraService.takePhotoFromBackCamera();
       
       if (base64Image != null) {
-        final imageIndex = submittedImages.length;
-        isUploading.add(imageIndex);
-
         // Simulate upload delay
         await Future.delayed(const Duration(seconds: 2));
 
         final fileSize = CameraService.getBase64FileSize(base64Image);
         final submissionImage = SubmissionImage(
           base64Data: base64Image,
-          fileName: 'Picture${submittedImages.length + 1}',
+          fileName: 'Picture${index + 1}',
           fileSize: fileSize,
           status: 'completed',
         );
 
-        submittedImages.add(submissionImage);
-        isUploading.remove(imageIndex);
+        submittedImages[index] = submissionImage;
       }
+      
+      isUploading.remove(index);
     } catch (e) {
+      isUploading.remove(index);
       ErrorModal.show(
         Get.context!,
         title: 'Error',
         message: 'Failed to capture image. Please try again.',
       );
     }
-  }
-
-  Future<void> browseImage() async {
-    if (submittedImages.length >= maxImages) {
-      ErrorModal.show(
-        Get.context!,
-        title: 'Limit Reached',
-        message: 'You can only upload up to $maxImages images',
-      );
-      return;
-    }
-
-    try {
-      final base64Image = await CameraService.pickImageFromGallery();
-      
-      if (base64Image != null) {
-        final imageIndex = submittedImages.length;
-        isUploading.add(imageIndex);
-
-        // Simulate upload delay
-        await Future.delayed(const Duration(seconds: 2));
-
-        final fileSize = CameraService.getBase64FileSize(base64Image);
-        final submissionImage = SubmissionImage(
-          base64Data: base64Image,
-          fileName: 'Picture${submittedImages.length + 1}',
-          fileSize: fileSize,
-          status: 'completed',
-        );
-
-        submittedImages.add(submissionImage);
-        isUploading.remove(imageIndex);
-      }
-    } catch (e) {
-      ErrorModal.show(
-        Get.context!,
-        title: 'Error',
-        message: 'Failed to select image. Please try again.',
-      );
-    }
-  }
-
-  void removeImage(int index) {
-    submittedImages.removeAt(index);
   }
 
   Future<void> submitTask() async {
@@ -182,7 +130,7 @@ class TaskSubmissionController extends GetxController {
         notes: notesController.text.trim().isEmpty
             ? null
             : notesController.text.trim(),
-        images: submittedImages.toList(),
+        images: submittedImages.values.toList(),
         submittedAt: DateTime.now(),
       );
 

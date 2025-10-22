@@ -102,7 +102,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: '${controller.totalWithdrawn.value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                text: controller.totalWithdrawn.value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'),
                                 style: TextStyle(
                                   fontFamily: 'Oddlini',
                                   fontSize: 48 * scale,

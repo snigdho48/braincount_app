@@ -2,7 +2,6 @@ import 'package:braincount/app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/withdraw_controller.dart';
-import '../../../widgets/user_header.dart';
 import '../../../core/theme/app_colors.dart';
 
 class AddBankView extends GetView<WithdrawController> {

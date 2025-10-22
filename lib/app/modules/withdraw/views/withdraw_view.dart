@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/withdraw_controller.dart';
 import '../../../routes/app_routes.dart';
-import '../../../widgets/user_header.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../data/services/theme_service.dart';
 
 class WithdrawView extends GetView<WithdrawController> {
   const WithdrawView({super.key});
