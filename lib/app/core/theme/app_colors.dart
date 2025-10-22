@@ -9,7 +9,8 @@ class AppColors {
   static bool get _isDark => _themeService.isDarkMode.value;
 
   // Background Colors
-  static Color get background => _isDark ? const Color(0xFF232323) : const Color(0xFFF5F5F5);
+  static Color get background =>
+      _isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
   static Color get cardBackground => _isDark ? const Color(0xFF393838) : Colors.white;
   static Color get cardDark => const Color(0xFF393838); // Alias for dark card (always dark)
   static Color get tertiaryBackground => _isDark ? const Color(0xFF212121) : const Color(0xFFFAFAFA);
@@ -44,9 +45,9 @@ class AppColors {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF232323),
-            Color(0xFF393838),
-            Color(0xFF232323),
+            Color(0xFF0A0A0A),
+            Color(0xFF1E1E1E),
+            Color(0xFF121212),
           ],
         )
       : const LinearGradient(

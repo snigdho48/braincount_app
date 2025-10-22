@@ -422,7 +422,7 @@ class DashboardView extends GetView<DashboardController> {
               label,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 6 * scale,
+                fontSize: 10 * scale,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primaryText,
                 letterSpacing: 0.12,
@@ -524,7 +524,7 @@ class DashboardView extends GetView<DashboardController> {
               'Balance',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 6 * scale,
+                fontSize: 10 * scale,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primaryText,
                 letterSpacing: 0.12,

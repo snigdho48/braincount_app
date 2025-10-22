@@ -36,6 +36,15 @@ class TaskListView extends GetView<TaskListController> {
               // Tab Filters
               _buildTabFilters(),
               
+              // Selected Filter Chips (from Figma design)
+              Obx(() {
+                // Watch advancedFilters to trigger rebuild when filters change
+                controller.advancedFilters.value;
+                final chips = controller.getActiveFilterChips();
+                if (chips.isEmpty) return const SizedBox.shrink();
+                return _buildSelectedFilterChips(chips);
+              }),
+              
               // Task List Container
               Expanded(
                 child: _buildTaskListContainer(),
@@ -245,6 +254,71 @@ class TaskListView extends GetView<TaskListController> {
               () => controller.changeFilter('submitted'),
               scale,
             ),
+        ],
+      ),
+    );
+  }
+
+  // Selected Filter Chips - Matches Figma Design exactly
+  Widget _buildSelectedFilterChips(List<Map<String, String>> chips) {
+    return Container(
+      margin: EdgeInsets.only(
+        left: Responsive.sp(12),
+        right: Responsive.sp(16),
+        top: Responsive.sp(12),
+        bottom: Responsive.sp(12),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            for (int i = 0; i < chips.length; i++) ...[
+              _buildFilterChip(chips[i]),
+              if (i < chips.length - 1) SizedBox(width: Responsive.sp(12)),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(Map<String, String> chip) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.sp(12),
+        vertical: Responsive.sp(3),
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2D2D2D), // Exact color from Figma
+        borderRadius: BorderRadius.circular(Responsive.sp(15)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            chip['label']!,
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: Responsive.fontSize(14),
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              height: 1.5,
+            ),
+          ),
+          SizedBox(width: Responsive.sp(10)),
+          GestureDetector(
+            onTap: () => controller.removeFilterChip(chip),
+            child: Container(
+              width: Responsive.sp(10),
+              height: Responsive.sp(10),
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.close,
+                size: Responsive.sp(10),
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -45,15 +45,22 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
       final initial = widget.initialFilters!;
       if (initial['taskNames'] != null) {
         selectedTaskNames.addAll((initial['taskNames'] as List).cast<String>());
+        // Add to applied filters for display
+        appliedFilters.addAll((initial['taskNames'] as List).cast<String>());
       }
       if (initial['locations'] != null) {
         selectedLocations.addAll((initial['locations'] as List).cast<String>());
+        // Add to applied filters for display
+        appliedFilters.addAll((initial['locations'] as List).cast<String>());
       }
       if (initial['startDate'] != null) {
         startDate = initial['startDate'];
       }
       if (initial['endDate'] != null) {
         endDate = initial['endDate'];
+        // Add date range to applied filters
+        final dateLabel = '${startDate!.day}-${endDate!.day} ${_getMonthName(startDate!.month)} ${startDate!.year.toString().substring(2)}';
+        appliedFilters.add(dateLabel);
       }
       if (initial['appliedFilters'] != null) {
         appliedFilters.addAll((initial['appliedFilters'] as List).cast<String>());
@@ -178,48 +185,64 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
 
   Widget _buildAppliedFilters() {
     return Container(
-      padding: EdgeInsets.all(Responsive.smVertical + Responsive.sp(4)),
-      child: Wrap(
-        spacing: Responsive.sp(12),
-        runSpacing: Responsive.sp(12),
-        children: appliedFilters.map((filter) {
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: Responsive.sp(12),
-              vertical: Responsive.sp(3),
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.cardBackground,
-              borderRadius: BorderRadius.circular(Responsive.sp(15)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  filter,
-                  style: TextStyle(
-                    color: AppColors.primaryText,
-                    fontSize: Responsive.fontSize(14),
-                    fontWeight: FontWeight.w500,
-                  ),
+      padding: EdgeInsets.symmetric(
+        horizontal: Responsive.md,
+        vertical: Responsive.smVertical + Responsive.sp(4),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: Responsive.sp(12),
+          children: appliedFilters.map((filter) {
+            return Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Responsive.sp(12),
+                  vertical: Responsive.sp(6),
                 ),
-                SizedBox(width: Responsive.sp(10)),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      appliedFilters.remove(filter);
-                    });
-                  },
-                  child: Icon(
-                    Icons.close,
-                    color: AppColors.primaryText,
-                    size: Responsive.sp(10),
-                  ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2D2D2D), // Match Figma design
+                  borderRadius: BorderRadius.circular(Responsive.sp(15)),
                 ),
-              ],
-            ),
-          );
-        }).toList(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      filter,
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        color: Colors.white,
+                        fontSize: Responsive.fontSize(14),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: Responsive.sp(10)),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          appliedFilters.remove(filter);
+                          // Also remove from selected items
+                          selectedTaskNames.remove(filter);
+                          selectedLocations.remove(filter);
+                          // If it's a date filter, clear dates
+                          if (filter.contains('-') && (filter.contains('Jan') || filter.contains('Feb') || filter.contains('Mar') || filter.contains('Apr') || filter.contains('May') || filter.contains('Jun') || filter.contains('Jul') || filter.contains('Aug') || filter.contains('Sep') || filter.contains('Oct') || filter.contains('Nov') || filter.contains('Dec'))) {
+                            startDate = null;
+                            endDate = null;
+                          }
+                        });
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: Responsive.sp(12),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -294,8 +317,12 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
               setState(() {
                 if (isSelected) {
                   selectedItems.remove(item);
+                  appliedFilters.remove(item);  // Remove from applied filters
                 } else {
                   selectedItems.add(item);
+                  if (!appliedFilters.contains(item)) {
+                    appliedFilters.add(item);  // Add to applied filters
+                  }
                 }
               });
             },
@@ -461,11 +488,21 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                     if (startDate == null || (startDate != null && endDate != null)) {
                       startDate = date;
                       endDate = null;
+                      // Remove old date filter from applied filters
+                      appliedFilters.removeWhere((filter) => filter.contains('Jan') || filter.contains('Feb') || filter.contains('Mar') || filter.contains('Apr') || filter.contains('May') || filter.contains('Jun') || filter.contains('Jul') || filter.contains('Aug') || filter.contains('Sep') || filter.contains('Oct') || filter.contains('Nov') || filter.contains('Dec'));
                     } else if (date.isAfter(startDate!)) {
                       endDate = date;
+                      // Add date range to applied filters
+                      final dateLabel = '${startDate!.day}-${endDate!.day} ${_getMonthName(startDate!.month)} ${startDate!.year.toString().substring(2)}';
+                      appliedFilters.removeWhere((filter) => filter.contains('Jan') || filter.contains('Feb') || filter.contains('Mar') || filter.contains('Apr') || filter.contains('May') || filter.contains('Jun') || filter.contains('Jul') || filter.contains('Aug') || filter.contains('Sep') || filter.contains('Oct') || filter.contains('Nov') || filter.contains('Dec'));
+                      appliedFilters.add(dateLabel);
                     } else {
                       endDate = startDate;
                       startDate = date;
+                      // Add date range to applied filters
+                      final dateLabel = '${startDate!.day}-${endDate!.day} ${_getMonthName(startDate!.month)} ${startDate!.year.toString().substring(2)}';
+                      appliedFilters.removeWhere((filter) => filter.contains('Jan') || filter.contains('Feb') || filter.contains('Mar') || filter.contains('Apr') || filter.contains('May') || filter.contains('Jun') || filter.contains('Jul') || filter.contains('Aug') || filter.contains('Sep') || filter.contains('Oct') || filter.contains('Nov') || filter.contains('Dec'));
+                      appliedFilters.add(dateLabel);
                     }
                   });
                 },

@@ -135,12 +135,92 @@ class TaskListController extends GetxController {
   }
 
   void applyAdvancedFilters(Map<String, dynamic> filters) {
+    print('🔍 Applying filters: $filters');
     advancedFilters.value = filters;
+    print('🔍 Active filter chips: ${getActiveFilterChips()}');
     applyFilter();
   }
 
   void clearAdvancedFilters() {
     advancedFilters.value = {};
+    applyFilter();
+  }
+
+  // Get active filter chips
+  List<Map<String, String>> getActiveFilterChips() {
+    final chips = <Map<String, String>>[];
+    
+    // Add location filters
+    if (advancedFilters.value['locations'] != null) {
+      final locations = advancedFilters.value['locations'] as List<String>;
+      for (var location in locations) {
+        chips.add({
+          'label': location,
+          'type': 'location',
+        });
+      }
+    }
+    
+    // Add task name filters
+    if (advancedFilters.value['taskNames'] != null) {
+      final taskNames = advancedFilters.value['taskNames'] as List<String>;
+      for (var name in taskNames) {
+        chips.add({
+          'label': name,
+          'type': 'taskName',
+        });
+      }
+    }
+    
+    // Add date range filter
+    if (advancedFilters.value['startDate'] != null && advancedFilters.value['endDate'] != null) {
+      final startDate = advancedFilters.value['startDate'] as DateTime;
+      final endDate = advancedFilters.value['endDate'] as DateTime;
+      final dateLabel = '${startDate.day}-${endDate.day} ${_getMonthName(startDate.month)} ${startDate.year.toString().substring(2)}';
+      chips.add({
+        'label': dateLabel,
+        'type': 'dateRange',
+      });
+    }
+    
+    return chips;
+  }
+
+  String _getMonthName(int month) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return months[month - 1];
+  }
+
+  // Remove a specific filter chip
+  void removeFilterChip(Map<String, String> chip) {
+    final filters = Map<String, dynamic>.from(advancedFilters.value);
+    
+    if (chip['type'] == 'location') {
+      if (filters['locations'] != null) {
+        final locations = List<String>.from(filters['locations']);
+        locations.remove(chip['label']);
+        if (locations.isEmpty) {
+          filters.remove('locations');
+        } else {
+          filters['locations'] = locations;
+        }
+      }
+    } else if (chip['type'] == 'taskName') {
+      if (filters['taskNames'] != null) {
+        final taskNames = List<String>.from(filters['taskNames']);
+        taskNames.remove(chip['label']);
+        if (taskNames.isEmpty) {
+          filters.remove('taskNames');
+        } else {
+          filters['taskNames'] = taskNames;
+        }
+      }
+    } else if (chip['type'] == 'dateRange') {
+      filters.remove('startDate');
+      filters.remove('endDate');
+    }
+    
+    advancedFilters.value = filters;
     applyFilter();
   }
 

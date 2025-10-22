@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Dark Theme Colors
-  static const Color darkBackground = Color(0xFF232323);
-  static const Color darkCard = Color(0xFF393838);
+  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkCard = Color(0xFF1E1E1E);
   static const Color darkBorder = Color(0xFF4A4949);
   static const Color darkText = Colors.white;
   static const Color darkSecondaryText = Color(0xFF888787);
-  static const Color darkTertiary = Color(0xFF212121);
+  static const Color darkTertiary = Color(0xFF0A0A0A);
   
   // Light Theme Colors
   static const Color lightBackground = Color(0xFFF5F5F5);
@@ -40,9 +40,9 @@ class AppTheme {
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      Color(0xFF232323),
-      Color(0xFF393838),
-      Color(0xFF232323),
+      Color(0xFF0A0A0A),
+      Color(0xFF1E1E1E),
+      Color(0xFF121212),
     ],
   );
 
