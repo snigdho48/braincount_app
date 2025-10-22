@@ -61,7 +61,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                                   'Balance History',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontFamily: 'Oddlini',
+                                    fontFamily: 'BebasNeue',
                                     fontSize: 20 * scale,
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.primaryText,
@@ -72,7 +72,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                                   textAlign: TextAlign.center,
                                   maxLines: 1,
                                   style: TextStyle(
-                                    fontFamily: 'Helvetica',
+                                    fontFamily: 'Inter',
                                     fontSize: 16 * scale,
                                     color: AppColors.secondaryText,
                                     height: 1.5,
@@ -104,7 +104,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                               TextSpan(
                                 text: controller.totalWithdrawn.value.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},'),
                                 style: TextStyle(
-                                  fontFamily: 'Oddlini',
+                                  fontFamily: 'BebasNeue',
                                   fontSize: 48 * scale,
                                   fontWeight: FontWeight.w700,
                                   color: const Color(0xFFFFBB27),
@@ -113,7 +113,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                               TextSpan(
                                 text: ' BDT',
                                 style: TextStyle(
-                                  fontFamily: 'Oddlini',
+                                  fontFamily: 'BebasNeue',
                                   fontSize: 48 * scale,
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.primaryText,
@@ -267,7 +267,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
           Text(
             label,
             style: TextStyle(
-              fontFamily: 'Helvetica',
+              fontFamily: 'Inter',
               fontSize: 16 * scale,
               color: AppColors.primaryText,
               letterSpacing: 0.32 * scale,
@@ -279,7 +279,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
           Text(
             value,
             style: TextStyle(
-              fontFamily: 'Helvetica',
+              fontFamily: 'Inter',
               fontSize: 16 * scale,
               color: AppColors.secondaryText,
               letterSpacing: 0.32 * scale,
@@ -362,7 +362,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                 Text(
                   '${index + 1}. ${transaction.title}',
                   style: TextStyle(
-                    fontFamily: 'Helvetica',
+                    fontFamily: 'Inter',
                     fontSize: 16 * scale,
                     color: AppColors.primaryText,
                     letterSpacing: 0.32 * scale,
@@ -375,7 +375,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                       TextSpan(
                         text: transaction.amount.toStringAsFixed(0),
                         style: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontWeight: FontWeight.w700,
                           fontSize: 16 * scale,
                           color: AppColors.primaryText,
@@ -384,7 +384,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                       TextSpan(
                         text: ' BDT',
                         style: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 16 * scale,
                           color: AppColors.secondaryText,
                           letterSpacing: 0.32 * scale,
@@ -400,7 +400,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
           Text(
             'Date: ${transaction.date.day.toString().padLeft(2, '0')}/${transaction.date.month.toString().padLeft(2, '0')}/${transaction.date.year.toString().substring(2, 4)}',
             style: TextStyle(
-              fontFamily: 'Helvetica',
+              fontFamily: 'Inter',
               fontWeight: FontWeight.w300,
               fontSize: 8 * scale,
               color: AppColors.secondaryText.withOpacity(0.7),
@@ -439,7 +439,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
             Text(
               'Request Withdraw',
               style: TextStyle(
-                fontFamily: 'Oddlini',
+                fontFamily: 'BebasNeue',
                 fontSize: 16 * scale,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,

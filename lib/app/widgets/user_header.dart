@@ -73,7 +73,7 @@ class UserHeader extends StatelessWidget {
                           Text(
                             userName.toUpperCase(),
                             style: TextStyle(
-                              fontFamily: 'Oddlini',
+                              fontFamily: 'BebasNeue',
                               fontSize: 13 * scale,
                               fontWeight: FontWeight.w700,
                               color: AppColors.primaryText,

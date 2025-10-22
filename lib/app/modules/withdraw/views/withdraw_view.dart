@@ -52,7 +52,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       child: Text(
                         'Select Method',
                         style: TextStyle(
-                          fontFamily: 'Oddlini',
+                          fontFamily: 'BebasNeue',
                           fontSize: 20 * scale,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryText,
@@ -302,7 +302,7 @@ class WithdrawView extends GetView<WithdrawController> {
             child: Text(
               'Withdraw',
               style: TextStyle(
-                fontFamily: 'Oddlini',
+                fontFamily: 'BebasNeue',
                 fontSize: 16 * scale,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
@@ -355,7 +355,7 @@ class WithdrawView extends GetView<WithdrawController> {
                   child: Text(
                     'Withdraw Money',
                     style: TextStyle(
-                      fontFamily: 'Oddlini',
+                      fontFamily: 'BebasNeue',
                       fontSize: 20 * scale,
                       fontWeight: FontWeight.w700,
                       color: AppColors.primaryText,
@@ -483,7 +483,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       keyboardType: TextInputType.number,
                       onChanged: (value) => controller.updateAmount(value),
                       style: TextStyle(
-                        fontFamily: 'Helvetica',
+                        fontFamily: 'Inter',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
                         color: AppColors.primaryText,
@@ -491,7 +491,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       decoration: InputDecoration(
                         hintText: 'Enter amount',
                         hintStyle: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
                           color: AppColors.secondaryText,
@@ -504,7 +504,7 @@ class WithdrawView extends GetView<WithdrawController> {
                         contentPadding: EdgeInsets.zero,
                         suffixText: 'BDT',
                         suffixStyle: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w600,
                           color: AppColors.primaryText,
@@ -518,7 +518,7 @@ class WithdrawView extends GetView<WithdrawController> {
                       child: Text(
                         controller.amountError.value,
                         style: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 12 * scale,
                           fontWeight: FontWeight.w400,
                           color: AppColors.error,
@@ -538,7 +538,7 @@ class WithdrawView extends GetView<WithdrawController> {
                 Text(
                   'Available Balance:',
                   style: TextStyle(
-                    fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                     fontSize: 13 * scale,
                     fontWeight: FontWeight.w400,
                     color: AppColors.success,
@@ -547,7 +547,7 @@ class WithdrawView extends GetView<WithdrawController> {
                 Text(
                   '${controller.availableBalance.value.toStringAsFixed(0)} BDT',
                   style: TextStyle(
-                    fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                     fontSize: 13 * scale,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryText,
@@ -604,7 +604,7 @@ class WithdrawView extends GetView<WithdrawController> {
                             : Text(
                                 'Withdraw Now',
                                 style: TextStyle(
-                                  fontFamily: 'Oddlini',
+                                  fontFamily: 'BebasNeue',
                                   fontSize: 16 * scale,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
@@ -717,7 +717,7 @@ class WithdrawView extends GetView<WithdrawController> {
                 Text(
                   title,
                   style: TextStyle(
-                    fontFamily: 'Oddlini',
+                    fontFamily: 'BebasNeue',
                     fontSize: 20 * scale,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryText,

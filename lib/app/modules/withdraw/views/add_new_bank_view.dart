@@ -46,7 +46,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                       child: Text(
                         'Add',
                         style: TextStyle(
-                          fontFamily: 'Oddlini',
+                          fontFamily: 'BebasNeue',
                           fontSize: 20 * scale,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryText,
@@ -89,7 +89,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                           Text(
                             'Add new bank',
                             style: TextStyle(
-                              fontFamily: 'Oddlini',
+                              fontFamily: 'BebasNeue',
                               fontSize: 20 * scale,
                               fontWeight: FontWeight.w700,
                               color: AppColors.primaryText,
@@ -219,7 +219,7 @@ class AddNewBankView extends GetView<WithdrawController> {
               child: Text(
                 'Add',
                 style: TextStyle(
-                  fontFamily: 'Oddlini',
+                  fontFamily: 'BebasNeue',
                   fontSize: 16 * scale,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -263,7 +263,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                   child: Text(
                     label,
                     style: TextStyle(
-                      fontFamily: 'Helvetica',
+                      fontFamily: 'Inter',
                       fontSize: 10 * scale,
                       fontWeight: FontWeight.w400,
                       color: Colors.white,
@@ -273,7 +273,7 @@ class AddNewBankView extends GetView<WithdrawController> {
               : Text(
                   label,
                   style: TextStyle(
-                    fontFamily: 'Helvetica',
+                    fontFamily: 'Inter',
                     fontSize: 10 * scale,
                     fontWeight: FontWeight.w400,
                     color: AppColors.secondaryText.withOpacity(0.7),
@@ -301,7 +301,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                   keyboardType: keyboardType,
                   controller: controller,
                   style: TextStyle(
-                    fontFamily: 'Helvetica',
+                    fontFamily: 'Inter',
                     fontSize: 15 * scale,
                     fontWeight: FontWeight.w400,
                     color: AppColors.primaryText,
@@ -309,7 +309,7 @@ class AddNewBankView extends GetView<WithdrawController> {
                   decoration: InputDecoration(
                     hintText: hintText,
                     hintStyle: TextStyle(
-                      fontFamily: 'Helvetica',
+                      fontFamily: 'Inter',
                       fontSize: 15 * scale,
                       fontWeight: FontWeight.w400,
                       color: AppColors.secondaryText,

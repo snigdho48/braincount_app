@@ -10,6 +10,9 @@ import 'app/routes/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Register Google Fonts licenses
+  AppConfig.registerFontLicenses();
+  
   // Initialize app configuration (OneRequest, etc.)
   AppConfig.initialize();
   
@@ -18,6 +21,9 @@ void main() async {
   
   runApp(const BrainCountApp());
 }
+
+/// Register licenses for Google Fonts used in the app
+
 
 class BrainCountApp extends StatelessWidget {
   const BrainCountApp({super.key});

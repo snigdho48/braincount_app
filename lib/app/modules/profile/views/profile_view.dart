@@ -48,7 +48,7 @@ class ProfileView extends GetView<ProfileController> {
                         child: Text(
                           'Profile',
                           style: TextStyle(
-                            fontFamily: 'Oddlini',
+                            fontFamily: 'BebasNeue',
                             fontSize: 20 * scale,
                             fontWeight: FontWeight.w700,
                             color: AppColors.primaryText,
@@ -135,7 +135,7 @@ class ProfileView extends GetView<ProfileController> {
               Text(
                 'Logout',
                 style: TextStyle(
-                  fontFamily: 'Oddlini',
+                  fontFamily: 'BebasNeue',
                   fontSize: 16 * scale,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -326,7 +326,7 @@ class ProfileView extends GetView<ProfileController> {
                   Obx(() => Text(
                     (controller.user.value?.name ?? 'NAFSIN RAHMAN').toUpperCase(),
                     style: TextStyle(
-                      fontFamily: 'Oddlini',
+                      fontFamily: 'BebasNeue',
                       fontSize: 20 * scale,
                       fontWeight: FontWeight.w700,
                       color: AppColors.primaryText,
@@ -403,7 +403,7 @@ class ProfileView extends GetView<ProfileController> {
                     Text(
                       'Email:',
                       style: TextStyle(
-                        fontFamily: 'Helvetica',
+                        fontFamily: 'Inter',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
                         color: AppColors.primaryText,
@@ -416,7 +416,7 @@ class ProfileView extends GetView<ProfileController> {
                         textAlign: TextAlign.end,
                         controller.user.value?.email ?? '3rfwehe@gmail.com',
                         style: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
                           color: AppColors.secondaryText,
@@ -456,7 +456,7 @@ class ProfileView extends GetView<ProfileController> {
                     Text(
                       'Phone:',
                       style: TextStyle(
-                        fontFamily: 'Helvetica',
+                        fontFamily: 'Inter',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
                         color: AppColors.primaryText,
@@ -467,7 +467,7 @@ class ProfileView extends GetView<ProfileController> {
                     Text(
                       '0131976411',
                       style: TextStyle(
-                        fontFamily: 'Helvetica',
+                        fontFamily: 'Inter',
                         fontSize: 16 * scale,
                         fontWeight: FontWeight.w400,
                         color: AppColors.secondaryText,
@@ -498,7 +498,7 @@ class ProfileView extends GetView<ProfileController> {
             //         Text(
             //           'Total Withdraw:',
             //           style: TextStyle(
-            //             fontFamily: 'Helvetica',
+            //             fontFamily: 'Inter',
             //             fontSize: 16 * scale,
             //             fontWeight: FontWeight.w400,
             //             color: Colors.white,
@@ -509,7 +509,7 @@ class ProfileView extends GetView<ProfileController> {
             //         Text(
             //           '23,322 BDT',
             //           style: TextStyle(
-            //             fontFamily: 'Helvetica',
+            //             fontFamily: 'Inter',
             //             fontSize: 16 * scale,
             //             fontWeight: FontWeight.w400,
             //             color: const Color(0xFF888787),
@@ -581,7 +581,7 @@ class ProfileView extends GetView<ProfileController> {
                         Text(
                           'Language:',
                           style: TextStyle(
-                            fontFamily: 'Helvetica',
+                            fontFamily: 'Inter',
                             fontSize: 16 * scale,
                             fontWeight: FontWeight.w400,
                             color: AppColors.primaryText,
@@ -609,7 +609,7 @@ class ProfileView extends GetView<ProfileController> {
                       Obx(() => Text(
                         controller.selectedLanguage.value,
                         style: TextStyle(
-                          fontFamily: 'Helvetica',
+                          fontFamily: 'Inter',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w400,
                           color: AppColors.secondaryText,
@@ -654,7 +654,7 @@ class ProfileView extends GetView<ProfileController> {
                           Text(
                             'Theme:',
                             style: TextStyle(
-                              fontFamily: 'Helvetica',
+                              fontFamily: 'Inter',
                               fontSize: 16 * scale,
                               fontWeight: FontWeight.w400,
                               color: AppColors.primaryText,
@@ -681,7 +681,7 @@ class ProfileView extends GetView<ProfileController> {
                             Obx(() => Text(
                               controller.isDarkMode ? 'Dark' : 'Light',
                               style: TextStyle(
-                                fontFamily: 'Helvetica',
+                                fontFamily: 'Inter',
                                 fontSize: 16 * scale,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.secondaryText,
@@ -737,7 +737,7 @@ class ProfileView extends GetView<ProfileController> {
               child: Text(
                 'Select Language',
                 style: TextStyle(
-                  fontFamily: 'Helvetica',
+                  fontFamily: 'Inter',
                   fontSize: 18 * scale,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primaryText,
@@ -776,7 +776,7 @@ class ProfileView extends GetView<ProfileController> {
                         Text(
                           language == 'EN' ? 'English' : 'বাংলা',
                           style: TextStyle(
-                            fontFamily: 'Helvetica',
+                            fontFamily: 'Inter',
                             fontSize: 16 * scale,
                             fontWeight: FontWeight.w400,
                             color: isSelected
@@ -840,7 +840,7 @@ class ProfileView extends GetView<ProfileController> {
               child: Text(
                 'Select Theme',
                 style: TextStyle(
-                  fontFamily: 'Helvetica',
+                  fontFamily: 'Inter',
                   fontSize: 18 * scale,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primaryText,
@@ -889,7 +889,7 @@ class ProfileView extends GetView<ProfileController> {
                             Text(
                               theme['name'] as String,
                               style: TextStyle(
-                                fontFamily: 'Helvetica',
+                                fontFamily: 'Inter',
                                 fontSize: 16 * scale,
                                 fontWeight: FontWeight.w400,
                                 color: isSelected

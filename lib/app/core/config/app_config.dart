@@ -1,5 +1,7 @@
 import 'package:braincount/app/data/services/theme_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:one_request/one_request.dart';
 
@@ -14,6 +16,41 @@ static Future<void> initializeTheme() async {
   await themeService.loadTheme();
   Get.put(themeService);
 }
+  /// Register licenses for ALL fonts - CRITICAL for Play Store approval
+  /// All fonts now have proper open-source licenses
+  static void registerFontLicenses() {
+    LicenseRegistry.addLicense(() async* {
+      // 1. BebasNeue (Google Fonts - OFL license)
+      try {
+        final String bebasNeueLicense =
+            await rootBundle.loadString('assets/fonts/OFL_BebasNeue.txt');
+        yield LicenseEntryWithLineBreaks(['BebasNeue'], bebasNeueLicense);
+      } catch (_) {
+        // License file not found
+      }
+
+      // 2. Poppins (Google Fonts - OFL license)
+      try {
+        final String poppinsLicense =
+            await rootBundle.loadString('assets/fonts/OFL_Poppins.txt');
+        yield LicenseEntryWithLineBreaks(['Poppins'], poppinsLicense);
+      } catch (_) {}
+
+      // 3. Inter (Google Fonts - OFL license)
+      try {
+        final String interLicense =
+            await rootBundle.loadString('assets/fonts/OFL_Inter.txt');
+        yield LicenseEntryWithLineBreaks(['Inter'], interLicense);
+      } catch (_) {}
+
+      // 4. Satoshi (Fontshare - FFL license)
+      try {
+        final String satoshiLicense =
+            await rootBundle.loadString('assets/fonts/OFL_Satoshi.txt');
+        yield LicenseEntryWithLineBreaks(['Satoshi'], satoshiLicense);
+      } catch (_) {}
+    });
+  }
   static void _configureOneRequest() {
     // Configure loading UI with BrainCount theme
     OneRequest.loadingconfig(

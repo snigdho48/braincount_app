@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Dark Theme Colors
@@ -77,43 +76,51 @@ class AppTheme {
         onError: Colors.white,
       ),
       
-      textTheme: GoogleFonts.robotoTextTheme(
-        ThemeData.dark().textTheme.copyWith(
-          displayLarge: const TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: darkText,
-          ),
-          displayMedium: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: darkText,
-          ),
-          displaySmall: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: darkText,
-          ),
-          headlineMedium: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: darkText,
-          ),
-          titleLarge: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: darkText,
-          ),
-          bodyLarge: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            color: darkText,
-          ),
-          bodyMedium: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-            color: darkSecondaryText,
-          ),
+      textTheme: ThemeData.dark().textTheme.copyWith(
+        displayLarge: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 32,
+          fontWeight: FontWeight.w400,
+          color: darkText,
+          letterSpacing: 1.5,
+        ),
+        displayMedium: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 28,
+          fontWeight: FontWeight.w400,
+          color: darkText,
+          letterSpacing: 1.2,
+        ),
+        displaySmall: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: darkText,
+          letterSpacing: 1.0,
+        ),
+        headlineMedium: const TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: darkText,
+        ),
+        titleLarge: const TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: darkText,
+        ),
+        bodyLarge: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: darkText,
+        ),
+        bodyMedium: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: darkSecondaryText,
         ),
       ),
       
@@ -195,43 +202,51 @@ class AppTheme {
         onError: Colors.white,
       ),
       
-      textTheme: GoogleFonts.robotoTextTheme(
-        ThemeData.light().textTheme.copyWith(
-          displayLarge: const TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: lightText,
-          ),
-          displayMedium: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: lightText,
-          ),
-          displaySmall: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: lightText,
-          ),
-          headlineMedium: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: lightText,
-          ),
-          titleLarge: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: lightText,
-          ),
-          bodyLarge: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
-            color: lightText,
-          ),
-          bodyMedium: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.normal,
-            color: lightSecondaryText,
-          ),
+      textTheme: ThemeData.light().textTheme.copyWith(
+        displayLarge: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 32,
+          fontWeight: FontWeight.w400,
+          color: lightText,
+          letterSpacing: 1.5,
+        ),
+        displayMedium: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 28,
+          fontWeight: FontWeight.w400,
+          color: lightText,
+          letterSpacing: 1.2,
+        ),
+        displaySmall: const TextStyle(
+          fontFamily: 'BebasNeue',
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: lightText,
+          letterSpacing: 1.0,
+        ),
+        headlineMedium: const TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+          color: lightText,
+        ),
+        titleLarge: const TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: lightText,
+        ),
+        bodyLarge: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
+          color: lightText,
+        ),
+        bodyMedium: const TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+          color: lightSecondaryText,
         ),
       ),
       
