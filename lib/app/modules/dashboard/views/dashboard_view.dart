@@ -13,7 +13,6 @@ import '../../../data/services/theme_service.dart';
 import '../../main_navigation/controllers/main_navigation_controller.dart';
 import '../../tasks/controllers/task_list_controller.dart';
 import '../../../data/models/task_model.dart';
-import '../widgets/zoomed_task_card.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -62,11 +61,51 @@ class DashboardView extends GetView<DashboardController> {
                             scale: controller.isTaskZoomed.value ? 1.0 : 0.8,
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeOut,
-                            child: ZoomedTaskCard(
-                              task: controller.zoomedTask.value!,
-                              onAccept: () => controller.acceptTask(controller.zoomedTask.value!),
-                              onReject: () => controller.rejectTask(controller.zoomedTask.value!),
-                              onClose: controller.closeZoomedTask,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: Responsive.sp(7)),
+                              child: Stack(
+                                children: [
+                                  // Use the same PendingTaskCard with expanded state
+                                  PendingTaskCard(
+                                    task: controller.zoomedTask.value!,
+                                    index: 0, // Index doesn't matter here
+                                    isExpanded: true, // Always expanded
+                                    onTap: () {}, // No toggle needed
+                                    onAccept: () {
+                                      controller.acceptTask(controller.zoomedTask.value!);
+                                      controller.closeZoomedTask();
+                                    },
+                                    onReject: () {
+                                      controller.rejectTask(controller.zoomedTask.value!);
+                                      controller.closeZoomedTask();
+                                    },
+                                    onDetails: () {
+                                      Get.find<TaskListController>().goToTaskDetails(controller.zoomedTask.value!);
+                                      controller.closeZoomedTask();
+                                    },
+                                  ),
+                                  // Close button overlay
+                                  Positioned(
+                                    top: Responsive.sp(8),
+                                    right: Responsive.sp(8),
+                                    child: GestureDetector(
+                                      onTap: controller.closeZoomedTask,
+                                      child: Container(
+                                        padding: EdgeInsets.all(Responsive.sp(4)),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.5),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.close,
+                                          size: Responsive.sp(16),
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 24 * scale),
