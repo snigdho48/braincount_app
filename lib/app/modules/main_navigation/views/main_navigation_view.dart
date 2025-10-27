@@ -26,7 +26,8 @@ class MainNavigationView extends GetView<MainNavigationController> {
     ];
 
     return Scaffold(
-      extendBody: true,
+      extendBody: true,  // Allows content to extend behind the nav bar
+      resizeToAvoidBottomInset: false,  // Prevent resizing when keyboard appears
       body: Obx(() => IndexedStack(
             index: controller.currentIndex.value,
             children: pages,

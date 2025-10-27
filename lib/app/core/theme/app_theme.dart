@@ -145,7 +145,7 @@ class AppTheme {
       
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkCard,
+        fillColor: const Color(0xFF2D2D2D),  // Darker background matching Figma design
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -158,7 +158,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: primary, width: 2),
         ),
-        hintStyle: const TextStyle(color: darkSecondaryText),
+        hintStyle: const TextStyle(color: Color(0xFF888888)),  // Light gray for hints
       ),
       
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -271,7 +271,7 @@ class AppTheme {
       
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: const Color(0xFFF5F5F5),  // Light gray background for light theme
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: lightBorder),

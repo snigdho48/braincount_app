@@ -61,14 +61,14 @@ class CustomTextField extends StatelessWidget {
           keyboardType: keyboardType,
           maxLines: maxLines,
           style: TextStyle(
-            color: AppColors.primaryText,
+            color: Colors.white,  // White text for better contrast on dark background
             fontSize: Responsive.fontSize(15),
           ),
           validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
-              color: AppColors.secondaryText.withOpacity(0.6),
+              color: const Color(0xFF888888),  // Light gray for hints on dark background
               fontSize: Responsive.fontSize(14),
             ),
             prefixIcon: prefixIcon != null
@@ -83,7 +83,7 @@ class CustomTextField extends StatelessWidget {
                 : null,
             suffixIcon: suffixIcon,
             filled: true,
-            fillColor: AppColors.cardBackground,
+            fillColor: const Color(0xFF2D2D2D),  // Darker background matching Figma design
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Responsive.radiusMd),
               borderSide: BorderSide.none,
@@ -95,8 +95,8 @@ class CustomTextField extends StatelessWidget {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(Responsive.radiusMd),
               borderSide: BorderSide(
-                color: AppColors.primary.withOpacity(0.5),
-                width: Responsive.sp(1),
+                color: AppColors.primary.withOpacity(0.8),  // Slightly more visible when focused
+                width: Responsive.sp(1.5),
               ),
             ),
             errorBorder: OutlineInputBorder(

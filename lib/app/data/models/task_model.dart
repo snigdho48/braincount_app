@@ -67,6 +67,7 @@ class TaskModel {
 
   bool get isCompleted => status == 'completed';
   bool get isPending => status == 'pending';
+  bool get isAccepted => status == 'accepted';
   bool get isSubmitted => status == 'submitted';
   bool get isRejected => status == 'rejected';
 }

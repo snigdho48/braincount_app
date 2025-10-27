@@ -38,7 +38,12 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                   }
 
                   return SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                      top: 20,
+                      bottom: 20 + MediaQuery.of(context).padding.bottom + 80,  // Bottom nav + device nav
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -156,13 +161,104 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                           ),
                           const SizedBox(height: 24),
                         ],
-                        // Submit Button
-                        if (task.isPending)
-                          CustomButton(
-                            text: 'Submit Task',
-                            onPressed: controller.goToSubmission,
-                            icon: Icons.camera_alt,
-                          ),
+                        // Buttons for pending tasks
+                        if (task.isPending || task.isAccepted) ...[
+                          Obx(() {
+                            // Show Accept/Reject buttons if pending and not yet accepted
+                            if (task.isPending && !controller.isTaskAccepted.value) {
+                              return Row(
+                                children: [
+                                  // Accept Button
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: controller.acceptTask,
+                                      child: Container(
+                                        height: Responsive.buttonHeight,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.success,
+                                          borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors.success.withOpacity(0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.check_circle,
+                                              color: Colors.white,
+                                              size: Responsive.iconSize,
+                                            ),
+                                            SizedBox(width: Responsive.sm),
+                                            Text(
+                                              'Accept',
+                                              style: TextStyle(
+                                                fontSize: Responsive.fontSize(16),
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Reject Button
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: controller.rejectTask,
+                                      child: Container(
+                                        height: Responsive.buttonHeight,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.error,
+                                          borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: AppColors.error.withOpacity(0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.cancel,
+                                              color: Colors.white,
+                                              size: Responsive.iconSize,
+                                            ),
+                                            SizedBox(width: Responsive.sm),
+                                            Text(
+                                              'Reject',
+                                              style: TextStyle(
+                                                fontSize: Responsive.fontSize(16),
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            
+                            // Show Submit Task button after accepting
+                            return CustomButton(
+                              text: 'Submit Task',
+                              onPressed: controller.goToSubmission,
+                              icon: Icons.camera_alt,
+                            );
+                          }),
+                        ],
                       ],
                     ),
                   );

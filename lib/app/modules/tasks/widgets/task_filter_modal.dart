@@ -37,6 +37,11 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
   bool dateExpanded = false;
   DateTime selectedMonth = DateTime.now();
 
+  // Status filters
+  final List<String> statusOptions = ['Pending', 'Accepted', 'Submitted', 'Rejected'];
+  final Set<String> selectedStatuses = {};
+  bool statusExpanded = false;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +67,11 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
         final dateLabel = '${startDate!.day}-${endDate!.day} ${_getMonthName(startDate!.month)} ${startDate!.year.toString().substring(2)}';
         appliedFilters.add(dateLabel);
       }
+      if (initial['statuses'] != null) {
+        selectedStatuses.addAll((initial['statuses'] as List).cast<String>());
+        // Add to applied filters for display
+        appliedFilters.addAll((initial['statuses'] as List).cast<String>());
+      }
       if (initial['appliedFilters'] != null) {
         appliedFilters.addAll((initial['appliedFilters'] as List).cast<String>());
       }
@@ -72,6 +82,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
   Widget build(BuildContext context) {
     return Container(
       height: Get.height * 0.85,
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),  // Safe area for device nav
       decoration: BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.only(
@@ -122,6 +133,16 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                     isExpanded: dateExpanded,
                     onToggle: () => setState(() => dateExpanded = !dateExpanded),
                     child: dateExpanded ? _buildCalendar() : null,
+                  ),
+                  
+                  SizedBox(height: Responsive.mdVertical),
+                  
+                  // Status Filter
+                  _buildFilterSection(
+                    title: 'Status',
+                    isExpanded: statusExpanded,
+                    onToggle: () => setState(() => statusExpanded = !statusExpanded),
+                    child: statusExpanded ? _buildCheckboxList(statusOptions, selectedStatuses, 'status') : null,
                   ),
                   
                   SizedBox(height: Responsive.xlVertical),
@@ -224,6 +245,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                           // Also remove from selected items
                           selectedTaskNames.remove(filter);
                           selectedLocations.remove(filter);
+                          selectedStatuses.remove(filter);
                           // If it's a date filter, clear dates
                           if (filter.contains('-') && (filter.contains('Jan') || filter.contains('Feb') || filter.contains('Mar') || filter.contains('Apr') || filter.contains('May') || filter.contains('Jun') || filter.contains('Jul') || filter.contains('Aug') || filter.contains('Sep') || filter.contains('Oct') || filter.contains('Nov') || filter.contains('Dec'))) {
                             startDate = null;
@@ -270,10 +292,10 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: Responsive.sp(20),
-              vertical: Responsive.sp(9),
+              vertical: Responsive.sp(14),  // Increased from 9 to 14 for more height
             ),
             decoration: BoxDecoration(
-              color: AppColors.cardBackground,
+              color: const Color(0xFF2D2D2D),  // Match Figma design - darker background
               borderRadius: BorderRadius.circular(Responsive.radiusSm),
             ),
             child: Row(
@@ -282,16 +304,17 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
                 Text(
                   isExpanded ? title : 'Select',
                   style: TextStyle(
-                    fontSize: Responsive.fontSize(12),
-                    color: AppColors.primaryText,
+                    fontSize: Responsive.fontSize(14),  // Slightly larger for better readability
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 Transform.rotate(
                   angle: isExpanded ? -1.5708 : 1.5708, // 90 or -90 degrees
                   child: Icon(
                     Icons.arrow_forward_ios,
-                    color: AppColors.primaryText,
-                    size: Responsive.sp(10),
+                    color: Colors.white,
+                    size: Responsive.sp(12),  // Slightly larger arrow
                   ),
                 ),
               ],
@@ -612,6 +635,7 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
     final filters = {
       'taskNames': selectedTaskNames.toList(),
       'locations': selectedLocations.toList(),
+      'statuses': selectedStatuses.toList(),
       'startDate': startDate,
       'endDate': endDate,
       'appliedFilters': appliedFilters,
@@ -624,12 +648,14 @@ class _TaskFilterModalState extends State<TaskFilterModal> {
     setState(() {
       selectedTaskNames.clear();
       selectedLocations.clear();
+      selectedStatuses.clear();
       startDate = null;
       endDate = null;
       appliedFilters.clear();
       taskNameExpanded = false;
       locationExpanded = false;
       dateExpanded = false;
+      statusExpanded = false;
     });
   }
 

@@ -14,7 +14,10 @@ class WithdrawView extends GetView<WithdrawController> {
 
     return Scaffold(
       floatingActionButton: Obx(() => controller.hasSelectedAccount
-          ? _buildWithdrawButton(scale, context)
+          ? Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 80),  // Above nav bar
+              child: _buildWithdrawButton(scale, context),
+            )
           : const SizedBox.shrink()),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Obx(() => AnimatedContainer(

@@ -11,8 +11,8 @@ class AppColors {
   // Background Colors
   static Color get background =>
       _isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F5);
-  static Color get cardBackground => _isDark ? const Color(0xFF393838) : Colors.white;
-  static Color get cardDark => const Color(0xFF393838); // Alias for dark card (always dark)
+  static Color get cardBackground => _isDark ? const Color(0xFF2D2D2D) : Colors.white;  // Match input field background
+  static Color get cardDark => const Color(0xFF2D2D2D); // Match input field background (always dark)
   static Color get tertiaryBackground => _isDark ? const Color(0xFF212121) : const Color(0xFFFAFAFA);
   
   // Text Colors

@@ -87,7 +87,8 @@ class ProfileView extends GetView<ProfileController> {
                       // Logout Button
                       _buildLogoutButton(scale),
                       
-                      SizedBox(height: 100 * scale), // Bottom padding for nav
+                      // Bottom padding for nav + device navigation
+                      SizedBox(height: 80 * scale + MediaQuery.of(context).padding.bottom),
                     ],
                   ),
                 ),
@@ -149,8 +150,6 @@ class ProfileView extends GetView<ProfileController> {
   }
 
   Widget _buildProfileCard(double scale) {
-    final isDark = controller.isDarkMode;
-    
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -158,61 +157,37 @@ class ProfileView extends GetView<ProfileController> {
       height: 149 * scale,
       padding: EdgeInsets.symmetric(horizontal: 20 * scale, vertical: 26 * scale),
       decoration: BoxDecoration(
-        gradient: isDark
-            ? const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color.fromARGB(255, 127, 80, 163),
-                  Color(0xFF7B1BAB),
-                  Color.fromARGB(255, 157, 43, 245),
-                ],
-              )
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primary.withOpacity(0.15),
-                  AppColors.primary.withOpacity(0.08),
-                  AppColors.primary.withOpacity(0.12),
-                ],
-              ),
+        // Always use dark mode gradient (purple gradient)
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.fromARGB(255, 127, 80, 163),
+            Color(0xFF7B1BAB),
+            Color.fromARGB(255, 157, 43, 245),
+          ],
+        ),
         borderRadius: BorderRadius.circular(20 * scale),
-        border: isDark
-            ? null
-            : Border.all(
-                color: AppColors.primary.withOpacity(0.2),
-                width: 1.5,
-              ),
-        boxShadow: isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+        // No border in any theme
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Avatar
+          // Avatar (always use dark mode styling)
           Container(
             width: 106 * scale,
             height: 97 * scale,
             padding: EdgeInsets.all(5 * scale),
             decoration: BoxDecoration(
-              color: isDark
-                  ? const Color(0xFFE0B8FF)
-                  : AppColors.primary.withOpacity(0.2),
+              color: const Color(0xFFE0B8FF),  // Always light purple background
               borderRadius: BorderRadius.circular(13 * scale),
-              border: isDark
-                  ? null
-                  : Border.all(
-                      color: AppColors.primary.withOpacity(0.3),
-                      width: 2,
-                    ),
             ),
             child: Stack(
               children: [
@@ -224,13 +199,11 @@ class ProfileView extends GetView<ProfileController> {
                     width: double.infinity,
                     height: double.infinity,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: isDark
-                          ? const Color(0xFFE0B8FF)
-                          : AppColors.primary.withOpacity(0.2),
+                      color: const Color(0xFFE0B8FF),
                       child: Icon(
                         Icons.person,
                         size: 50 * scale,
-                        color: isDark ? Colors.white : AppColors.primary,
+                        color: Colors.white,
                       ),
                     ),
                   ),
@@ -241,29 +214,14 @@ class ProfileView extends GetView<ProfileController> {
                   child: Container(
                     width: 22 * scale,
                     height: 22 * scale,
-                    decoration: BoxDecoration(
-                      color: isDark ? Colors.white : AppColors.primary,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,  // Always white circle
                       shape: BoxShape.circle,
-                      border: isDark
-                          ? null
-                          : Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                      boxShadow: isDark
-                          ? null
-                          : [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                     ),
                     child: Icon(
                       Icons.camera_alt,
                       size: 14 * scale,
-                      color: isDark ? const Color(0xFF5B099B) : Colors.white,
+                      color: const Color(0xFF5B099B),  // Always purple icon
                     ),
                   ),
                 ),
@@ -300,7 +258,7 @@ class ProfileView extends GetView<ProfileController> {
                           fontFamily: 'Satoshi',
                           fontSize: 16 * scale,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.primaryText,
+                          color: Colors.white,  // Always white text
                         ),
                       )),
                       Text(
@@ -309,9 +267,7 @@ class ProfileView extends GetView<ProfileController> {
                           fontFamily: 'Poppins',
                           fontSize: 10 * scale,
                           fontWeight: FontWeight.w500,
-                          color: isDark
-                              ? const Color(0xFFDEA5FF)
-                              : AppColors.primary.withOpacity(0.7),
+                          color: const Color(0xFFDEA5FF),  // Always light purple
                         ),
                       ),
                     ],
@@ -329,7 +285,7 @@ class ProfileView extends GetView<ProfileController> {
                       fontFamily: 'BebasNeue',
                       fontSize: 20 * scale,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryText,
+                      color: Colors.white,  // Always white text
                     ),
                     textAlign: TextAlign.center,
                   )),
@@ -340,7 +296,7 @@ class ProfileView extends GetView<ProfileController> {
                       fontFamily: 'Satoshi',
                       fontSize: 11 * scale,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.primaryText,
+                      color: Colors.white,  // Always white text
                     ),
                     textAlign: TextAlign.right,
                   )),

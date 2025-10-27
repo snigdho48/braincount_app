@@ -13,7 +13,10 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
     final screenWidth = Get.width;
 
     return Scaffold(
-      floatingActionButton: _buildRequestButton(scale),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 60),  // Above nav bar
+        child: _buildRequestButton(scale),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Obx(() => AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -181,7 +184,7 @@ class BalanceHistoryView extends GetView<BalanceHistoryController> {
                       ),
                     ),
 
-                    SizedBox(height: 100 * scale),
+                    SizedBox(height: 100 * scale + MediaQuery.of(context).padding.bottom),  // Bottom nav + device nav
                   ],
                 ),
               ),

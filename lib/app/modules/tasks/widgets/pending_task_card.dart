@@ -5,25 +5,28 @@ import '../../../core/utils/responsive.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/services/theme_service.dart';
 
-class SubmittedTaskCard extends StatelessWidget {
+class PendingTaskCard extends StatelessWidget {
   final TaskModel task;
   final int index;
   final bool isExpanded;
   final VoidCallback onTap;
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
   final VoidCallback? onDetails;
 
-  const SubmittedTaskCard({
+  const PendingTaskCard({
     super.key,
     required this.task,
     required this.index,
     required this.isExpanded,
     required this.onTap,
+    this.onAccept,
+    this.onReject,
     this.onDetails,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Use a solid light grey background in light mode for better card appearance
     final isDark = Get.find<ThemeService>().isDarkMode.value;
     final cardColor = isDark ? AppColors.cardBackground : Colors.white;
     
@@ -39,8 +42,8 @@ class SubmittedTaskCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(Responsive.sp(10)),
               border: Border.all(
                 color: isDark 
-                    ? AppColors.success.withOpacity(0.5) 
-                    : AppColors.success.withOpacity(0.2),
+                    ? AppColors.primary.withOpacity(0.5) 
+                    : AppColors.primary.withOpacity(0.2),
                 width: 1.5,
               ),
               boxShadow: [
@@ -119,7 +122,7 @@ class SubmittedTaskCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Submission Status: ${task.submissionStatus ?? 'Accepted'}',
+                                      'Location: ${task.location}',
                                       style: TextStyle(
                                         fontSize: Responsive.fontSize(9),
                                         color: AppColors.primaryText,
@@ -129,10 +132,11 @@ class SubmittedTaskCard extends StatelessWidget {
                                     ),
                                     SizedBox(height: Responsive.sp(4)),
                                     Text(
-                                      'Submitted Status: ${task.submittedStatus ?? 'Good'}',
+                                      'Reward: ${task.reward.toStringAsFixed(2)} BDT',
                                       style: TextStyle(
                                         fontSize: Responsive.fontSize(9),
-                                        color: AppColors.primaryText,
+                                        color: AppColors.success,
+                                        fontWeight: FontWeight.w600,
                                         height: 1.25,
                                         letterSpacing: 0.18,
                                       ),
@@ -153,7 +157,7 @@ class SubmittedTaskCard extends StatelessWidget {
                               
                               // Arrow icon
                               Transform.rotate(
-                                angle: 0, // 268.584 degrees in radians
+                                angle: 0,
                                 child: Icon(
                                   Icons.arrow_forward_ios,
                                   size: Responsive.sp(12),
@@ -162,43 +166,116 @@ class SubmittedTaskCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        
+        // Accept/Reject/Details buttons (only shown when expanded)
+        if (isExpanded) ...[
+          SizedBox(height: Responsive.sp(12)),
+          Row(
+            children: [
+              // Accept Button
+              Expanded(
+                child: GestureDetector(
+                  onTap: onAccept,
+                  child: Container(
+                    height: Responsive.sp(30),
+                    decoration: BoxDecoration(
+                      color: AppColors.success,
+                      borderRadius: BorderRadius.circular(Responsive.sp(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.success.withOpacity(0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                
-                // Details button (only shown when expanded)
-                if (isExpanded) ...[
-                  SizedBox(height: Responsive.sp(12)),
-                  GestureDetector(
-                    onTap: onDetails,
-                    child: Container(
-                      height: Responsive.sp(40),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(Responsive.sp(8)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Details',
-                          style: TextStyle(
-                            fontSize: Responsive.fontSize(14),
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                    child: Center(
+                      child: Text(
+                        'Accept',
+                        style: TextStyle(
+                          fontSize: Responsive.fontSize(14),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
+              ),
+              
+              SizedBox(width: Responsive.sp(8)),
+              
+              // Reject Button
+              Expanded(
+                child: GestureDetector(
+                  onTap: onReject,
+                  child: Container(
+                    height: Responsive.sp(30),
+                    decoration: BoxDecoration(
+                      color: AppColors.error,
+                      borderRadius: BorderRadius.circular(Responsive.sp(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.error.withOpacity(0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Reject',
+                        style: TextStyle(
+                          fontSize: Responsive.fontSize(14),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              
+              SizedBox(width: Responsive.sp(8)),
+              
+              // Details Button
+              Expanded(
+                child: GestureDetector(
+                  onTap: onDetails,
+                  child: Container(
+                    height: Responsive.sp(30),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(Responsive.sp(8)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Details',
+                        style: TextStyle(
+                          fontSize: Responsive.fontSize(14),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
               ],
             ),
           ),
@@ -216,10 +293,10 @@ class SubmittedTaskCard extends StatelessWidget {
     final deadlineText = '${task.deadline!.day.toString().padLeft(2, '0')}/${task.deadline!.month.toString().padLeft(2, '0')}/${task.deadline!.year.toString().substring(2)}';
     
     return Positioned(
-      right: Responsive.sp(10),
+      right: Responsive.sp(15),
       bottom: isExpanded
-          ? Responsive.sp(60)  // Higher when button is visible
-          : Responsive.sp(25),
+          ? Responsive.sp(70)  // Higher when buttons are visible
+          : Responsive.sp(28),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: Responsive.sp(6),

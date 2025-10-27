@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:braincount/app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,9 +7,13 @@ import '../../../widgets/user_header.dart';
 import '../../../widgets/brain_loader.dart';
 import '../../../routes/app_routes.dart';
 import '../../tasks/widgets/submitted_task_card.dart';
+import '../../tasks/widgets/pending_task_card.dart';
+import '../../tasks/widgets/accepted_task_card.dart';
 import '../../../data/services/theme_service.dart';
 import '../../main_navigation/controllers/main_navigation_controller.dart';
 import '../../tasks/controllers/task_list_controller.dart';
+import '../../../data/models/task_model.dart';
+import '../widgets/zoomed_task_card.dart';
 
 class DashboardView extends GetView<DashboardController> {
   const DashboardView({super.key});
@@ -49,6 +52,29 @@ class DashboardView extends GetView<DashboardController> {
                   _build3DTaskMap(scale),
                   
                   SizedBox(height: 35 * scale),
+
+                  // Zoomed Task Card (positioned before summary)
+                  Obx(() {
+                    if (controller.isTaskZoomed.value && controller.zoomedTask.value != null) {
+                      return Column(
+                        children: [
+                          AnimatedScale(
+                            scale: controller.isTaskZoomed.value ? 1.0 : 0.8,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                            child: ZoomedTaskCard(
+                              task: controller.zoomedTask.value!,
+                              onAccept: () => controller.acceptTask(controller.zoomedTask.value!),
+                              onReject: () => controller.rejectTask(controller.zoomedTask.value!),
+                              onClose: controller.closeZoomedTask,
+                            ),
+                          ),
+                          SizedBox(height: 24 * scale),
+                        ],
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  }),
                   
                   // Summary Title
                   _buildSummaryTitle(scale),
@@ -63,7 +89,8 @@ class DashboardView extends GetView<DashboardController> {
                   // Task List with Tabs
                   _buildTaskSection(scale),
                   
-                  SizedBox(height: 120 * scale), // Space for bottom nav
+                  // Space for bottom nav + device navigation
+                  SizedBox(height: 100 * scale + MediaQuery.of(context).padding.bottom),
                 ],
               ),
             );
@@ -132,18 +159,28 @@ class DashboardView extends GetView<DashboardController> {
           ),
           
           // Task Card 1 (Top-left on buildings)
-          Positioned(
-            top: 0,
-            left: 65 * scale,
-            child: _build3DTaskCard('Task 2', scale),
-          ),
+          Obx(() {
+            if (controller.latest3DTasks.isNotEmpty) {
+              return Positioned(
+                top: 0,
+                left: 65 * scale,
+                child: _build3DTaskCard(controller.latest3DTasks[0], scale),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
           
           // Task Card 2 (Center-right on buildings)
-          Positioned(
-            top: 110 * scale,
-            left: 125 * scale,
-            child: _build3DTaskCard('Task 4', scale),
-          ),
+          Obx(() {
+            if (controller.latest3DTasks.length > 1) {
+              return Positioned(
+                top: 110 * scale,
+                left: 125 * scale,
+                child: _build3DTaskCard(controller.latest3DTasks[1], scale),
+              );
+            }
+            return const SizedBox.shrink();
+          }),
           
           // Withdraw Button (bottom-right)
           Positioned(
@@ -156,95 +193,105 @@ class DashboardView extends GetView<DashboardController> {
     );
   }
 
-  Widget _build3DTaskCard(String taskName, double scale) {
+  Widget _build3DTaskCard(TaskModel task, double scale) {
     final isDark = Get.find<ThemeService>().isDarkMode.value;
     
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(7 * scale),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-      height: 49 * scale,
-      width: 161 * scale,
-      decoration: BoxDecoration(
+    return GestureDetector(
+      onTap: () => controller.zoomToTask(task),
+      child: Container(
+        height: 49 * scale,
+        width: 161 * scale,
+        decoration: BoxDecoration(
+          // Dark mode: White cards, Light mode: Light cards with border
+          color: isDark 
+              ? Colors.white  // Solid white in dark mode
+              : const Color(0xFFF5F5F5),  // Light gray in light mode
+          borderRadius: BorderRadius.circular(7 * scale),
+          border: Border.all(
             color: isDark 
-                ? Colors.white.withOpacity(0.1)
-                : Colors.white.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(7 * scale),
-            border: Border.all(
-              color: isDark 
-                  ? Colors.white.withOpacity(0.2)
-                  : Colors.white.withOpacity(0.4),
-              width: 1,
-            ),
-        boxShadow: [
-          BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10 * scale,
-            offset: Offset(0, 4 * scale),
+                ? Colors.white.withOpacity(0.3)  // Subtle border in dark
+                : AppColors.border.withOpacity(0.6),  // More visible border in light
+            width: 1,
           ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Task name
-          Positioned(
-            left: 15 * scale,
-            top: 10 * scale,
-            child: Text(
-              taskName,
-              style: TextStyle(
-                fontSize: 15 * scale,
-                fontWeight: FontWeight.bold,
-                    color: AppColors.primaryText,
-                letterSpacing: -0.15,
-                height: 1.5,
-              ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.1),
+              blurRadius: 10 * scale,
+              offset: Offset(0, 4 * scale),
             ),
-          ),
-          
-          // View button
-          Positioned(
-            right: 11 * scale,
-            top: 11 * scale,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 11 * scale,
-                vertical: 4 * scale,
-              ),
-              decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(15 * scale),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.2),
-                      width: 1,
-                    ),
-              ),
-              child: Text(
-                'View',
-                style: TextStyle(
-                  fontSize: 12 * scale,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: -0.12,
-                  height: 1.5,
+          ],
+        ),
+        child: Stack(
+          children: [
+            // Task name
+            Positioned(
+              left: 15 * scale,
+              top: 10 * scale,
+              child: SizedBox(
+                width: 100 * scale,
+                child: Text(
+                  task.title,
+                  style: TextStyle(
+                    fontSize: 13 * scale,
+                    fontWeight: FontWeight.bold,
+                    color: isDark 
+                        ? Colors.black  // Black text on white card in dark mode
+                        : const Color(0xFF212121),  // Dark text on light card in light mode
+                    letterSpacing: -0.15,
+                    height: 1.2,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-          ),
-          
-          // Arrow at bottom
-          Positioned(
-            bottom: -7 * scale,
-            left: 36 * scale,
-            child: Icon(
-              Icons.arrow_drop_down,
-                  color: AppColors.primaryText,
-              size: 14 * scale,
+            
+            // View button
+            Positioned(
+              right: 11 * scale,
+              top: 11 * scale,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 11 * scale,
+                  vertical: 4 * scale,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,  // Solid purple button
+                  borderRadius: BorderRadius.circular(15 * scale),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'View',
+                  style: TextStyle(
+                    fontSize: 12 * scale,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: -0.12,
+                    height: 1.5,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ],
-          ),
+            
+            // Arrow at bottom
+            Positioned(
+              bottom: -7 * scale,
+              left: 36 * scale,
+              child: Icon(
+                Icons.arrow_drop_down,
+                color: isDark 
+                    ? Colors.black  // Black arrow on white card in dark mode
+                    : const Color(0xFF212121),  // Dark arrow on light card in light mode
+                size: 14 * scale,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -389,7 +436,7 @@ class DashboardView extends GetView<DashboardController> {
           
           // Icon
           Positioned(
-            top: 21 * scale,
+            top: 15 * scale,
             left: 24 * scale,
             child: Image.asset(
               iconPath,
@@ -491,7 +538,7 @@ class DashboardView extends GetView<DashboardController> {
           
           // Icon
           Positioned(
-            top: 24 * scale,
+            top: 18 * scale,
             left: 26 * scale,
             child: Image.asset(
               'assets/figma_exports/ced8213fa5d46c747c4716e117d8a33b5e7cb0a3.png',
@@ -621,6 +668,14 @@ class DashboardView extends GetView<DashboardController> {
           ),
           SizedBox(width: 6 * scale),
           _buildTabItem(
+            'Accepted',
+            Icons.task_alt,
+            controller.selectedFilter.value == 'accepted',
+            () => controller.changeFilter('accepted'),
+            scale,
+          ),
+          SizedBox(width: 6 * scale),
+          _buildTabItem(
             'Submitted',
             Icons.check_circle_outline,
             controller.selectedFilter.value == 'submitted',
@@ -639,16 +694,15 @@ class DashboardView extends GetView<DashboardController> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 109 * scale,
         height: 30 * scale,
         padding: EdgeInsets.symmetric(
           horizontal: 17 * scale,
           vertical: 7 * scale,
         ),
         decoration: BoxDecoration(
-           color: isActive 
-               ? (isDark?const Color(0xFF646397) :Color.fromARGB(255, 155, 104, 159))
-               : (isDark ? AppColors.cardBackground.withOpacity(0.5) : const Color(0xFFFAFAFA)),
+          color: isActive 
+              ? (isDark ? const Color(0xFF646397) : Color.fromARGB(255, 155, 104, 159))
+              : (isDark ? AppColors.cardBackground.withOpacity(0.5) : const Color(0xFFFAFAFA)),
           borderRadius: BorderRadius.circular(6 * scale),
            border: !isActive ? Border.all(
              color: isDark ? AppColors.border.withOpacity(0.3) : AppColors.border.withOpacity(0.25),
@@ -696,7 +750,7 @@ class DashboardView extends GetView<DashboardController> {
 
   Widget _buildTaskList(double scale) {
     return Obx(() {
-      final tasks = controller.recentTasks.take(3).toList();
+      final tasks = controller.filteredRecentTasks.take(3).toList();
       
       if (tasks.isEmpty) {
         return Padding(
@@ -722,11 +776,7 @@ class DashboardView extends GetView<DashboardController> {
               ),
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 7.5 * scale),
-                child: SubmittedTaskCard(
-                  task: task,
-                  index: index + 1,
-                  onTap: () => controller.goToTaskDetails(task),
-                ),
+                child: _buildTaskCard(task, index + 1),
               ),
             );
           }),
@@ -738,6 +788,48 @@ class DashboardView extends GetView<DashboardController> {
         ],
       );
     });
+  }
+
+  Widget _buildTaskCard(TaskModel task, int index) {
+    // Show appropriate card based on task status
+    if (task.isPending) {
+      return Obx(() {
+        final taskListController = Get.find<TaskListController>();
+        final isExpanded = taskListController.isCardExpanded(task.id);
+        
+        return PendingTaskCard(
+          task: task,
+          index: index,
+          isExpanded: isExpanded,
+          onTap: () => taskListController.toggleCardExpansion(task.id),
+          onAccept: () {
+            taskListController.expandedTaskId.value = null;
+            taskListController.acceptTask(task);
+          },
+          onReject: () {
+            taskListController.expandedTaskId.value = null;
+            taskListController.rejectTask(task);
+          },
+          onDetails: () => controller.goToTaskDetails(task),
+        );
+      });
+    }
+    
+    if (task.isAccepted) {
+      return AcceptedTaskCard(
+        task: task,
+        index: index,
+        onDetails: () => controller.goToTaskDetails(task),
+      );
+    }
+    
+    // For submitted/completed tasks
+    return SubmittedTaskCard(
+      isExpanded: false,
+      task: task,
+      index: index,
+      onTap: () => controller.goToTaskDetails(task),
+    );
   }
 
   Widget _buildSeeMoreButton(double scale) {

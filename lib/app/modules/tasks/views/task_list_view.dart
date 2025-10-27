@@ -6,6 +6,8 @@ import '../../../core/utils/responsive.dart';
 import '../../../widgets/brain_loader.dart';
 import '../widgets/task_filter_modal.dart';
 import '../widgets/submitted_task_card.dart';
+import '../widgets/pending_task_card.dart';
+import '../widgets/accepted_task_card.dart';
 import '../../../data/services/theme_service.dart';
 
 class TaskListView extends GetView<TaskListController> {
@@ -22,6 +24,7 @@ class TaskListView extends GetView<TaskListController> {
           gradient: AppColors.backgroundGradient,
         ),
         child: SafeArea(
+          bottom: false,  // Don't apply SafeArea to bottom, we'll handle it manually
           child: Column(
             children: [
               // User Header
@@ -45,10 +48,8 @@ class TaskListView extends GetView<TaskListController> {
                 return _buildSelectedFilterChips(chips);
               }),
               
-              // Task List Container
-              Expanded(
-                child: _buildTaskListContainer(),
-              ),
+              // Task List Container (no Expanded, auto-sizes)
+             _buildTaskListContainer(),
             ],
           ),
         ),
@@ -56,7 +57,6 @@ class TaskListView extends GetView<TaskListController> {
     );
   }
 
-  
 
   Widget _buildTitleBar() {
     return Container(
@@ -222,39 +222,53 @@ class TaskListView extends GetView<TaskListController> {
         top: Responsive.smVertical,
         bottom: Responsive.smVertical,
       ),
-      padding: EdgeInsets.symmetric(horizontal: Responsive.sp(10) ,vertical: Responsive.sp(4)),
-      decoration: BoxDecoration(
-        color: isDark ? Colors.transparent : const Color(0xFFFFFFFF).withOpacity(0.4),
-        borderRadius: BorderRadius.circular(Responsive.sp(8)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildTabItem(
-              'Task List',
-              Icons.list,
-              controller.selectedFilter.value == 'all',
-              () => controller.changeFilter('all'),
-              scale,
-            ),
-            SizedBox(width: 6 * scale),
-            _buildTabItem(
-              'Pending',
-              Icons.pending,
-              controller.selectedFilter.value == 'pending',
-              () => controller.changeFilter('pending'),
-              scale,
-            ),
-            SizedBox(width: 6 * scale),
-            _buildTabItem(
-              'Submitted',
-              Icons.check_circle_outline,
-              controller.selectedFilter.value == 'submitted',
-              () => controller.changeFilter('submitted'),
-              scale,
-            ),
-        ],
+      height: 38 * scale,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: Responsive.sp(10)),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: Responsive.sp(10), vertical: Responsive.sp(4)),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.transparent : const Color(0xFFFFFFFF).withOpacity(0.4),
+            borderRadius: BorderRadius.circular(Responsive.sp(8)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildTabItem(
+                'Task List',
+                Icons.list,
+                controller.selectedFilter.value == 'all',
+                () => controller.changeFilter('all'),
+                scale,
+              ),
+              SizedBox(width: 6 * scale),
+              _buildTabItem(
+                'Pending',
+                Icons.pending,
+                controller.selectedFilter.value == 'pending',
+                () => controller.changeFilter('pending'),
+                scale,
+              ),
+              SizedBox(width: 6 * scale),
+              _buildTabItem(
+                'Accepted',
+                Icons.task_alt,
+                controller.selectedFilter.value == 'accepted',
+                () => controller.changeFilter('accepted'),
+                scale,
+              ),
+              SizedBox(width: 6 * scale),
+              _buildTabItem(
+                'Submitted',
+                Icons.check_circle_outline,
+                controller.selectedFilter.value == 'submitted',
+                () => controller.changeFilter('submitted'),
+                scale,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -331,7 +345,6 @@ class TaskListView extends GetView<TaskListController> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 109 * scale,
         height: 30 * scale,
         padding: EdgeInsets.symmetric(
           horizontal: 17 * scale,
@@ -403,9 +416,17 @@ class TaskListView extends GetView<TaskListController> {
 
   Widget _buildTaskListContainer() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: Responsive.sp(7)),
+      margin: EdgeInsets.only(
+        left: Responsive.sp(7),
+        right: Responsive.sp(7),
+        bottom: MediaQuery.of(Get.context!).padding.bottom + Responsive.sp(80),  // Bottom nav + device nav
+      ),
+      constraints:  BoxConstraints(
+        maxHeight: Get.height * .8,
+      ),
       padding: EdgeInsets.all(Responsive.sp(11)),
       decoration: BoxDecoration(
+        
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(Responsive.sp(10)),
         border: Border.all(
@@ -439,13 +460,49 @@ class TaskListView extends GetView<TaskListController> {
 
         return ListView.builder(
           padding: EdgeInsets.zero,
+          shrinkWrap: true,
           itemCount: controller.filteredTasks.length,
           itemBuilder: (context, index) {
             final task = controller.filteredTasks[index];
+            // Show PendingTaskCard with Accept/Reject buttons for pending tasks
+            if (task.isPending) {
+              // Wrap only pending cards in Obx for expansion
+              return Obx(() {
+                final isExpanded = controller.isCardExpanded(task.id);
+                return PendingTaskCard(
+                  task: task,
+                  index: index,
+                  isExpanded: isExpanded,
+                  onTap: () => controller.toggleCardExpansion(task.id),
+                  onAccept: () {
+                    controller.expandedTaskId.value = null; // Collapse card
+                    controller.acceptTask(task);
+                  },
+                  onReject: () {
+                    controller.expandedTaskId.value = null; // Collapse card
+                    controller.rejectTask(task);
+                  },
+                  onDetails: () => controller.goToTaskDetails(task),
+                );
+              });
+            }
+            
+            // Show accepted tasks with Submit button
+            if (task.isAccepted) {
+              return AcceptedTaskCard(
+                task: task,
+                index: index,
+                onDetails: () => controller.goToTaskDetails(task),
+              );
+            }
+            
+            // Show SubmittedTaskCard for submitted/completed tasks (navigate directly)
             return SubmittedTaskCard(
               task: task,
               index: index,
-              onTap: () => controller.goToTaskDetails(task),
+              isExpanded: false,  // Never expand submitted tasks
+              onTap: () => controller.goToTaskDetails(task),  // Navigate directly to details
+              onDetails: () => controller.goToTaskDetails(task),
             );
           },
         );

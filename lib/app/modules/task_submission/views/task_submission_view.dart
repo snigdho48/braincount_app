@@ -7,15 +7,12 @@ import '../controllers/task_submission_controller.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../data/services/camera_service.dart';
-import '../../../data/services/theme_service.dart';
 
 class TaskSubmissionView extends GetView<TaskSubmissionController> {
   const TaskSubmissionView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeService = Get.find<ThemeService>();
-    
     return Scaffold(
       body: Obx(() => AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -31,7 +28,12 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
               // Content
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.all(Responsive.md),
+                  padding: EdgeInsets.only(
+                    left: Responsive.md,
+                    right: Responsive.md,
+                    top: Responsive.md,
+                    bottom: Responsive.md + MediaQuery.of(context).padding.bottom + 80,  // Bottom nav + device nav
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

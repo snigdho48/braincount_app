@@ -13,6 +13,9 @@ class TaskListController extends GetxController {
   final searchQuery = ''.obs;
   final advancedFilters = Rx<Map<String, dynamic>>({});
   
+  // Expanded card tracking
+  final expandedTaskId = Rxn<String>(); // Track which card is expanded
+  
   // User data (reactive for API)
   final userName = 'NAFSIN RAHMAN'.obs;
   final userId = '34874'.obs;
@@ -80,6 +83,8 @@ class TaskListController extends GetxController {
     // Apply status filter
     if (selectedFilter.value == 'pending') {
       tempTasks = tempTasks.where((task) => task.status == 'pending').toList();
+    } else if (selectedFilter.value == 'accepted') {
+      tempTasks = tempTasks.where((task) => task.status == 'accepted').toList();
     } else if (selectedFilter.value == 'submitted') {
       tempTasks = tempTasks.where((task) => task.status == 'submitted' || task.status == 'completed').toList();
     }
@@ -128,6 +133,18 @@ class TaskListController extends GetxController {
           return task.deadline!.isAfter(startDate.subtract(const Duration(days: 1))) &&
                  task.deadline!.isBefore(endDate.add(const Duration(days: 1)));
         }).toList();
+      }
+
+      // Status filter
+      if (advancedFilters.value['statuses'] != null) {
+        final statuses = advancedFilters.value['statuses'] as List<String>;
+        if (statuses.isNotEmpty) {
+          tempTasks = tempTasks.where((task) {
+            return statuses.any((status) => 
+              task.status.toLowerCase() == status.toLowerCase()
+            );
+          }).toList();
+        }
       }
     }
 
@@ -183,6 +200,17 @@ class TaskListController extends GetxController {
       });
     }
     
+    // Add status filters
+    if (advancedFilters.value['statuses'] != null) {
+      final statuses = advancedFilters.value['statuses'] as List<String>;
+      for (var status in statuses) {
+        chips.add({
+          'label': status,
+          'type': 'status',
+        });
+      }
+    }
+    
     return chips;
   }
 
@@ -215,6 +243,16 @@ class TaskListController extends GetxController {
           filters['taskNames'] = taskNames;
         }
       }
+    } else if (chip['type'] == 'status') {
+      if (filters['statuses'] != null) {
+        final statuses = List<String>.from(filters['statuses']);
+        statuses.remove(chip['label']);
+        if (statuses.isEmpty) {
+          filters.remove('statuses');
+        } else {
+          filters['statuses'] = statuses;
+        }
+      }
     } else if (chip['type'] == 'dateRange') {
       filters.remove('startDate');
       filters.remove('endDate');
@@ -235,8 +273,86 @@ class TaskListController extends GetxController {
     applyFilter();
   }
 
+  void toggleCardExpansion(String taskId) {
+    if (expandedTaskId.value == taskId) {
+      expandedTaskId.value = null; // Collapse if already expanded
+    } else {
+      expandedTaskId.value = taskId; // Expand this card
+    }
+  }
+
+  bool isCardExpanded(String taskId) {
+    return expandedTaskId.value == taskId;
+  }
+
   void goToTaskDetails(TaskModel task) {
     Get.toNamed(AppRoutes.taskDetails, arguments: {'task': task});
+  }
+
+  // Accept/Reject task methods for task list
+  Future<void> acceptTask(TaskModel task) async {
+    try {
+      // TODO: Call API to accept task
+      // await ApiService.acceptTask(task.id);
+      
+      // Update task status locally (this will be replaced by API response)
+      final index = tasks.indexWhere((t) => t.id == task.id);
+      if (index != -1) {
+        tasks[index] = TaskModel(
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          location: task.location,
+          imageUrl: task.imageUrl,
+          reward: task.reward,
+          status: 'accepted', // Change status to accepted
+          deadline: task.deadline,
+          views: task.views,
+          submissionStatus: task.submissionStatus,
+          submittedStatus: task.submittedStatus,
+          submittedAt: task.submittedAt,
+        );
+      }
+      
+      // Refresh filtered tasks
+      applyFilter();
+      
+      Get.snackbar(
+        'Task Accepted',
+        'You can now submit "${task.title}"',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      print('Error accepting task: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to accept task',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> rejectTask(TaskModel task) async {
+    try {
+      // TODO: Call API to reject task
+      // await ApiService.rejectTask(task.id);
+      
+      // Refresh task list
+      await loadTasks();
+      
+      Get.snackbar(
+        'Task Rejected',
+        'You have rejected "${task.title}"',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      print('Error rejecting task: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to reject task',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }
 
