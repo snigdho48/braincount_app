@@ -180,10 +180,11 @@ class TaskListController extends GetxController {
     if (selectedFilter.value == 'pending') {
       tempTasks = tempTasks.where((task) => task.status == 'pending').toList();
     } else if (selectedFilter.value == 'accepted') {
-      tempTasks = tempTasks.where((task) => task.status == 'accepted').toList();
+      // Accepted but not yet submitted
+      tempTasks = tempTasks.where((task) => task.status == 'accepted' && !task.isSubmitted).toList();
     } else if (selectedFilter.value == 'submitted') {
-      // Backend uses 'accepted' status for submitted/completed tasks
-      tempTasks = tempTasks.where((task) => task.status == 'accepted' || task.status == 'completed').toList();
+      // Submitted tasks
+      tempTasks = tempTasks.where((task) => task.isSubmittedTask).toList();
     }
     // 'all' shows everything, no filter needed
 

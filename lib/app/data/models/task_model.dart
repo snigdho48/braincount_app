@@ -11,6 +11,7 @@ class TaskModel {
   final String? submissionStatus;
   final String? submittedStatus;
   final DateTime? submittedAt;
+  final bool isSubmitted;  // Flag to indicate if task has been submitted
   
   // Status fields from submission (4 different parts)
   final String? colourStatus;
@@ -32,6 +33,7 @@ class TaskModel {
     this.submissionStatus,
     this.submittedStatus,
     this.submittedAt,
+    this.isSubmitted = false,
     this.colourStatus,
     this.structureStatus,
     this.mediumStatus,
@@ -70,6 +72,7 @@ class TaskModel {
       submissionStatus: json['submission_status'] ?? json['submitted_status'] ?? json['payment_status'],
       submittedStatus: json['submitted_status'] ?? json['submission_status'] ?? json['payment_status'],
       submittedAt: parseDate(json['submitted_at']),
+      isSubmitted: json['is_submitted'] ?? false,
       // Status fields from submission
       colourStatus: submission?['colour_status'],
       structureStatus: submission?['structure_status'],
@@ -98,8 +101,8 @@ class TaskModel {
 
   bool get isCompleted => status == 'completed';
   bool get isPending => status == 'pending';
-  bool get isAccepted => status == 'accepted';
-  bool get isSubmitted => status == 'submitted';
+  bool get isAccepted => status == 'accepted' && !isSubmitted;  // Accepted but not yet submitted
+  bool get isSubmittedTask => status == 'submitted' || isSubmitted;  // Task has been submitted
   bool get isRejected => status == 'rejected';
 }
 

@@ -111,10 +111,11 @@ class DashboardController extends GetxController {
     } else if (selectedFilter.value == 'pending') {
       filtered = recentTasks.where((task) => task.isPending).toList();
     } else if (selectedFilter.value == 'accepted') {
-      filtered = recentTasks.where((task) => task.isAccepted).toList();
+      // Accepted but not yet submitted
+      filtered = recentTasks.where((task) => task.status == 'accepted' && !task.isSubmitted).toList();
     } else if (selectedFilter.value == 'submitted') {
-      // Backend uses 'accepted' status for submitted/completed tasks
-      filtered = recentTasks.where((task) => task.isAccepted || task.isCompleted).toList();
+      // Submitted tasks (status='submitted' or isSubmitted flag is true)
+      filtered = recentTasks.where((task) => task.isSubmittedTask).toList();
     } else {
       // Default: show all except rejected
       filtered = recentTasks.where((task) => !task.isRejected).toList();
