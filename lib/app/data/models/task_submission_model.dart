@@ -1,38 +1,52 @@
 class TaskSubmissionModel {
   final String taskId;
-  final List<String> conditions;
   final String? notes;
   final List<SubmissionImage> images;
   final DateTime submittedAt;
+  
+  // Status fields (4 different parts)
+  final String? colourStatus;      // good, degraded, critical
+  final String? structureStatus;  // good, degraded, critical
+  final String? mediumStatus;     // good, degraded, critical
+  final String? communicationStatus; // good, critical
 
   TaskSubmissionModel({
     required this.taskId,
-    required this.conditions,
     this.notes,
     required this.images,
     required this.submittedAt,
+    this.colourStatus,
+    this.structureStatus,
+    this.mediumStatus,
+    this.communicationStatus,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'task_id': taskId,
-      'conditions': conditions,
       'notes': notes,
       'images': images.map((e) => e.toJson()).toList(),
       'submitted_at': submittedAt.toIso8601String(),
+      'colour_status': colourStatus,
+      'structure_status': structureStatus,
+      'medium_status': mediumStatus,
+      'communication_status': communicationStatus,
     };
   }
 
   factory TaskSubmissionModel.fromJson(Map<String, dynamic> json) {
     return TaskSubmissionModel(
       taskId: json['task_id'] ?? '',
-      conditions: List<String>.from(json['conditions'] ?? []),
       notes: json['notes'],
       images: (json['images'] as List?)
               ?.map((e) => SubmissionImage.fromJson(e))
               .toList() ??
           [],
       submittedAt: DateTime.parse(json['submitted_at']),
+      colourStatus: json['colour_status'],
+      structureStatus: json['structure_status'],
+      mediumStatus: json['medium_status'],
+      communicationStatus: json['communication_status'],
     );
   }
 }

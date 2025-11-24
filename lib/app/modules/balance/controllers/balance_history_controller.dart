@@ -9,15 +9,15 @@ class BalanceHistoryController extends GetxController {
   final isLoading = false.obs;
   
   // User info
-  final userName = 'NAFSIN RAHMAN'.obs;
-  final userId = '34874'.obs;
+  final userName = ''.obs;
+  final userId = ''.obs;
   
   // Stats
-  final totalWithdrawn = 2067.0.obs;
-  final pendingTasks = 1.obs;
-  final rejectedTasks = 1.obs;
-  final completedTasks = 34.obs;
-  final pendingAmount = 2222.0.obs;
+  final totalWithdrawn = 0.0.obs;
+  final pendingTasks = 0.obs;
+  final rejectedTasks = 0.obs;
+  final completedTasks = 0.obs;
+  final pendingAmount = 0.0.obs;
   
   // Collapsible sections
   final isHistoryExpanded = true.obs;
@@ -57,42 +57,32 @@ class BalanceHistoryController extends GetxController {
         final balanceModel = entry.value;
         return TransactionModel(
           id: index,
-          title: 'Withdraw ${index.toString().padLeft(2, '0')}',
+          title: balanceModel.type == 'earning' 
+              ? balanceModel.description.isNotEmpty 
+                  ? balanceModel.description
+                  : 'Task Completed'
+              : balanceModel.description.isNotEmpty
+                  ? balanceModel.description
+                  : 'Withdrawal Request',
           amount: balanceModel.amount,
           date: balanceModel.date,
-          status: balanceModel.type == 'credit' ? 'completed' : 'pending',
-          type: 'withdrawal',
+          status: balanceModel.status,
+          type: balanceModel.type,
         );
       }).toList();
+      
+      // Calculate total withdrawn from transactions
+      final withdrawals = transactions.where((t) => t.type == 'withdrawal').toList();
+      totalWithdrawn.value = withdrawals.fold(0.0, (sum, t) => sum + t.amount);
     } catch (e) {
-      print('Error loading history: $e');
-      // Mock data for demonstration
-      transactions.value = [
-        TransactionModel(
-          id: 1,
-          title: 'Withdraw 01',
-          amount: 22.0,
-          date: DateTime(2025, 9, 23),
-          status: 'completed',
-          type: 'withdrawal',
-        ),
-        TransactionModel(
-          id: 2,
-          title: 'Withdraw 01',
-          amount: 22.0,
-          date: DateTime(2025, 9, 23),
-          status: 'completed',
-          type: 'withdrawal',
-        ),
-        TransactionModel(
-          id: 3,
-          title: 'Withdraw 01',
-          amount: 22.0,
-          date: DateTime(2025, 9, 23),
-          status: 'completed',
-          type: 'withdrawal',
-        ),
-      ];
+      // Show error but don't crash
+      transactions.value = [];
+      Get.snackbar(
+        'Error',
+        'Failed to load transaction history',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -100,15 +90,23 @@ class BalanceHistoryController extends GetxController {
 
   Future<void> loadStats() async {
     try {
-      // This would typically come from the API
-      // For now using mock data
-      totalWithdrawn.value = 2067.0;
-      pendingTasks.value = 1;
-      rejectedTasks.value = 1;
-      completedTasks.value = 34;
-      pendingAmount.value = 2222.0;
+      // Get stats from dashboard API
+      final stats = await ApiService.getDashboardStats();
+      completedTasks.value = stats.taskCompleted;
+      pendingTasks.value = stats.taskPending;
+      rejectedTasks.value = stats.taskRejected;
+      
+      // Calculate total withdrawn from transactions
+      final withdrawals = transactions.where((t) => t.type == 'withdrawal').toList();
+      totalWithdrawn.value = withdrawals.fold(0.0, (sum, t) => sum + t.amount);
+      
+      // Calculate pending amount (balance - withdrawn)
+      final user = await StorageService.getUser();
+      if (user != null) {
+        pendingAmount.value = user.balance;
+      }
     } catch (e) {
-      print('Error loading stats: $e');
+      // Error handled silently - keep existing values
     }
   }
 

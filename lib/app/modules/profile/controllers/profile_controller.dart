@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/services/storage_service.dart';
+import '../../../data/services/api_service.dart';
 import '../../../data/services/theme_service.dart';
 import '../../../routes/app_routes.dart';
 
@@ -39,9 +40,26 @@ class ProfileController extends GetxController {
   }
 
   Future<void> loadUserData() async {
-    final userData = await StorageService.getUser();
-    if (userData != null) {
-      currentUser.value = userData;
+    try {
+      // Load user from storage first
+      final userData = await StorageService.getUser();
+      if (userData != null) {
+        currentUser.value = userData;
+      }
+      
+      // Refresh balance from dashboard API
+      try {
+        final stats = await ApiService.getDashboardStats();
+        if (userData != null && stats.balance != userData.balance) {
+          final updatedUser = userData.copyWith(balance: stats.balance);
+          await StorageService.saveUser(updatedUser);
+          currentUser.value = updatedUser;
+        }
+      } catch (e) {
+        // If API fails, keep existing user data
+      }
+    } catch (e) {
+      // Error handled silently
     }
   }
 

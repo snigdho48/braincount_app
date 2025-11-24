@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../data/services/storage_service.dart';
+import '../../../data/services/api_service.dart';
 import '../../../data/models/bank_account_model.dart';
 import '../../../data/models/mobile_banking_model.dart';
 import '../../../widgets/error_modal.dart';
@@ -15,7 +16,7 @@ class WithdrawController extends GetxController {
   
   final isLoading = false.obs;
   final selectedMethod = 'bank'.obs;
-  final availableBalance = 390.0.obs; // Mock balance
+  final availableBalance = 0.0.obs; // Will be loaded from API
   final amountError = ''.obs; // For real-time validation
   final amountText = ''.obs; // Reactive amount text
   
@@ -86,9 +87,31 @@ class WithdrawController extends GetxController {
   bool get isAmountValid => amountError.value.isEmpty && amountText.value.isNotEmpty;
 
   Future<void> loadBalance() async {
-    final user = await StorageService.getUser();
-    if (user != null) {
-      availableBalance.value = user.balance;
+    try {
+      // First try to get balance from user storage (faster)
+      final user = await StorageService.getUser();
+      if (user != null && user.balance > 0) {
+        availableBalance.value = user.balance;
+      }
+      
+      // Then update from API (more accurate)
+      final stats = await ApiService.getDashboardStats();
+      availableBalance.value = stats.balance;
+      
+      // Update user balance in storage
+      if (user != null) {
+        final updatedUser = user.copyWith(balance: stats.balance);
+        await StorageService.saveUser(updatedUser);
+      }
+    } catch (e) {
+      // Fallback to user balance from storage
+      final user = await StorageService.getUser();
+      if (user != null) {
+        availableBalance.value = user.balance;
+      } else {
+        // If no user data, keep at 0
+        availableBalance.value = 0.0;
+      }
     }
   }
 
@@ -104,7 +127,7 @@ class WithdrawController extends GetxController {
             .toList();
       }
     } catch (e) {
-      print('Error loading bank accounts: $e');
+      // Error handled silently
     }
   }
 
@@ -120,7 +143,7 @@ class WithdrawController extends GetxController {
             .toList();
       }
     } catch (e) {
-      print('Error loading mobile banking accounts: $e');
+      // Error handled silently
     }
   }
 
@@ -131,7 +154,7 @@ class WithdrawController extends GetxController {
       final jsonList = bankAccounts.map((account) => account.toJson()).toList();
       await prefs.setString('bank_accounts', jsonEncode(jsonList));
     } catch (e) {
-      print('Error saving bank accounts: $e');
+      // Error handled silently
     }
   }
 
@@ -142,7 +165,7 @@ class WithdrawController extends GetxController {
       final jsonList = mobileBankingAccounts.map((account) => account.toJson()).toList();
       await prefs.setString('mobile_banking_accounts', jsonEncode(jsonList));
     } catch (e) {
-      print('Error saving mobile banking accounts: $e');
+      // Error handled silently
     }
   }
 
@@ -375,32 +398,81 @@ class WithdrawController extends GetxController {
     try {
       isLoading.value = true;
       
-      // For now, just show success (API integration later)
-      await Future.delayed(const Duration(seconds: 1));
+      // Prepare account details based on selected account
+      Map<String, dynamic> accountDetails = {};
+      if (selectedBankAccount.value != null) {
+        final account = selectedBankAccount.value!;
+        accountDetails = {
+          'bank_name': account.bankName,
+          'account_number': account.bankNumber,
+          'branch_name': account.branchName,
+          'routing_number': account.routingNumber,
+        };
+      } else if (selectedMobileBanking.value != null) {
+        final account = selectedMobileBanking.value!;
+        accountDetails = {
+          'provider': account.provider,
+          'phone_number': account.phoneNumber,
+          'full_name': account.fullName,
+        };
+      }
       
-      // Update balance
-      availableBalance.value -= amount;
+      // Determine payment method
+      String method = selectedMethod.value;
+      if (selectedMobileBanking.value != null) {
+        // Map MFS provider to method
+        final provider = selectedMobileBanking.value!.provider.toLowerCase();
+        if (provider == 'bkash') {
+          method = 'bkash';
+        } else if (provider == 'nagad') {
+          method = 'nagad';
+        } else if (provider == 'rocket') {
+          method = 'rocket';
+        }
+      }
       
-      // Clear form
-      amountController.clear();
-      selectedBankAccount.value = null;
-      selectedMobileBanking.value = null;
-
-      SuccessModal.show(
-        Get.context!,
-        title: 'Success!',
-        message: 'Withdrawal request submitted successfully',
-        onPressed: () {
-          Get.back(); // Close modal
-          Get.back(); // Close bottom sheet
-          Get.back(); // Go back to previous page
-        },
+      // Call API
+      final response = await ApiService.withdrawRequest(
+        amount,
+        method,
+        accountDetails,
       );
+      
+      if (response['success'] == true) {
+        // Reload balance from API
+        await loadBalance();
+        
+        // Clear form
+        amountController.clear();
+        selectedBankAccount.value = null;
+        selectedMobileBanking.value = null;
+
+        SuccessModal.show(
+          Get.context!,
+          title: 'Success!',
+          message: response['message'] ?? 'Withdrawal request submitted successfully',
+          onPressed: () {
+            Get.back(); // Close modal
+            Get.back(); // Close bottom sheet
+            Get.back(); // Go back to previous page
+          },
+        );
+      } else {
+        ErrorModal.show(
+          Get.context!,
+          title: 'Withdrawal Failed',
+          message: response['error'] ?? response['message'] ?? 'Failed to submit withdrawal request',
+        );
+      }
     } catch (e) {
+      String errorMessage = 'An error occurred. Please try again.';
+      if (e.toString().isNotEmpty && !e.toString().contains('Exception: ')) {
+        errorMessage = e.toString().replaceFirst('Exception: ', '');
+      }
       ErrorModal.show(
         Get.context!,
         title: 'Error',
-        message: 'An error occurred. Please try again.',
+        message: errorMessage,
       );
     } finally {
       isLoading.value = false;

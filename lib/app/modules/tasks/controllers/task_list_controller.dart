@@ -8,10 +8,17 @@ class TaskListController extends GetxController {
   final tasks = <TaskModel>[].obs;
   final filteredTasks = <TaskModel>[].obs;
   final isLoading = false.obs;
+  final isLoadingMore = false.obs; // For pagination loading
   final selectedFilter = 'all'.obs;
   final searchController = TextEditingController();
   final searchQuery = ''.obs;
   final advancedFilters = Rx<Map<String, dynamic>>({});
+  
+  // Pagination state
+  final currentPage = 1.obs;
+  final hasNextPage = false.obs;
+  final totalCount = 0.obs;
+  final pageSize = 10;
   
   // Expanded card tracking
   final expandedTaskId = Rxn<String>(); // Track which card is expanded
@@ -29,7 +36,7 @@ class TaskListController extends GetxController {
     final status = Get.arguments?['status'] ?? 'all';
     selectedFilter.value = status;
     loadUserData();
-    loadTasks();
+    loadTasks(reset: true);
   }
 
   /// Load user data from API
@@ -44,7 +51,7 @@ class TaskListController extends GetxController {
       // For now, using default values
       // This will automatically update the UI when API is connected
     } catch (e) {
-      print('Error loading user data: $e');
+      // Error handled silently
     }
   }
 
@@ -54,17 +61,106 @@ class TaskListController extends GetxController {
     super.onClose();
   }
 
-  Future<void> loadTasks() async {
+  Future<void> loadTasks({bool reset = true}) async {
     try {
-      isLoading.value = true;
-      final taskList = await ApiService.getTasks(status: selectedFilter.value);
-      tasks.value = taskList;
+      if (reset) {
+        isLoading.value = true;
+        currentPage.value = 1;
+        tasks.value = [];
+      } else {
+        isLoadingMore.value = true;
+      }
+      
+      final response = await ApiService.getTasks(
+        status: selectedFilter.value,
+        page: currentPage.value,
+        pageSize: pageSize,
+      );
+      
+      final tasksList = (response['results'] ?? response['tasks'] ?? []) as List;
+      final newTasks = tasksList
+          .map((task) => TaskModel.fromJson(task))
+          .toList();
+      
+      if (reset) {
+        tasks.value = newTasks;
+      } else {
+        tasks.addAll(newTasks);
+      }
+      
+      // Update pagination state
+      totalCount.value = response['count'] ?? 0;
+      hasNextPage.value = response['next'] != null;
+      
       applyFilter();
+      
+      // Show success message if no tasks found (informational)
+      if (tasks.isEmpty && selectedFilter.value != 'all' && reset) {
+        Get.snackbar(
+          'No Tasks',
+          'No ${selectedFilter.value} tasks found',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+        );
+      }
     } catch (e) {
-      print('Error loading tasks: $e');
+      // Extract error message
+      String errorString = e.toString();
+      
+      // Show user-friendly error message
+      String errorMessage = 'Failed to load tasks';
+      
+      // Check for specific error patterns
+      if (errorString.isEmpty || errorString == 'Exception: ') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (errorString.toLowerCase().contains('connection') || 
+                 errorString.toLowerCase().contains('network') ||
+                 errorString.toLowerCase().contains('socket') ||
+                 errorString.toLowerCase().contains('connection refused')) {
+        errorMessage = 'Network error. Please check your internet connection.';
+      } else if (errorString.contains('401') || errorString.toLowerCase().contains('unauthorized')) {
+        errorMessage = 'Session expired. Please login again.';
+      } else if (errorString.contains('403') || errorString.toLowerCase().contains('forbidden')) {
+        errorMessage = 'You do not have permission to view tasks.';
+      } else if (errorString.contains('404') || errorString.toLowerCase().contains('not found')) {
+        errorMessage = 'Tasks endpoint not found.';
+      } else if (errorString.contains('500') || errorString.toLowerCase().contains('server')) {
+        errorMessage = 'Server error. Please try again later.';
+      } else if (errorString.contains('timeout')) {
+        errorMessage = 'Request timeout. Please try again.';
+      } else {
+        // Extract actual error message if available
+        final match = RegExp(r'Exception:\s*(.+)').firstMatch(errorString);
+        if (match != null && match.group(1)?.isNotEmpty == true) {
+          errorMessage = match.group(1)!;
+        } else if (errorString.length > 20) {
+          // Use error string if it's meaningful
+          errorMessage = errorString.replaceFirst('Exception: ', '');
+        }
+      }
+      
+      Get.snackbar(
+        'Error',
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Get.theme.colorScheme.onError,
+      );
     } finally {
       isLoading.value = false;
+      isLoadingMore.value = false;
     }
+  }
+
+  // Load more tasks (pagination)
+  Future<void> loadMoreTasks() async {
+    if (isLoadingMore.value || !hasNextPage.value) {
+      return; // Already loading or no more pages
+    }
+    
+    currentPage.value++;
+    await loadTasks(reset: false);
   }
 
   void filterTasks(String filter) {
@@ -86,7 +182,8 @@ class TaskListController extends GetxController {
     } else if (selectedFilter.value == 'accepted') {
       tempTasks = tempTasks.where((task) => task.status == 'accepted').toList();
     } else if (selectedFilter.value == 'submitted') {
-      tempTasks = tempTasks.where((task) => task.status == 'submitted' || task.status == 'completed').toList();
+      // Backend uses 'accepted' status for submitted/completed tasks
+      tempTasks = tempTasks.where((task) => task.status == 'accepted' || task.status == 'completed').toList();
     }
     // 'all' shows everything, no filter needed
 
@@ -152,9 +249,7 @@ class TaskListController extends GetxController {
   }
 
   void applyAdvancedFilters(Map<String, dynamic> filters) {
-    print('🔍 Applying filters: $filters');
     advancedFilters.value = filters;
-    print('🔍 Active filter chips: ${getActiveFilterChips()}');
     applyFilter();
   }
 
@@ -292,65 +387,89 @@ class TaskListController extends GetxController {
   // Accept/Reject task methods for task list
   Future<void> acceptTask(TaskModel task) async {
     try {
-      // TODO: Call API to accept task
-      // await ApiService.acceptTask(task.id);
+      final response = await ApiService.acceptTask(task.id);
       
-      // Update task status locally (this will be replaced by API response)
-      final index = tasks.indexWhere((t) => t.id == task.id);
-      if (index != -1) {
-        tasks[index] = TaskModel(
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          location: task.location,
-          imageUrl: task.imageUrl,
-          reward: task.reward,
-          status: 'accepted', // Change status to accepted
-          deadline: task.deadline,
-          views: task.views,
-          submissionStatus: task.submissionStatus,
-          submittedStatus: task.submittedStatus,
-          submittedAt: task.submittedAt,
+      if (response['success'] == true) {
+        // Change filter to 'accepted' to show the accepted task
+        selectedFilter.value = 'accepted';
+        
+        // Refresh task list to get updated status
+        await loadTasks();
+        
+        Get.snackbar(
+          'Task Accepted',
+          response['message'] ?? 'You can now submit "${task.title}"',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.primary,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          response['error'] ?? 'Failed to accept task',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Colors.white,
         );
       }
-      
-      // Refresh filtered tasks
-      applyFilter();
-      
-      Get.snackbar(
-        'Task Accepted',
-        'You can now submit "${task.title}"',
-        snackPosition: SnackPosition.BOTTOM,
-      );
     } catch (e) {
-      print('Error accepting task: $e');
+      String errorMsg = 'Failed to accept task';
+      if (e.toString().isNotEmpty && !e.toString().contains('Exception: ')) {
+        errorMsg = e.toString().replaceFirst('Exception: ', '');
+      }
       Get.snackbar(
         'Error',
-        'Failed to accept task',
+        errorMsg,
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Colors.white,
       );
     }
   }
 
   Future<void> rejectTask(TaskModel task) async {
     try {
-      // TODO: Call API to reject task
-      // await ApiService.rejectTask(task.id);
+      final response = await ApiService.rejectTask(task.id);
       
-      // Refresh task list
-      await loadTasks();
-      
-      Get.snackbar(
-        'Task Rejected',
-        'You have rejected "${task.title}"',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (response['success'] == true) {
+        // If currently viewing pending tasks, switch to 'all' to show remaining tasks
+        // (rejected tasks won't show in pending filter anymore)
+        if (selectedFilter.value == 'pending') {
+          selectedFilter.value = 'all';
+        }
+        
+        // Refresh task list to get updated status
+        await loadTasks();
+        
+        Get.snackbar(
+          'Task Rejected',
+          response['message'] ?? 'You have rejected "${task.title}"',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.secondary,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          response['error'] ?? 'Failed to reject task',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.colorScheme.error,
+          colorText: Colors.white,
+        );
+      }
     } catch (e) {
-      print('Error rejecting task: $e');
+      String errorMsg = 'Failed to reject task';
+      if (e.toString().isNotEmpty && !e.toString().contains('Exception: ')) {
+        errorMsg = e.toString().replaceFirst('Exception: ', '');
+      }
       Get.snackbar(
         'Error',
-        'Failed to reject task',
+        errorMsg,
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Get.theme.colorScheme.error,
+        colorText: Colors.white,
       );
     }
   }

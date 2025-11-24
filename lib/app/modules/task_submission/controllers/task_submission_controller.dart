@@ -9,7 +9,6 @@ import '../../../widgets/success_modal.dart';
 
 class TaskSubmissionController extends GetxController {
   final task = Rxn<TaskModel>();
-  final selectedConditions = <String>[].obs;
   final notesController = TextEditingController();
   final submittedImages = <int, SubmissionImage>{}.obs;
   final isUploading = <int>[].obs;
@@ -17,21 +16,17 @@ class TaskSubmissionController extends GetxController {
 
   final maxImages = 4;
 
-  final conditionOptions = [
-    'Resolved',
-    'Good',
-    'Color Faded',
-    'Colour Severely Bad',
-    'Medium Teared',
-    'Medium Damaged',
-    'Medium Missing',
-    'Structure Damaged',
-    'Structure Missing',
-    'Communication Right',
-    'Communication Wrong',
-    'Communication Missing',
-    'If other please write',
-  ];
+  // Status fields (4 different parts)
+  final colourStatus = Rxn<String>();      // good, degraded, critical
+  final structureStatus = Rxn<String>();  // good, degraded, critical
+  final mediumStatus = Rxn<String>();     // good, degraded, critical
+  final communicationStatus = Rxn<String>(); // good, critical
+  
+  // Status options
+  final colourStatusOptions = ['good', 'degraded', 'critical'];
+  final structureStatusOptions = ['good', 'degraded', 'critical'];
+  final mediumStatusOptions = ['good', 'degraded', 'critical'];
+  final communicationStatusOptions = ['good', 'critical'];
 
   @override
   void onInit() {
@@ -48,17 +43,6 @@ class TaskSubmissionController extends GetxController {
     super.onClose();
   }
 
-  void toggleCondition(String condition) {
-    if (selectedConditions.contains(condition)) {
-      selectedConditions.remove(condition);
-      // Clear notes when unchecking "If other please write"
-      if (condition == 'If other please write') {
-        notesController.clear();
-      }
-    } else {
-      selectedConditions.add(condition);
-    }
-  }
 
   Future<void> captureImage(int index) async {
     try {
@@ -93,21 +77,36 @@ class TaskSubmissionController extends GetxController {
   }
 
   Future<void> submitTask() async {
-    if (selectedConditions.isEmpty) {
+    // Validate that all status fields are selected (required)
+    if (colourStatus.value == null) {
       ErrorModal.show(
         Get.context!,
         title: 'Validation Error',
-        message: 'Please select at least one billboard condition',
+        message: 'Please select Colour Status',
       );
       return;
     }
-
-    if (selectedConditions.contains('If other please write') && 
-        notesController.text.trim().isEmpty) {
+    if (structureStatus.value == null) {
       ErrorModal.show(
         Get.context!,
         title: 'Validation Error',
-        message: 'Please write your notes when selecting "If other please write"',
+        message: 'Please select Structure Status',
+      );
+      return;
+    }
+    if (mediumStatus.value == null) {
+      ErrorModal.show(
+        Get.context!,
+        title: 'Validation Error',
+        message: 'Please select Medium Status',
+      );
+      return;
+    }
+    if (communicationStatus.value == null) {
+      ErrorModal.show(
+        Get.context!,
+        title: 'Validation Error',
+        message: 'Please select Communication Status',
       );
       return;
     }
@@ -126,12 +125,15 @@ class TaskSubmissionController extends GetxController {
 
       final submission = TaskSubmissionModel(
         taskId: task.value!.id,
-        conditions: selectedConditions.toList(),
         notes: notesController.text.trim().isEmpty
             ? null
             : notesController.text.trim(),
         images: submittedImages.values.toList(),
         submittedAt: DateTime.now(),
+        colourStatus: colourStatus.value,
+        structureStatus: structureStatus.value,
+        mediumStatus: mediumStatus.value,
+        communicationStatus: communicationStatus.value,
       );
 
       final response = await ApiService.submitTask(submission);

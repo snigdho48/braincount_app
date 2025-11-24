@@ -47,69 +47,68 @@ class DashboardView extends GetView<DashboardController> {
                   
                   SizedBox(height: 20 * scale),
                   
-                  // 3D Task Map
-                  _build3DTaskMap(scale),
+                  // 3D Task Map with Zoom Effect
+                 _build3DTaskMap(scale),
                   
                   SizedBox(height: 35 * scale),
 
                   // Zoomed Task Card (positioned before summary)
                   Obx(() {
                     if (controller.isTaskZoomed.value && controller.zoomedTask.value != null) {
-                      return Column(
-                        children: [
-                          AnimatedScale(
-                            scale: controller.isTaskZoomed.value ? 1.0 : 0.8,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: Responsive.sp(7)),
-                              child: Stack(
-                                children: [
-                                  // Use the same PendingTaskCard with expanded state
-                                  PendingTaskCard(
-                                    task: controller.zoomedTask.value!,
-                                    index: 0, // Index doesn't matter here
-                                    isExpanded: true, // Always expanded
-                                    onTap: () {}, // No toggle needed
-                                    onAccept: () {
-                                      controller.acceptTask(controller.zoomedTask.value!);
-                                      controller.closeZoomedTask();
-                                    },
-                                    onReject: () {
-                                      controller.rejectTask(controller.zoomedTask.value!);
-                                      controller.closeZoomedTask();
-                                    },
-                                    onDetails: () {
-                                      Get.find<TaskListController>().goToTaskDetails(controller.zoomedTask.value!);
-                                      controller.closeZoomedTask();
-                                    },
-                                  ),
-                                  // Close button overlay
-                                  Positioned(
-                                    top: Responsive.sp(8),
-                                    right: Responsive.sp(8),
-                                    child: GestureDetector(
-                                      onTap: controller.closeZoomedTask,
-                                      child: Container(
-                                        padding: EdgeInsets.all(Responsive.sp(4)),
-                                        decoration: BoxDecoration(
-                                          color: Colors.black.withOpacity(0.5),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          Icons.close,
-                                          size: Responsive.sp(16),
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                      return Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: Responsive.sp(7),
+                          vertical: Responsive.sp(16),
+                        ),
+                        child: AnimatedScale(
+                          scale: controller.isTaskZoomed.value ? 1.0 : 0.8,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOut,
+                          child: Stack(
+                            children: [
+                              // Use the same PendingTaskCard with expanded state
+                              PendingTaskCard(
+                                task: controller.zoomedTask.value!,
+                                index: 0, // Index doesn't matter here
+                                isExpanded: true, // Always expanded
+                                onTap: () {}, // No toggle needed
+                                onAccept: () {
+                                  controller.acceptTask(controller.zoomedTask.value!);
+                                  controller.closeZoomedTask();
+                                },
+                                onReject: () {
+                                  controller.rejectTask(controller.zoomedTask.value!);
+                                  controller.closeZoomedTask();
+                                },
+                                onDetails: () {
+                                  Get.find<TaskListController>().goToTaskDetails(controller.zoomedTask.value!);
+                                  controller.closeZoomedTask();
+                                },
+                              ),
+                              // Close button overlay
+                              Positioned(
+                                top: Responsive.sp(8),
+                                right: Responsive.sp(8),
+                                child: GestureDetector(
+                                  onTap: controller.closeZoomedTask,
+                                  child: Container(
+                                    padding: EdgeInsets.all(Responsive.sp(6)),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: Responsive.sp(18),
+                                      color: Colors.white,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                          SizedBox(height: 24 * scale),
-                        ],
+                        ),
                       );
                     }
                     return const SizedBox.shrink();
@@ -236,7 +235,10 @@ class DashboardView extends GetView<DashboardController> {
     final isDark = Get.find<ThemeService>().isDarkMode.value;
     
     return GestureDetector(
-      onTap: () => controller.zoomToTask(task),
+      onTap: () {
+        controller.zoomToTask(task);
+      },
+      behavior: HitTestBehavior.opaque,
       child: Container(
         height: 49 * scale,
         width: 161 * scale,
@@ -789,17 +791,47 @@ class DashboardView extends GetView<DashboardController> {
 
   Widget _buildTaskList(double scale) {
     return Obx(() {
+      // Show loading state if data is being loaded
+      if (controller.isLoading.value && controller.recentTasks.isEmpty) {
+        return Padding(
+          padding: EdgeInsets.all(40 * scale),
+          child: Center(
+            child: CircularProgressIndicator(
+              color: AppColors.info,
+            ),
+          ),
+        );
+      }
+      
       final tasks = controller.filteredRecentTasks.take(3).toList();
       
       if (tasks.isEmpty) {
         return Padding(
           padding: EdgeInsets.all(40 * scale),
-          child: Text(
-            'No tasks available',
-            style: TextStyle(
-                color: AppColors.secondaryText,
-              fontSize: 14 * scale,
-            ),
+          child: Column(
+            children: [
+              Icon(
+                Icons.task_alt,
+                size: 48 * scale,
+                color: AppColors.secondaryText.withOpacity(0.5),
+              ),
+              SizedBox(height: 12 * scale),
+              Text(
+                'No tasks available',
+                style: TextStyle(
+                  color: AppColors.secondaryText,
+                  fontSize: 14 * scale,
+                ),
+              ),
+              SizedBox(height: 4 * scale),
+              Text(
+                'Try changing the filter or check back later',
+                style: TextStyle(
+                  color: AppColors.secondaryText.withOpacity(0.7),
+                  fontSize: 12 * scale,
+                ),
+              ),
+            ],
           ),
         );
       }

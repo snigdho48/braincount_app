@@ -98,12 +98,46 @@ class AcceptedTaskCard extends StatelessWidget {
                                 height: Responsive.sp(42),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(Responsive.sp(6)),
-                                  image: DecorationImage(
-                                    image: task.imageUrl.isNotEmpty
-                                        ? NetworkImage(task.imageUrl)
-                                        : const AssetImage('assets/figma_exports/50f61fdb67813faee19ba296bbb09fda88e00dfd.png') as ImageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  color: AppColors.cardBackground,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(Responsive.sp(6)),
+                                  child: task.imageUrl.isNotEmpty && task.imageUrl.startsWith('data:image')
+                                      ? Image.network(
+                                          task.imageUrl,
+                                          width: Responsive.sp(66),
+                                          height: Responsive.sp(42),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Image.asset(
+                                              'assets/figma_exports/50f61fdb67813faee19ba296bbb09fda88e00dfd.png',
+                                              width: Responsive.sp(66),
+                                              height: Responsive.sp(42),
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        )
+                                      : task.imageUrl.isNotEmpty
+                                          ? Image.network(
+                                              task.imageUrl,
+                                              width: Responsive.sp(66),
+                                              height: Responsive.sp(42),
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return Image.asset(
+                                                  'assets/figma_exports/50f61fdb67813faee19ba296bbb09fda88e00dfd.png',
+                                                  width: Responsive.sp(66),
+                                                  height: Responsive.sp(42),
+                                                  fit: BoxFit.cover,
+                                                );
+                                              },
+                                            )
+                                          : Image.asset(
+                                              'assets/figma_exports/50f61fdb67813faee19ba296bbb09fda88e00dfd.png',
+                                              width: Responsive.sp(66),
+                                              height: Responsive.sp(42),
+                                              fit: BoxFit.cover,
+                                            ),
                                 ),
                               ),
                               
@@ -228,7 +262,7 @@ class AcceptedTaskCard extends StatelessWidget {
     
     return Positioned(
       right: Responsive.sp(10),
-      bottom: Responsive.sp(60),  // Higher because of submit button
+      bottom: Responsive.sp(80),  // Higher because of submit button
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: Responsive.sp(6),

@@ -87,19 +87,16 @@ class LoginView extends GetView<LoginController> {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: Responsive.lgVertical),
-                  // Email Field
+                  // Email or Username Field
                   CustomTextField(
-                    label: 'Email',
-                    hint: 'Write email address',
+                    label: 'Email or Username',
+                    hint: 'Write email address or username',
                     controller: controller.emailController,
                     isRequired: true,
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.text,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      }
-                      if (!GetUtils.isEmail(value)) {
-                        return 'Please enter a valid email';
+                        return 'Please enter your email or username';
                       }
                       return null;
                     },
@@ -185,12 +182,14 @@ class LoginView extends GetView<LoginController> {
                   ),
                   SizedBox(height: Responsive.lgVertical),
                   // Google Login Button
-                  GestureDetector(
-                    onTap: controller.loginWithGoogle,
+                  Obx(() => GestureDetector(
+                    onTap: controller.isGoogleLoading.value ? null : controller.loginWithGoogle,
                     child: Container(
                       height: Responsive.buttonHeight,
                       decoration: BoxDecoration(
-                        color: AppColors.cardBackground,
+                        color: controller.isGoogleLoading.value 
+                            ? AppColors.cardBackground.withOpacity(0.6)
+                            : AppColors.cardBackground,
                         borderRadius: BorderRadius.circular(Responsive.radiusXl + Responsive.sp(6)),
                         border: Border.all(
                           color: AppColors.borderColor,
@@ -200,6 +199,16 @@ class LoginView extends GetView<LoginController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          if (controller.isGoogleLoading.value)
+                            SizedBox(
+                              width: Responsive.sp(20),
+                              height: Responsive.sp(20),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          else
                           Image.asset(
                             'assets/app_icon/google_logo.png',
                             width: Responsive.sp(24),
@@ -211,13 +220,15 @@ class LoginView extends GetView<LoginController> {
                             style: TextStyle(
                               fontSize: Responsive.fontSize(16),
                               fontWeight: FontWeight.w600,
-                              color: AppColors.primaryText,
+                              color: controller.isGoogleLoading.value
+                                  ? AppColors.secondaryText
+                                  : AppColors.primaryText,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
+                  )),
                   SizedBox(height: Responsive.xlVertical),
                   // Register Link
                   Row(

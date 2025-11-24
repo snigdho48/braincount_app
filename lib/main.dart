@@ -10,11 +10,13 @@ import 'app/routes/app_routes.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize app configuration (OneRequest, etc.)
+  AppConfig.initialize();
   // Register Google Fonts licenses
   AppConfig.registerFontLicenses();
   
-  // Initialize app configuration (OneRequest, etc.)
-  AppConfig.initialize();
+  await AppConfig.initializeFirebase();
+
   
   // Initialize theme service
   await AppConfig.initializeTheme();

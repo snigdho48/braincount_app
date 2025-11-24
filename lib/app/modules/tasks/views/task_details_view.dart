@@ -50,24 +50,59 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                         // Task Image
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            'assets/designs/dashboard dafult.png',
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: double.infinity,
-                                height: 200,
-                                color: AppColors.cardBackground,
-                                child:  Icon(
-                                  Icons.image,
-                                  color: AppColors.secondaryText,
-                                  size: 64,
+                          child: task.imageUrl.isNotEmpty && task.imageUrl.startsWith('data:image')
+                              ? Image.network(
+                                  task.imageUrl,
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: AppColors.cardBackground,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          value: loadingProgress.expectedTotalBytes != null
+                                              ? loadingProgress.cumulativeBytesLoaded /
+                                                  loadingProgress.expectedTotalBytes!
+                                              : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: AppColors.cardBackground,
+                                      child: Icon(
+                                        Icons.image,
+                                        color: AppColors.secondaryText,
+                                        size: 64,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  'assets/designs/dashboard dafult.png',
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: AppColors.cardBackground,
+                                      child: Icon(
+                                        Icons.image,
+                                        color: AppColors.secondaryText,
+                                        size: 64,
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
                         ),
                         const SizedBox(height: 24),
                         // Task Title
@@ -90,12 +125,22 @@ class TaskDetailsView extends GetView<TaskDetailsController> {
                         _buildDetailRow(
                           'Status:',
                           task.status.toUpperCase(),
-                          statusColor: task.isSubmitted
+                          statusColor: task.isAccepted
                               ? AppColors.success
                               : task.isPending
                                   ? AppColors.warning
                                   : AppColors.error,
                         ),
+                        if (task.submittedStatus != null)
+                          _buildDetailRow(
+                            'Payment Status:',
+                            task.submittedStatus!.toUpperCase(),
+                            statusColor: task.submittedStatus == 'approved'
+                                ? AppColors.success
+                                : task.submittedStatus == 'pending'
+                                    ? AppColors.warning
+                                    : AppColors.error,
+                          ),
                         if (task.deadline != null)
                           _buildDetailRow(
                             'Deadline:',

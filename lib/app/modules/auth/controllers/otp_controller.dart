@@ -6,6 +6,7 @@ import '../../../data/models/user_model.dart';
 import '../../../widgets/error_modal.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/config/app_config.dart';
 
 class OtpController extends GetxController {
   final otpController = TextEditingController();
@@ -72,6 +73,9 @@ class OtpController extends GetxController {
         await StorageService.saveToken(response['token']);
         await StorageService.saveUser(UserModel.fromJson(response['user']));
         await StorageService.setLoggedIn(true);
+
+        // Update OneRequest headers with auth token
+        AppConfig.updateAuthHeaders(response['token']);
 
         // Navigate to dashboard
         Get.offAllNamed(AppRoutes.dashboard);

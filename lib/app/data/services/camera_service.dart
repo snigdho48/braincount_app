@@ -35,7 +35,6 @@ class CameraService {
       
       return base64String;
     } catch (e) {
-      print('Error taking photo: $e');
       return null;
     }
   }
@@ -55,7 +54,6 @@ class CameraService {
       
       return base64String;
     } catch (e) {
-      print('Error picking image: $e');
       return null;
     }
   }

@@ -10,12 +10,47 @@ import '../widgets/pending_task_card.dart';
 import '../widgets/accepted_task_card.dart';
 import '../../../data/services/theme_service.dart';
 
-class TaskListView extends GetView<TaskListController> {
+class TaskListView extends StatefulWidget {
   const TaskListView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<TaskListView> createState() => _TaskListViewState();
+}
+
+class _TaskListViewState extends State<TaskListView> {
+  // ScrollController for infinite scroll
+  late final ScrollController _scrollController;
+  late final TaskListController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<TaskListController>();
+    _scrollController = ScrollController();
     
+    // Setup scroll listener for infinite scroll
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= 
+        _scrollController.position.maxScrollExtent * 0.8) {
+      // Load more when user scrolls to 80% of the list
+      if (!controller.isLoadingMore.value && controller.hasNextPage.value) {
+        controller.loadMoreTasks();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() => AnimatedContainer(
         duration: const Duration(milliseconds: 300),
@@ -50,6 +85,7 @@ class TaskListView extends GetView<TaskListController> {
               
               // Task List Container (no Expanded, auto-sizes)
              _buildTaskListContainer(),
+             SizedBox(height: MediaQuery.of(context).padding.bottom + Responsive.sp(80)),
             ],
           ),
         ),
@@ -415,33 +451,29 @@ class TaskListView extends GetView<TaskListController> {
 
 
   Widget _buildTaskListContainer() {
-    return Container(
-      margin: EdgeInsets.only(
-        left: Responsive.sp(7),
-        right: Responsive.sp(7),
-        bottom: MediaQuery.of(Get.context!).padding.bottom + Responsive.sp(80),  // Bottom nav + device nav
-      ),
-      constraints:  BoxConstraints(
-        maxHeight: Get.height * .8,
-      ),
-      padding: EdgeInsets.all(Responsive.sp(11)),
-      decoration: BoxDecoration(
-        
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(Responsive.sp(10)),
-        border: Border.all(
-          color: AppColors.border.withOpacity(0.3),
-          width: 1,
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.only(
+          left: Responsive.sp(7),
+          right: Responsive.sp(7),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+        padding: EdgeInsets.all(Responsive.sp(11)),
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(Responsive.sp(10)),
+          border: Border.all(
+            color: AppColors.border.withOpacity(0.3),
+            width: 1,
           ),
-        ],
-      ),
-      child: Obx(() {
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: BrainLoader(message: 'Loading tasks...'));
         }
@@ -460,9 +492,25 @@ class TaskListView extends GetView<TaskListController> {
 
         return ListView.builder(
           padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          itemCount: controller.filteredTasks.length,
+          shrinkWrap: false, // Allow ListView to scroll independently
+          physics: const AlwaysScrollableScrollPhysics(), // Always allow scrolling
+          controller: _scrollController,
+          itemCount: controller.filteredTasks.length + (controller.hasNextPage.value ? 1 : 0),
           itemBuilder: (context, index) {
+            // Show loading indicator at the bottom when loading more
+            if (index == controller.filteredTasks.length) {
+              return Obx(() => controller.isLoadingMore.value
+                  ? Padding(
+                      padding: EdgeInsets.all(Responsive.sp(16)),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.info,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink());
+            }
+            
             final task = controller.filteredTasks[index];
             // Show PendingTaskCard with Accept/Reject buttons for pending tasks
             if (task.isPending) {
@@ -507,6 +555,7 @@ class TaskListView extends GetView<TaskListController> {
           },
         );
       }),
+      ),
     );
   }
 

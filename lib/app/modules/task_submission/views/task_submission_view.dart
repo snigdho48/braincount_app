@@ -40,21 +40,12 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
                       // Current Billboard Image
                       _buildCurrentBillboardImage(),
                       SizedBox(height: Responsive.lgVertical),
-                      // Billboard Condition
-                      _buildConditionSection(),
-                      // Notes Section (conditional)
-                      Obx(() {
-                        if (controller.selectedConditions.contains('If other please write')) {
-                          return Column(
-                            children: [
-                              SizedBox(height: Responsive.lgVertical),
-                              _buildNotesSection(),
-                              SizedBox(height: Responsive.lgVertical),
-                            ],
-                          );
-                        }
-                        return SizedBox(height: Responsive.lgVertical);
-                      }),
+                      // Status Section (4 different parts)
+                      _buildStatusSection(),
+                      SizedBox(height: Responsive.lgVertical),
+                      // Notes Section
+                      _buildNotesSection(),
+                      SizedBox(height: Responsive.lgVertical),
                       // Billboard Pictures
                       _buildPicturesSection(),
                       SizedBox(height: Responsive.lgVertical),
@@ -188,100 +179,6 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
     );
   }
 
-  Widget _buildConditionSection() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: Responsive.md, vertical: Responsive.lg),
-      decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(Responsive.radiusLg),
-      ),
-      child:  Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          'Billboard Condition:',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: AppColors.primaryText,
-            fontSize: Responsive.fontSize(16),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: Responsive.md),
-        Obx(() {
-            final conditions = controller.conditionOptions;
-            return Column(
-              children: List.generate(
-                (conditions.length / 2).ceil(),
-                (rowIndex) {
-                  final startIndex = rowIndex * 2;
-                  final endIndex = (startIndex + 2).clamp(0, conditions.length);
-                  final rowItems = conditions.sublist(startIndex, endIndex);
-                  
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: Responsive.sp(8)),
-                    child: Row(
-                      children: [
-                        ...rowItems.map((condition) {
-                          final isSelected = controller.selectedConditions.contains(condition);
-                          return Expanded(
-                            child: GestureDetector(
-                              onTap: () => controller.toggleCondition(condition),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: Responsive.sp(20),
-                                    height: Responsive.sp(20),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? AppColors.primary
-                                          : Colors.transparent,
-                                      border: Border.all(
-                                        color: AppColors.borderColor,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(Responsive.sp(4)),
-                                    ),
-                                    child: isSelected
-                                        ? Icon(
-                                            Icons.check,
-                                            size: Responsive.sp(14),
-                                            color: Colors.white,
-                                          )
-                                        : null,
-                                  ),
-                                  SizedBox(width: Responsive.sp(8)),
-                                  Expanded(
-                                    child: Text(
-                                      condition,
-                                      style: TextStyle(
-                                        color: AppColors.secondaryText,
-                                        fontSize: Responsive.fontSize(13),
-                                      ),
-                                      maxLines: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                        // Add empty space if odd number of items
-                        if (rowItems.length == 1) Expanded(child: SizedBox()),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            );
-          }),
-      
-      ],
-        ),
-    );
-  }
-
   Widget _buildNotesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -305,6 +202,206 @@ class TaskSubmissionView extends GetView<TaskSubmissionController> {
               borderRadius: BorderRadius.circular(Responsive.radiusLg),
               borderSide: BorderSide.none,
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: Responsive.md, vertical: Responsive.lg),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(Responsive.radiusLg),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Status Assessment',
+                style: TextStyle(
+                  fontSize: Responsive.fontSize(16),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryText,
+                ),
+              ),
+              Spacer(),
+              Obx(() {
+                final hasAllSelections = controller.colourStatus.value != null &&
+                    controller.structureStatus.value != null &&
+                    controller.mediumStatus.value != null &&
+                    controller.communicationStatus.value != null;
+                if (!hasAllSelections) {
+                  return Text(
+                    '* Required',
+                    style: TextStyle(
+                      fontSize: Responsive.fontSize(12),
+                      color: Colors.orange,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  );
+                }
+                return SizedBox.shrink();
+              }),
+            ],
+          ),
+          SizedBox(height: Responsive.mdVertical),
+          // Colour Status
+          Obx(() => _buildStatusDropdown(
+            label: 'Colour Status *',
+            value: controller.colourStatus.value,
+            options: controller.colourStatusOptions,
+            onChanged: (value) => controller.colourStatus.value = value,
+          )),
+          SizedBox(height: Responsive.mdVertical),
+          // Structure Status
+          Obx(() => _buildStatusDropdown(
+            label: 'Structure Status *',
+            value: controller.structureStatus.value,
+            options: controller.structureStatusOptions,
+            onChanged: (value) => controller.structureStatus.value = value,
+          )),
+          SizedBox(height: Responsive.mdVertical),
+          // Medium Status
+          Obx(() => _buildStatusDropdown(
+            label: 'Medium Status *',
+            value: controller.mediumStatus.value,
+            options: controller.mediumStatusOptions,
+            onChanged: (value) => controller.mediumStatus.value = value,
+          )),
+          SizedBox(height: Responsive.mdVertical),
+          // Communication Status
+          Obx(() => _buildStatusDropdown(
+            label: 'Communication Status *',
+            value: controller.communicationStatus.value,
+            options: controller.communicationStatusOptions,
+            onChanged: (value) => controller.communicationStatus.value = value,
+          )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatusDropdown({
+    required String label,
+    required String? value,
+    required List<String> options,
+    required Function(String?) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: Responsive.fontSize(14),
+            fontWeight: FontWeight.w500,
+            color: AppColors.primaryText,
+          ),
+        ),
+        SizedBox(height: Responsive.sp(8)),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: Responsive.md),
+          decoration: BoxDecoration(
+            color: AppColors.cardBackground,
+            border: Border.all(
+              color: value == null ? AppColors.border.withOpacity(0.5) : AppColors.primary,
+              width: value == null ? 1 : 2,
+            ),
+            borderRadius: BorderRadius.circular(Responsive.radiusMd),
+          ),
+          child: DropdownButton<String>(
+            value: value,
+            isExpanded: true,
+            underline: SizedBox.shrink(),
+            icon: Icon(
+              Icons.arrow_drop_down,
+              color: AppColors.primaryText,
+            ),
+            dropdownColor: AppColors.cardBackground,
+            hint: Text(
+              'Select $label',
+              style: TextStyle(
+                color: AppColors.secondaryText,
+                fontSize: Responsive.fontSize(14),
+              ),
+            ),
+            items: options.map((String option) {
+              // Get color based on status
+              Color statusColor = AppColors.primaryText;
+              if (option == 'critical') {
+                statusColor = Colors.red;
+              } else if (option == 'degraded') {
+                statusColor = Colors.orange;
+              } else if (option == 'good') {
+                statusColor = Colors.green;
+              }
+              
+              return DropdownMenuItem<String>(
+                value: option,
+                child: Row(
+                  children: [
+                    Container(
+                      width: Responsive.sp(12),
+                      height: Responsive.sp(12),
+                      decoration: BoxDecoration(
+                        color: statusColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: Responsive.sp(8)),
+                    Text(
+                      option.toUpperCase(),
+                      style: TextStyle(
+                        color: AppColors.primaryText,
+                        fontSize: Responsive.fontSize(14),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            selectedItemBuilder: (BuildContext context) {
+              return options.map((String option) {
+                Color statusColor = AppColors.primaryText;
+                if (option == 'critical') {
+                  statusColor = Colors.red;
+                } else if (option == 'degraded') {
+                  statusColor = Colors.orange;
+                } else if (option == 'good') {
+                  statusColor = Colors.green;
+                }
+                
+                return Row(
+                  children: [
+                    if (value == option) ...[
+                      Container(
+                        width: Responsive.sp(12),
+                        height: Responsive.sp(12),
+                        decoration: BoxDecoration(
+                          color: statusColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      SizedBox(width: Responsive.sp(8)),
+                    ],
+                    Text(
+                      value == option ? option.toUpperCase() : option.toUpperCase(),
+                      style: TextStyle(
+                        color: AppColors.primaryText,
+                        fontSize: Responsive.fontSize(14),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                );
+              }).toList();
+            },
           ),
         ),
       ],

@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/models/dashboard_stats_model.dart';
 import '../../../data/services/storage_service.dart';
 import '../../../data/services/api_service.dart';
 import '../../../routes/app_routes.dart';
+import '../../../core/theme/app_colors.dart';
 
 class DashboardController extends GetxController {
   final currentUser = Rxn<UserModel>();
@@ -13,7 +15,7 @@ class DashboardController extends GetxController {
   final latest3DTasks = <TaskModel>[].obs; // Latest 2 tasks for 3D view
   final isLoading = false.obs;
   final selectedTab = 0.obs;
-  final selectedFilter = 'submitted'.obs; // For task filtering
+  final selectedFilter = 'all'.obs; // For task filtering - default to 'all' to show all tasks
   
   // 3D card zoom state
   final isTaskZoomed = false.obs;
@@ -30,6 +32,18 @@ class DashboardController extends GetxController {
     final user = await StorageService.getUser();
     if (user != null) {
       currentUser.value = user;
+      
+      // Update balance from dashboard stats
+      try {
+        final stats = await ApiService.getDashboardStats();
+        if (stats.balance != user.balance) {
+          final updatedUser = user.copyWith(balance: stats.balance);
+          await StorageService.saveUser(updatedUser);
+          currentUser.value = updatedUser;
+        }
+      } catch (e) {
+        // If API fails, keep existing user data
+      }
     }
   }
 
@@ -37,22 +51,42 @@ class DashboardController extends GetxController {
     try {
       isLoading.value = true;
       
-      final [statsData, submittedTasksData, allTasksData] = await Future.wait([
+      // Load all tasks so filters work properly
+      final [statsData, allTasksResponse] = await Future.wait([
         ApiService.getDashboardStats(),
-        ApiService.getTasks(status: 'submitted'),
-        ApiService.getTasks(status: 'all'),  // Get all tasks for 3D view
+        ApiService.getTasks(status: 'all', page: 1, pageSize: 100),  // Get first 100 tasks for filtering
       ]);
 
       stats.value = statsData as DashboardStatsModel;
-      recentTasks.value = (submittedTasksData as List<TaskModel>).take(3).toList();
+      
+      // Extract tasks from paginated response
+      final responseMap = allTasksResponse as Map<String, dynamic>;
+      final tasksList = ((responseMap['results'] ?? responseMap['tasks'] ?? []) as List)
+          .map((task) => TaskModel.fromJson(task as Map<String, dynamic>))
+          .toList();
+      
+      // Always use all tasks from API for better filtering
+      // The stats recentTasks might be limited, so we use all tasks
+      recentTasks.value = tasksList;
+      
+      // If no tasks from API, try to use recent tasks from stats as fallback
+      if (recentTasks.isEmpty && statsData.recentTasks != null && statsData.recentTasks!.isNotEmpty) {
+        recentTasks.value = statsData.recentTasks!;
+      }
       
       // Get latest 2 pending tasks for 3D view
-      final pendingTasks = (allTasksData as List<TaskModel>)
+      final pendingTasks = tasksList
           .where((task) => task.isPending)
           .toList();
       latest3DTasks.value = pendingTasks.take(2).toList();
     } catch (e) {
-      print('Error loading dashboard: $e');
+      // Show error to user
+      Get.snackbar(
+        'Error',
+        'Failed to load dashboard data: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -64,20 +98,40 @@ class DashboardController extends GetxController {
 
   void changeFilter(String filter) {
     selectedFilter.value = filter;
-    loadDashboardData(); // Reload tasks with new filter
+    // No need to reload - filtering is done by the getter
+    // The filteredRecentTasks getter will automatically update when selectedFilter changes
   }
   
   List<TaskModel> get filteredRecentTasks {
+    List<TaskModel> filtered;
+    
     if (selectedFilter.value == 'all') {
-      return recentTasks.toList();
+      // Show all tasks except rejected ones
+      filtered = recentTasks.where((task) => !task.isRejected).toList();
     } else if (selectedFilter.value == 'pending') {
-      return recentTasks.where((task) => task.isPending).toList();
+      filtered = recentTasks.where((task) => task.isPending).toList();
     } else if (selectedFilter.value == 'accepted') {
-      return recentTasks.where((task) => task.isAccepted).toList();
+      filtered = recentTasks.where((task) => task.isAccepted).toList();
     } else if (selectedFilter.value == 'submitted') {
-      return recentTasks.where((task) => task.isSubmitted || task.isCompleted).toList();
+      // Backend uses 'accepted' status for submitted/completed tasks
+      filtered = recentTasks.where((task) => task.isAccepted || task.isCompleted).toList();
+    } else {
+      // Default: show all except rejected
+      filtered = recentTasks.where((task) => !task.isRejected).toList();
     }
-    return recentTasks.toList();
+    
+    // Sort by creation date (most recent first) and return
+    filtered.sort((a, b) {
+      // Sort pending tasks first, then by date
+      if (a.isPending && !b.isPending) return -1;
+      if (!a.isPending && b.isPending) return 1;
+      if (a.deadline != null && b.deadline != null) {
+        return b.deadline!.compareTo(a.deadline!);
+      }
+      return 0;
+    });
+    
+    return filtered;
   }
 
   void goToTaskDetails(TaskModel task) {
@@ -116,50 +170,90 @@ class DashboardController extends GetxController {
   // Accept/Reject task methods
   Future<void> acceptTask(TaskModel task) async {
     try {
-      // TODO: Call API to accept task
-      // await ApiService.acceptTask(task.id);
+      final response = await ApiService.acceptTask(task.id);
       
-      closeZoomedTask();
-      
-      // Refresh dashboard data (API will return updated status)
-      await loadDashboardData();
-      
-      Get.snackbar(
-        'Task Accepted',
-        'You can now submit "${task.title}"',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (response['success'] == true) {
+        closeZoomedTask();
+        
+        // Change filter to 'accepted' to show the accepted task
+        selectedFilter.value = 'accepted';
+        
+        // Refresh dashboard data (API will return updated status)
+        await loadDashboardData();
+        
+        Get.snackbar(
+          'Task Accepted',
+          response['message'] ?? 'You can now submit "${task.title}"',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.success,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          response['error'] ?? 'Failed to accept task',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
     } catch (e) {
-      print('Error accepting task: $e');
+      String errorMsg = 'Failed to accept task';
+      if (e.toString().isNotEmpty && !e.toString().contains('Exception: ')) {
+        errorMsg = e.toString().replaceFirst('Exception: ', '');
+      }
       Get.snackbar(
         'Error',
-        'Failed to accept task',
+        errorMsg,
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
       );
     }
   }
 
   Future<void> rejectTask(TaskModel task) async {
     try {
-      // TODO: Call API to reject task
-      // await ApiService.rejectTask(task.id);
+      final response = await ApiService.rejectTask(task.id);
       
-      closeZoomedTask();
-      
-      // Refresh dashboard data
-      await loadDashboardData();
-      
-      Get.snackbar(
-        'Task Rejected',
-        'You have rejected "${task.title}"',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      if (response['success'] == true) {
+        closeZoomedTask();
+        
+        // Change filter to 'all' to show remaining tasks (rejected tasks are filtered out)
+        selectedFilter.value = 'all';
+        
+        // Refresh dashboard data
+        await loadDashboardData();
+        
+        Get.snackbar(
+          'Task Rejected',
+          response['message'] ?? 'You have rejected "${task.title}"',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.warning,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          response['error'] ?? 'Failed to reject task',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: AppColors.error,
+          colorText: Colors.white,
+        );
+      }
     } catch (e) {
-      print('Error rejecting task: $e');
+      String errorMsg = 'Failed to reject task';
+      if (e.toString().isNotEmpty && !e.toString().contains('Exception: ')) {
+        errorMsg = e.toString().replaceFirst('Exception: ', '');
+      }
       Get.snackbar(
         'Error',
-        'Failed to reject task',
+        errorMsg,
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.error,
+        colorText: Colors.white,
       );
     }
   }

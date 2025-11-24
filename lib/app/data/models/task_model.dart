@@ -11,6 +11,13 @@ class TaskModel {
   final String? submissionStatus;
   final String? submittedStatus;
   final DateTime? submittedAt;
+  
+  // Status fields from submission (4 different parts)
+  final String? colourStatus;
+  final String? structureStatus;
+  final String? mediumStatus;
+  final String? communicationStatus;
+  final String? overallStatus;
 
   TaskModel({
     required this.id,
@@ -25,9 +32,31 @@ class TaskModel {
     this.submissionStatus,
     this.submittedStatus,
     this.submittedAt,
+    this.colourStatus,
+    this.structureStatus,
+    this.mediumStatus,
+    this.communicationStatus,
+    this.overallStatus,
   });
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
+    // Helper to parse date from string or DateTime
+    DateTime? parseDate(dynamic dateValue) {
+      if (dateValue == null) return null;
+      if (dateValue is DateTime) return dateValue;
+      if (dateValue is String) {
+        try {
+          return DateTime.parse(dateValue);
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+    
+    // Extract submission data if available
+    final submission = json['submission'] as Map<String, dynamic>?;
+
     return TaskModel(
       id: json['id'] ?? '',
       title: json['title'] ?? '',
@@ -36,15 +65,17 @@ class TaskModel {
       imageUrl: json['image_url'] ?? '',
       reward: (json['reward'] ?? 0).toDouble(),
       status: json['status'] ?? 'pending',
-      deadline: json['deadline'] != null 
-          ? DateTime.parse(json['deadline']) 
-          : null,
+      deadline: parseDate(json['deadline']),
       views: json['views'] ?? 0,
-      submissionStatus: json['submission_status'],
-      submittedStatus: json['submitted_status'],
-      submittedAt: json['submitted_at'] != null
-          ? DateTime.parse(json['submitted_at'])
-          : null,
+      submissionStatus: json['submission_status'] ?? json['submitted_status'] ?? json['payment_status'],
+      submittedStatus: json['submitted_status'] ?? json['submission_status'] ?? json['payment_status'],
+      submittedAt: parseDate(json['submitted_at']),
+      // Status fields from submission
+      colourStatus: submission?['colour_status'],
+      structureStatus: submission?['structure_status'],
+      mediumStatus: submission?['medium_status'],
+      communicationStatus: submission?['communication_status'],
+      overallStatus: submission?['overall_status'],
     );
   }
 
