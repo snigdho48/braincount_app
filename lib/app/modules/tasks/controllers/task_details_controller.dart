@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../data/models/task_model.dart';
 import '../../../data/services/api_service.dart';
 import '../../../routes/app_routes.dart';
+import 'task_list_controller.dart';
+import '../../dashboard/controllers/dashboard_controller.dart';
 
 class TaskDetailsController extends GetxController {
   final task = Rxn<TaskModel>();
@@ -62,6 +64,28 @@ class TaskDetailsController extends GetxController {
         // Mark as accepted locally
         isTaskAccepted.value = true;
         
+        // Update task list controller if it exists
+        if (Get.isRegistered<TaskListController>()) {
+          try {
+            final taskListController = Get.find<TaskListController>();
+            taskListController.selectedFilter.value = 'accepted';
+            await taskListController.loadTasks(reset: true);
+          } catch (e) {
+            // Error updating task list, continue anyway
+          }
+        }
+        
+        // Update dashboard controller if it exists
+        if (Get.isRegistered<DashboardController>()) {
+          try {
+            final dashboardController = Get.find<DashboardController>();
+            dashboardController.selectedFilter.value = 'accepted';
+            await dashboardController.loadDashboardData();
+          } catch (e) {
+            // Error updating dashboard, continue anyway
+          }
+        }
+        
         Get.snackbar(
           'Task Accepted',
           response['message'] ?? 'You can now submit this task',
@@ -71,7 +95,7 @@ class TaskDetailsController extends GetxController {
           duration: const Duration(seconds: 2),
         );
         
-        // Optionally go back after a short delay to show the updated task in the list
+        // Go back after a short delay to show the updated task in the list
         Future.delayed(const Duration(milliseconds: 500), () {
           Get.back();
         });
@@ -106,6 +130,34 @@ class TaskDetailsController extends GetxController {
       final response = await ApiService.rejectTask(task.value!.id);
       
       if (response['success'] == true) {
+        // Update task list controller if it exists
+        if (Get.isRegistered<TaskListController>()) {
+          try {
+            final taskListController = Get.find<TaskListController>();
+            // If currently viewing pending tasks, switch to 'all' to show remaining tasks
+            if (taskListController.selectedFilter.value == 'pending') {
+              taskListController.selectedFilter.value = 'all';
+            }
+            await taskListController.loadTasks(reset: true);
+          } catch (e) {
+            // Error updating task list, continue anyway
+          }
+        }
+        
+        // Update dashboard controller if it exists
+        if (Get.isRegistered<DashboardController>()) {
+          try {
+            final dashboardController = Get.find<DashboardController>();
+            // If currently viewing pending tasks, switch to 'all'
+            if (dashboardController.selectedFilter.value == 'pending') {
+              dashboardController.selectedFilter.value = 'all';
+            }
+            await dashboardController.loadDashboardData();
+          } catch (e) {
+            // Error updating dashboard, continue anyway
+          }
+        }
+        
         Get.back(); // Go back to previous screen immediately
         
         Get.snackbar(
